@@ -11,22 +11,22 @@
         <string>1.7.5</string>
 
         <key>CFBundleExecutable</key>
-        <string>Bisq</string>
+        <string>RadioX</string>
 
         <key>CFBundleName</key>
-        <string>Bisq</string>
+        <string>RadioX</string>
 
         <key>CFBundleIdentifier</key>
-        <string>io.bisq.CAT</string>
+        <string>io.radiox.CAT</string>
 
         <key>CFBundleIconFile</key>
-        <string>Bisq.icns</string>
+        <string>RadioX.icns</string>
 
         <key>LSApplicationCategoryType</key>
         <string>public.app-category.finance</string>
 
         <key>NSHumanReadableCopyright</key>
-        <string>Copyright © 2013-2021 - The Bisq developers</string>
+        <string>Copyright © 2013-2021 - The RadioX developers</string>
 
          <!-- Only supported in older OSX versions.
               See: https://github.com/bitcoin/bitcoin/issues/11896#issuecomment-352148399-->
