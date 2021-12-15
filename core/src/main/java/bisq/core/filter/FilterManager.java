@@ -250,7 +250,8 @@ public class FilterManager {
                 }
 
                 if (requireUpdateToNewVersionForTrading()) {
-                    filterWarningHandler.accept(Res.get("popup.warning.mandatoryUpdate.trading"));
+//                    filterWarningHandler.accept(Res.get("popup.warning.mandatoryUpdate.trading"));
+               //     filterWarningHandler.accept(Res.get(""));
                 }
 
                 if (requireUpdateToNewVersionForDAO()) {

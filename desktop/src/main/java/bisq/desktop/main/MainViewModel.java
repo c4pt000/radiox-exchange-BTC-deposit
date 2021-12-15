@@ -516,7 +516,8 @@ public class MainViewModel implements ViewModel, BisqSetup.BisqSetupListener {
         this.footerVersionInfo.setValue("v" + Version.VERSION);
         this.getNewVersionAvailableProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue) {
-                this.footerVersionInfo.setValue("v" + Version.VERSION + " " + Res.get("mainView.version.update"));
+         //       this.footerVersionInfo.setValue("v" + Version.VERSION + " " + Res.get("mainView.version.update"));
+                this.footerVersionInfo.setValue("v" + Version.VERSION);
             } else {
                 this.footerVersionInfo.setValue("v" + Version.VERSION);
             }

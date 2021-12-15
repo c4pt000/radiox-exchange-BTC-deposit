@@ -93,7 +93,8 @@ public class DisplayUpdateDownloadWindow extends Overlay<DisplayUpdateDownloadWi
         // need to set headLine, otherwise the fields will not be created in addHeadLine
         createGridPane();
         information(""); // to set regular information styling
-        headLine = Res.get("displayUpdateDownloadWindow.headline");
+//        headLine = Res.get("displayUpdateDownloadWindow.headline");
+        headLine = Res.get("");
         addHeadLine();
         addContent();
         addButtons();
@@ -120,8 +121,10 @@ public class DisplayUpdateDownloadWindow extends Overlay<DisplayUpdateDownloadWi
         gridPane.getChildren().add(separator);
 
 
-        Button downloadButton = new AutoTooltipButton(Res.get("displayUpdateDownloadWindow.button.label"));
-        downloadButton.getStyleClass().add("action-button");
+//        Button downloadButton = new AutoTooltipButton(Res.get("displayUpdateDownloadWindow.button.label"));
+        Button downloadButton = new AutoTooltipButton(Res.get(""));
+  //      downloadButton.getStyleClass().add("action-button");
+        downloadButton.getStyleClass().add("");
         downloadButton.setDefaultButton(true);
 
         busyAnimation = new BusyAnimation(false);
@@ -140,7 +143,8 @@ public class DisplayUpdateDownloadWindow extends Overlay<DisplayUpdateDownloadWi
         gridPane.getChildren().add(hBox);
 
         Label downloadingFileLabel = addLabel(gridPane, ++rowIndex,
-                Res.get("displayUpdateDownloadWindow.downloadingFile", ""));
+//                Res.get("displayUpdateDownloadWindow.downloadingFile", ""));
+                Res.get("", ""));
         downloadingFileLabel.setOpacity(0.2);
         GridPane.setHalignment(downloadingFileLabel, HPos.LEFT);
 
@@ -154,7 +158,8 @@ public class DisplayUpdateDownloadWindow extends Overlay<DisplayUpdateDownloadWi
         gridPane.getChildren().add(progressBar);
 
 
-        final String downloadedFilesLabelTitle = Res.get("displayUpdateDownloadWindow.downloadedFiles");
+//        final String downloadedFilesLabelTitle = Res.get("displayUpdateDownloadWindow.downloadedFiles");
+        final String downloadedFilesLabelTitle = Res.get("");
         Label downloadedFilesLabel = addLabel(gridPane, ++rowIndex, downloadedFilesLabelTitle);
         GridPane.setColumnIndex(downloadedFilesLabel, 0);
         GridPane.setHalignment(downloadedFilesLabel, HPos.LEFT);
@@ -162,7 +167,8 @@ public class DisplayUpdateDownloadWindow extends Overlay<DisplayUpdateDownloadWi
         downloadedFilesLabel.setOpacity(0.2);
 
 
-        final String verifiedSigLabelTitle = Res.get("displayUpdateDownloadWindow.verifiedSigs");
+//        final String verifiedSigLabelTitle = Res.get("displayUpdateDownloadWindow.verifiedSigs");
+        final String verifiedSigLabelTitle = Res.get("");
         Label verifiedSigLabel = addLabel(gridPane, ++rowIndex, verifiedSigLabelTitle);
         GridPane.setColumnIndex(verifiedSigLabel, 0);
         GridPane.setColumnSpan(verifiedSigLabel, 2);
@@ -181,7 +187,8 @@ public class DisplayUpdateDownloadWindow extends Overlay<DisplayUpdateDownloadWi
         gridPane.getChildren().add(separator2);
 
         BisqInstaller installer = new BisqInstaller();
-        String downloadFailedString = Res.get("displayUpdateDownloadWindow.download.failed");
+//        String downloadFailedString = Res.get("displayUpdateDownloadWindow.download.failed");
+        String downloadFailedString = Res.get("");
         downloadButton.setOnAction(e -> {
             if (installer.isSupportedOS()) {
                 List<String> downloadedFiles = new ArrayList<>();
@@ -191,7 +198,8 @@ public class DisplayUpdateDownloadWindow extends Overlay<DisplayUpdateDownloadWi
                 downloadedFilesLabel.setOpacity(1);
                 downloadingFileLabel.setOpacity(1);
                 busyAnimation.play();
-                statusLabel.setText(Res.get("displayUpdateDownloadWindow.status.downloading"));
+//                statusLabel.setText(Res.get("displayUpdateDownloadWindow.status.downloading"));
+                statusLabel.setText(Res.get(""));
 
                 // download installer
                 downloadTaskOptional = installer.download(alert.getVersion());
@@ -199,7 +207,8 @@ public class DisplayUpdateDownloadWindow extends Overlay<DisplayUpdateDownloadWi
                     final DownloadTask downloadTask = downloadTaskOptional.get();
                     final ChangeListener<String> downloadedFilesListener = (observable, oldValue, newValue) -> {
                         if (!newValue.endsWith("-local")) {
-                            downloadingFileLabel.setText(Res.get("displayUpdateDownloadWindow.downloadingFile", newValue));
+//                            downloadingFileLabel.setText(Res.get("displayUpdateDownloadWindow.downloadingFile", newValue));
+                            downloadingFileLabel.setText(Res.get("", newValue));
                             downloadedFilesLabel.setText(downloadedFilesLabelTitle + " " + Joiner.on(", ").join(downloadedFiles));
                             downloadedFiles.add(newValue);
                         }
@@ -214,7 +223,8 @@ public class DisplayUpdateDownloadWindow extends Overlay<DisplayUpdateDownloadWi
                         progressBar.setVisible(false);
                         downloadingFileLabel.setText("");
                         downloadingFileLabel.setOpacity(0.2);
-                        statusLabel.setText(Res.get("displayUpdateDownloadWindow.status.verifying"));
+//                        statusLabel.setText(Res.get("displayUpdateDownloadWindow.status.verifying"));
+                        statusLabel.setText(Res.get(""));
 
                         List<BisqInstaller.FileDescriptor> downloadResults = downloadTask.getValue();
                         Optional<BisqInstaller.FileDescriptor> downloadFailed = downloadResults.stream()
@@ -252,11 +262,14 @@ public class DisplayUpdateDownloadWindow extends Overlay<DisplayUpdateDownloadWi
                                 Optional<BisqInstaller.VerifyDescriptor> verifyFailed = verifyResults.stream()
                                         .filter(verifyDescriptor -> !BisqInstaller.VerifyStatusEnum.OK.equals(verifyDescriptor.getVerifyStatusEnum())).findFirst();
                                 if (verifyResults == null || verifyResults.isEmpty() || verifyFailed.isPresent()) {
-                                    showErrorMessage(downloadButton, statusLabel, Res.get("displayUpdateDownloadWindow.verify.failed"));
+//                                    showErrorMessage(downloadButton, statusLabel, Res.get("displayUpdateDownloadWindow.verify.failed"));
+                                    showErrorMessage(downloadButton, statusLabel, Res.get(""));
                                 } else {
                                     verifiedSigLabel.getStyleClass().add("success-text");
-                                    new Popup().feedback(Res.get("displayUpdateDownloadWindow.success"))
-                                            .actionButtonText(Res.get("displayUpdateDownloadWindow.download.openDir"))
+//                                    new Popup().feedback(Res.get("displayUpdateDownloadWindow.success"))
+  //                                          .actionButtonText(Res.get("displayUpdateDownloadWindow.download.openDir"))
+                                    new Popup().feedback(Res.get(""))
+                                            .actionButtonText(Res.get(""))
                                             .onAction(() -> {
                                                 try {
                                                     Utilities.openFile(new File(Utilities.getDownloadOfHomeDir()));
@@ -277,7 +290,8 @@ public class DisplayUpdateDownloadWindow extends Overlay<DisplayUpdateDownloadWi
                     showErrorMessage(downloadButton, statusLabel, downloadFailedString);
                 }
             } else {
-                showErrorMessage(downloadButton, statusLabel, (Res.get("displayUpdateDownloadWindow.installer.failed")));
+//                showErrorMessage(downloadButton, statusLabel, (Res.get("displayUpdateDownloadWindow.installer.failed")));
+                showErrorMessage(downloadButton, statusLabel, (Res.get("")));
             }
         });
     }
@@ -310,9 +324,11 @@ public class DisplayUpdateDownloadWindow extends Overlay<DisplayUpdateDownloadWi
 
     @Override
     protected void addButtons() {
-        closeButton = new AutoTooltipButton(Res.get("displayUpdateDownloadWindow.button.ignoreDownload"));
+//        closeButton = new AutoTooltipButton(Res.get("displayUpdateDownloadWindow.button.ignoreDownload"));
+        closeButton = new AutoTooltipButton(Res.get(""));
         closeButton.setOnAction(event -> doClose());
-        actionButton = new AutoTooltipButton(Res.get("displayUpdateDownloadWindow.button.downloadLater"));
+  //      actionButton = new AutoTooltipButton(Res.get("displayUpdateDownloadWindow.button.downloadLater"));
+        actionButton = new AutoTooltipButton(Res.get(""));
         actionButton.setDefaultButton(false);
         actionButton.setOnAction(event -> {
             cleanup();
@@ -371,7 +387,8 @@ public class DisplayUpdateDownloadWindow extends Overlay<DisplayUpdateDownloadWi
         stopAnimations();
         downloadButton.setDisable(false);
         new Popup()
-                .headLine(Res.get("displayUpdateDownloadWindow.download.failed.headline"))
+//                .headLine(Res.get("displayUpdateDownloadWindow.download.failed.headline"))
+                .headLine(Res.get(""))
                 .feedback(errorMsg)
                 .onClose(this::doClose)
                 .show();

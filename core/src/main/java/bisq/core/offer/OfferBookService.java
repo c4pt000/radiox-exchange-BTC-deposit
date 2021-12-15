@@ -136,10 +136,11 @@ public class OfferBookService {
     ///////////////////////////////////////////////////////////////////////////////////////////
 
     public void addOffer(Offer offer, ResultHandler resultHandler, ErrorMessageHandler errorMessageHandler) {
-        if (filterManager.requireUpdateToNewVersionForTrading()) {
-            errorMessageHandler.handleErrorMessage(Res.get("popup.warning.mandatoryUpdate.trading"));
-            return;
-        }
+//        if (filterManager.requireUpdateToNewVersionForTrading()) {
+//            errorMessageHandler.handleErrorMessage(Res.get("popup.warning.mandatoryUpdate.trading"));
+//            errorMessageHandler.handleErrorMessage(Res.get("popup.warning.mandatoryUpdate.trading"));
+  //          return;
+    //    }
 
         boolean result = p2PService.addProtectedStorageEntry(offer.getOfferPayloadBase());
         if (result) {
@@ -152,10 +153,10 @@ public class OfferBookService {
     public void refreshTTL(OfferPayloadBase offerPayloadBase,
                            ResultHandler resultHandler,
                            ErrorMessageHandler errorMessageHandler) {
-        if (filterManager.requireUpdateToNewVersionForTrading()) {
-            errorMessageHandler.handleErrorMessage(Res.get("popup.warning.mandatoryUpdate.trading"));
-            return;
-        }
+    //    if (filterManager.requireUpdateToNewVersionForTrading()) {
+  //          errorMessageHandler.handleErrorMessage(Res.get("popup.warning.mandatoryUpdate.trading"));
+      //      return;
+      //  }
 
         boolean result = p2PService.refreshTTL(offerPayloadBase);
         if (result) {
