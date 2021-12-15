@@ -410,7 +410,7 @@ public class MainViewModel implements ViewModel, BisqSetup.BisqSetupListener {
                 .onAesKey(aesKeyHandler::accept)
                 .onClose(() -> BisqApp.getShutDownHandler().run())
                 .show());
-
+/*
         bisqSetup.setDisplayUpdateHandler((alert, key) -> new DisplayUpdateDownloadWindow(alert, config)
                 .actionButtonText(Res.get("displayUpdateDownloadWindow.button.downloadLater"))
                 .onAction(() -> {
@@ -421,6 +421,7 @@ public class MainViewModel implements ViewModel, BisqSetup.BisqSetupListener {
                     preferences.dontShowAgain(key, true); // ignore update
                 })
                 .show());
+*/
         bisqSetup.setDisplayAlertHandler(alert -> new DisplayAlertMessageWindow()
                 .alertMessage(alert)
                 .closeButtonText(Res.get("shared.close"))

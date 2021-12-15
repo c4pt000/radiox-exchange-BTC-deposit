@@ -249,14 +249,14 @@ public class FilterManager {
                     // filterWarningHandler.accept(Res.get("popup.warning.nodeBanned", Res.get("popup.warning.priceRelay")));
                 }
 
-                if (requireUpdateToNewVersionForTrading()) {
+            //    if (requireUpdateToNewVersionForTrading()) {
 //                    filterWarningHandler.accept(Res.get("popup.warning.mandatoryUpdate.trading"));
                //     filterWarningHandler.accept(Res.get(""));
-                }
+              //  }
 
-                if (requireUpdateToNewVersionForDAO()) {
-                    filterWarningHandler.accept(Res.get("popup.warning.mandatoryUpdate.dao"));
-                }
+              //  if (requireUpdateToNewVersionForDAO()) {
+              //      filterWarningHandler.accept(Res.get("popup.warning.mandatoryUpdate.dao"));
+               // }
                 if (filter.isDisableDao()) {
                     filterWarningHandler.accept(Res.get("popup.warning.disable.dao"));
                 }
@@ -439,20 +439,23 @@ public class FilterManager {
     }
 
     public boolean requireUpdateToNewVersionForTrading() {
-        if (getFilter() == null) {
+  
+     if (getFilter() == null) {
             return false;
         }
 
         boolean requireUpdateToNewVersion = false;
         String getDisableTradeBelowVersion = getFilter().getDisableTradeBelowVersion();
         if (getDisableTradeBelowVersion != null && !getDisableTradeBelowVersion.isEmpty()) {
-            requireUpdateToNewVersion = Version.isNewVersion(getDisableTradeBelowVersion);
+           // requireUpdateToNewVersion = Version.isNewVersion(getDisableTradeBelowVersion);
         }
 
         return requireUpdateToNewVersion;
+
     }
 
     public boolean requireUpdateToNewVersionForDAO() {
+
         if (getFilter() == null) {
             return false;
         }
@@ -460,10 +463,11 @@ public class FilterManager {
         boolean requireUpdateToNewVersion = false;
         String disableDaoBelowVersion = getFilter().getDisableDaoBelowVersion();
         if (disableDaoBelowVersion != null && !disableDaoBelowVersion.isEmpty()) {
-            requireUpdateToNewVersion = Version.isNewVersion(disableDaoBelowVersion);
+//            requireUpdateToNewVersion = Version.isNewVersion(disableDaoBelowVersion);
         }
 
         return requireUpdateToNewVersion;
+
     }
 
     public boolean arePeersPaymentAccountDataBanned(PaymentAccountPayload paymentAccountPayload) {
