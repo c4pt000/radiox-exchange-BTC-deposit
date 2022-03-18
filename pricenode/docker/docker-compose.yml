@@ -1,6 +1,6 @@
 version: '3'
 
-# Fill in your own RADCAVERAGE public and private keys
+# Fill in your own BTCAVERAGE public and private keys
 
 services:
     pricenode:
@@ -12,8 +12,8 @@ services:
             - 80:80
             - 8080:8080
         environment:
-            - RADCAVERAGE_PRIVKEY=!!!!!!!!!!!!!!!!!!!!!!!!! YOUR PRIVATE KEY !!!!!!!!!!!!!!!!!!!!!!!!!!!
-            - RADCAVERAGE_PUBKEY=!!!!!!!!!!!!!!!!!!!!!!!!!! YOUR PUBKEY !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            - BTCAVERAGE_PRIVKEY=!!!!!!!!!!!!!!!!!!!!!!!!! YOUR PRIVATE KEY !!!!!!!!!!!!!!!!!!!!!!!!!!!
+            - BTCAVERAGE_PUBKEY=!!!!!!!!!!!!!!!!!!!!!!!!!! YOUR PUBKEY !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     entropy:
       restart: always
       image: harbur/haveged:1.7c-1

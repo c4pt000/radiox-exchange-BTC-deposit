@@ -63,7 +63,7 @@ class OpenOffersDataModel extends ActivatableDataModel {
                                OpenBsqSwapOfferService openBsqSwapOfferService,
                                PriceFeedService priceFeedService,
                                PriceUtil priceUtil,
-                               @Named(FormattingUtils.RADC_FORMATTER_KEY) CoinFormatter btcFormatter,
+                               @Named(FormattingUtils.BTC_FORMATTER_KEY) CoinFormatter btcFormatter,
                                BsqFormatter bsqFormatter) {
         this.openOfferManager = openOfferManager;
         this.openBsqSwapOfferService = openBsqSwapOfferService;

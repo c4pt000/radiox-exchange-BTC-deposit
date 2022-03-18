@@ -11,7 +11,7 @@ getbalance
 
 DESCRIPTION
 -----------
-Returns full balance information for Bisq BSQ and/or RADC wallets.
+Returns full balance information for Bisq BSQ and/or BTC wallets.
 
 OPTIONS
 -------
@@ -20,11 +20,11 @@ OPTIONS
 
 EXAMPLES
 --------
-Show full BSQ and RADC wallet balance information:
+Show full BSQ and BTC wallet balance information:
 $ ./bisq-cli --password=xyz --port=9998 getbalance
 
 Show full BSQ wallet balance information:
 $ ./bisq-cli --password=xyz --port=9998 getbalance --currency-code=bsq
 
-Show full RADC wallet balance information:
+Show full BTC wallet balance information:
 $ ./bisq-cli --password=xyz --port=9998 getbalance --currency-code=btc

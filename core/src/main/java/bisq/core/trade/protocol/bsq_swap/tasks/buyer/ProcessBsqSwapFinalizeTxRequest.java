@@ -49,7 +49,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * Worst case would be that the seller pays less for miner fee as expected and thus risks to get the tx never confirmed.
  * The change output cannot be verified exactly due potential dust values and non-deterministic behaviour of the
  * fee estimation.
- * The important values for out RADC output and out BSQ change output are set already in BuyerCreatesBsqInputsAndChange
+ * The important values for out BTC output and out BSQ change output are set already in BuyerCreatesBsqInputsAndChange
  * and are not related to the data provided by the peer. If the peers inputs would not be sufficient the tx would
  * fail anyway.
  */
@@ -67,7 +67,7 @@ public abstract class ProcessBsqSwapFinalizeTxRequest extends BsqSwapTask {
             checkNotNull(request);
             Validator.checkTradeId(protocolModel.getOfferId(), request);
 
-            // We will use only the seller's RADC inputs from the tx, so we do not verify anything else.
+            // We will use only the seller's BTC inputs from the tx, so we do not verify anything else.
             byte[] tx = request.getTx();
             WalletService btcWalletService = protocolModel.getBtcWalletService();
             Transaction sellersTransaction = btcWalletService.getTxFromSerializedTx(tx);
@@ -95,14 +95,14 @@ public abstract class ProcessBsqSwapFinalizeTxRequest extends BsqSwapTask {
 
             long change = request.getBtcChange();
             checkArgument(change == 0 || Restrictions.isAboveDust(Coin.valueOf(change)),
-                    "RADC change must be 0 or above dust");
+                    "BTC change must be 0 or above dust");
 
             long sumInputs = sellersRawBtcInputs.stream().mapToLong(input -> input.value).sum();
             int sellersTxSize = BsqSwapCalculation.getVBytesSize(sellersRawBtcInputs, change);
             long sellersBtcInputAmount = BsqSwapCalculation.getSellersBtcInputValue(trade, sellersTxSize, getSellersTradeFee()).getValue();
             // It can be that there have been dust change which got added to miner fees, so sumInputs could be a bit larger.
             checkArgument(sumInputs >= sellersBtcInputAmount,
-                    "Sellers RADC input amount do not match our calculated required RADC input amount");
+                    "Sellers BTC input amount do not match our calculated required BTC input amount");
 
             int buyersTxSize = BsqSwapCalculation.getVBytesSize(buyersBsqInputs, protocolModel.getChange());
             long txFeePerVbyte = trade.getTxFeePerVbyte();
@@ -112,7 +112,7 @@ public abstract class ProcessBsqSwapFinalizeTxRequest extends BsqSwapTask {
             long expectedChange = sumInputs - buyersBtcPayout - sellersTxFee - buyersTxFee;
             boolean isChangeAboveDust = Restrictions.isAboveDust(Coin.valueOf(expectedChange));
             if (expectedChange != change && isChangeAboveDust) {
-                log.warn("Sellers RADC change is not as expected. This can happen if fee estimation for buyersBsqInputs did not " +
+                log.warn("Sellers BTC change is not as expected. This can happen if fee estimation for buyersBsqInputs did not " +
                         "succeed (e.g. dust change, max. iterations reached,...");
                 log.warn("buyersBtcPayout={}, sumInputs={}, sellersTxFee={}, buyersTxFee={}, expectedChange={}, change={}",
                         buyersBtcPayout, sumInputs, sellersTxFee, buyersTxFee, expectedChange, change);
@@ -126,12 +126,12 @@ public abstract class ProcessBsqSwapFinalizeTxRequest extends BsqSwapTask {
             String sellersBsqPayoutAddress = request.getBsqPayoutAddress();
             checkNotNull(sellersBsqPayoutAddress, "sellersBsqPayoutAddress must not be null");
             checkArgument(!sellersBsqPayoutAddress.isEmpty(), "sellersBsqPayoutAddress must not be empty");
-            Address.fromString(params, sellersBsqPayoutAddress); // If address is not a RADC address it throws an exception
+            Address.fromString(params, sellersBsqPayoutAddress); // If address is not a BTC address it throws an exception
 
             String sellersBtcChangeAddress = request.getBtcChangeAddress();
             checkNotNull(sellersBtcChangeAddress, "sellersBtcChangeAddress must not be null");
             checkArgument(!sellersBtcChangeAddress.isEmpty(), "sellersBtcChangeAddress must not be empty");
-            Address.fromString(params, sellersBtcChangeAddress); // If address is not a RADC address it throws an exception
+            Address.fromString(params, sellersBtcChangeAddress); // If address is not a BTC address it throws an exception
 
             // Apply data
             BsqSwapTradePeer tradePeer = protocolModel.getTradePeer();

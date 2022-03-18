@@ -49,9 +49,6 @@ import org.bitcoinj.core.PeerAddress;
 import org.bitcoinj.core.PeerGroup;
 import org.bitcoinj.core.RejectMessage;
 import org.bitcoinj.core.listeners.DownloadProgressTracker;
-
-
-
 //import org.bitcoinj.params.MainNetParams;
 //import org.bitcoinj.params.RegTestParams;
 //import org.bitcoinj.params.TestNet3Params;
@@ -60,10 +57,6 @@ import org.bitcoinj.core.listeners.DownloadProgressTracker;
 import org.libdohj.params.DogecoinMainNetParams;
 import org.libdohj.params.DogecoinRegTestParams;
 import org.libdohj.params.DogecoinTestNet3Params;
-
-
-
-
 import org.bitcoinj.utils.Threading;
 import org.bitcoinj.wallet.DeterministicSeed;
 import org.bitcoinj.wallet.Wallet;
@@ -121,15 +114,15 @@ import static com.google.common.base.Preconditions.checkNotNull;
 @Slf4j
 public class WalletsSetup {
 
-    public static final String PRE_SEGWIT_RADC_WALLET_BACKUP = "pre_segwit_radiox_RADC.wallet.backup";
-    public static final String PRE_SEGWIT_BSQ_WALLET_BACKUP = "pre_segwit_radiox_BSQ.wallet.backup";
+    public static final String PRE_SEGWIT_BTC_WALLET_BACKUP = "pre_segwit_bisq_BTC.wallet.backup";
+    public static final String PRE_SEGWIT_BSQ_WALLET_BACKUP = "pre_segwit_bisq_BSQ.wallet.backup";
 
     @Getter
     public final BooleanProperty walletsSetupFailed = new SimpleBooleanProperty();
 
     private static final long STARTUP_TIMEOUT = 180;
-    private static final String BSQ_WALLET_FILE_NAME = "radiox_BSQ.wallet";
-    private static final String SPV_CHAIN_FILE_NAME = "radiox.spvchain";
+    private static final String BSQ_WALLET_FILE_NAME = "bisq_BSQ.wallet";
+    private static final String SPV_CHAIN_FILE_NAME = "bisq.spvchain";
 
     private final RegTestHost regTestHost;
     private final AddressEntryList addressEntryList;
@@ -169,7 +162,7 @@ public class WalletsSetup {
                         @Named(Config.USER_AGENT) String userAgent,
                         @Named(Config.WALLET_DIR) File walletDir,
                         @Named(Config.USE_ALL_PROVIDED_NODES) boolean useAllProvidedNodes,
-                        @Named(Config.NUM_CONNECTIONS_FOR_RADC) int numConnectionsForBtc,
+                        @Named(Config.NUM_CONNECTIONS_FOR_BTC) int numConnectionsForBtc,
                         @Named(Config.SOCKS5_DISCOVER_MODE) String socks5DiscoverModeString) {
         this.regTestHost = regTestHost;
         this.addressEntryList = addressEntryList;
@@ -184,7 +177,7 @@ public class WalletsSetup {
         this.socks5DiscoverMode = evaluateMode(socks5DiscoverModeString);
         this.walletDir = walletDir;
 
-        btcWalletFileName = "radiox_" + config.baseCurrencyNetwork.getCurrencyCode() + ".wallet";
+        btcWalletFileName = "bisq_" + config.baseCurrencyNetwork.getCurrencyCode() + ".wallet";
         params = Config.baseCurrencyNetworkParameters();
         PeerGroup.setIgnoreHttpSeeds(true);
     }
@@ -215,7 +208,7 @@ public class WalletsSetup {
 
         walletConfig = new WalletConfig(params,
                 walletDir,
-                "radiox") {
+                "bisq") {
             @Override
             protected void onSetupCompleted() {
                 //We are here in the btcj thread Thread[ STARTING,5,main]
@@ -441,7 +434,7 @@ public class WalletsSetup {
             e.printStackTrace();
         }
 
-        List.of(PRE_SEGWIT_RADC_WALLET_BACKUP, PRE_SEGWIT_BSQ_WALLET_BACKUP).forEach(filename -> {
+        List.of(PRE_SEGWIT_BTC_WALLET_BACKUP, PRE_SEGWIT_BSQ_WALLET_BACKUP).forEach(filename -> {
             File segwitBackup = new File(walletDir, filename);
             try {
                 FileUtil.deleteFileIfExists(segwitBackup);
@@ -474,7 +467,7 @@ public class WalletsSetup {
                 t.printStackTrace();
                 log.error("Executing task failed. " + t.getMessage());
             }
-        }, "RestoreRADCWallet-%d").start();
+        }, "RestoreBTCWallet-%d").start();
     }
 
 

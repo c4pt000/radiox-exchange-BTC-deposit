@@ -2,7 +2,7 @@ withdrawfunds
 
 NAME
 ----
-withdrawfunds - send RADC received during a trade to an external RADC wallet and close trade
+withdrawfunds - send BTC received during a trade to an external BTC wallet and close trade
 
 SYNOPSIS
 --------
@@ -13,10 +13,10 @@ withdrawfunds
 
 DESCRIPTION
 -----------
-A RADC buyer completes the final step in the trade protocol by sending received RADC to
-an external RADC wallet.
+A BTC buyer completes the final step in the trade protocol by sending received BTC to
+an external BTC wallet.
 
-The alternative way to close out the trade is to keep the received RADC in the Bisq wallet
+The alternative way to close out the trade is to keep the received BTC in the Bisq wallet
 with the closetrade command.
 
 The buyer needs to complete the trade protocol using the closetrade or withdrawfunds command.
@@ -37,14 +37,14 @@ OPTIONS
 
 EXAMPLES
 --------
-A RADC seller has informed the buyer that fiat payment has been received for trade with ID
-83e8b2e2-51b6-4f39-a748-3ebd29c22aea, and locked RADC has been released to the buyer.
-The RADC buyer closes out the trade by sending the received RADC to an external RADC wallet:
+A BTC seller has informed the buyer that fiat payment has been received for trade with ID
+83e8b2e2-51b6-4f39-a748-3ebd29c22aea, and locked BTC has been released to the buyer.
+The BTC buyer closes out the trade by sending the received BTC to an external BTC wallet:
 $ ./bisq-cli --password=xyz --port=9998 withdrawfunds --trade-id=83e8b2e2-51b6-4f39-a748-3ebd29c22aea \
     --address=2N5J6MyjAsWnashimGiNwoRzUXThsQzRmbv               (bitcoin regtest address)
 
 
-A seller sends a trade's RADC proceeds to an external wallet, and includes an optional memo:
+A seller sends a trade's BTC proceeds to an external wallet, and includes an optional memo:
 $ ./bisq-cli --password=xyz --port=9998 withdrawfunds --trade-id=83e8b2e2-51b6-4f39-a748-3ebd29c22aea \
     --address=2N5J6MyjAsWnashimGiNwoRzUXThsQzRmbv \
     --memo="note to self"

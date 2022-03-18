@@ -135,11 +135,11 @@ public class DaoStateSnapshotService implements DaoSetupService, DaoStateListene
         if (config.baseCurrencyNetwork.isMainnet() &&
                 walletsSetup.isDownloadComplete() &&
                 daoStateService.getChainHeight() == bsqWalletService.getBestChainHeight()) {
-            // In case the DAO state is invalid we might get an outdated RECIPIENT_RADC_ADDRESS. In that case we trigger
+            // In case the DAO state is invalid we might get an outdated RECIPIENT_BTC_ADDRESS. In that case we trigger
             // a dao resync from resources.
-            String address = daoStateService.getParamValue(Param.RECIPIENT_RADC_ADDRESS, daoStateService.getChainHeight());
+            String address = daoStateService.getParamValue(Param.RECIPIENT_BTC_ADDRESS, daoStateService.getChainHeight());
             if (DelayedPayoutAddressProvider.isOutdatedAddress(address)) {
-                log.warn("The RECIPIENT_RADC_ADDRESS is not as expected. The DAO state is probably out of " +
+                log.warn("The RECIPIENT_BTC_ADDRESS is not as expected. The DAO state is probably out of " +
                         "sync and a resync should fix that issue.");
                 resyncDaoStateFromResources();
             }

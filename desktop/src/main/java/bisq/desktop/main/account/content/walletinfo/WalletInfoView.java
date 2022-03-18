@@ -79,7 +79,7 @@ public class WalletInfoView extends ActivatableView<GridPane, Void> {
                            BtcWalletService btcWalletService,
                            BsqWalletService bsqWalletService,
                            WalletPasswordWindow walletPasswordWindow,
-                           @Named(FormattingUtils.RADC_FORMATTER_KEY) CoinFormatter btcFormatter,
+                           @Named(FormattingUtils.BTC_FORMATTER_KEY) CoinFormatter btcFormatter,
                            BsqFormatter bsqFormatter) {
         this.walletsManager = walletsManager;
         this.btcWalletService = btcWalletService;

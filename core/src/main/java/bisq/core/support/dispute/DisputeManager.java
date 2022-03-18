@@ -901,7 +901,7 @@ public abstract class DisputeManager<T extends DisputeList<Dispute>> extends Sup
 
     // If price was going down between take offer time and open dispute time the buyer has an incentive to
     // not send the payment but to try to make a new trade with the better price. We risks to lose part of the
-    // security deposit (in mediation we will always get back 0.003 RADC to keep some incentive to accept mediated
+    // security deposit (in mediation we will always get back 0.003 BTC to keep some incentive to accept mediated
     // proposal). But if gain is larger than this loss he has economically an incentive to default in the trade.
     // We do all those calculations to give a hint to mediators to detect option trades.
     protected void addPriceInfoMessage(Dispute dispute, int counter) {
@@ -938,12 +938,12 @@ public abstract class DisputeManager<T extends DisputeList<Dispute>> extends Sup
         String headline;
         if (potentialGain.isPositive()) {
             headline = "This might be a potential option trade!";
-            optionTradeDetails = "\nRADC amount calculated with price at dispute opening: " + potentialAmountAtDisputeOpening.toFriendlyString() +
+            optionTradeDetails = "\nBTC amount calculated with price at dispute opening: " + potentialAmountAtDisputeOpening.toFriendlyString() +
                     "\nMax loss of security deposit is: " + maxLossSecDeposit.toFriendlyString() +
                     "\nPossible gain from an option trade is: " + potentialGain.toFriendlyString();
         } else {
             headline = "It does not appear to be an option trade.";
-            optionTradeDetails = "\nRADC amount calculated with price at dispute opening: " + potentialAmountAtDisputeOpening.toFriendlyString() +
+            optionTradeDetails = "\nBTC amount calculated with price at dispute opening: " + potentialAmountAtDisputeOpening.toFriendlyString() +
                     "\nMax loss of security deposit is: " + maxLossSecDeposit.toFriendlyString() +
                     "\nPossible loss from an option trade is: " + potentialGain.multiply(-1).toFriendlyString();
         }

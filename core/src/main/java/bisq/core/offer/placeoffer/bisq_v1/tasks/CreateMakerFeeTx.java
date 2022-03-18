@@ -158,7 +158,7 @@ public class CreateMakerFeeTx extends Task<PlaceOfferModel> {
         } catch (Throwable t) {
             if (t instanceof DaoDisabledException) {
                 offer.setErrorMessage("You cannot pay the trade fee in BSQ at the moment because the DAO features have been " +
-                        "disabled due technical problems. Please use the RADC fee option until the issues are resolved. " +
+                        "disabled due technical problems. Please use the BTC fee option until the issues are resolved. " +
                         "For more information please visit the Bisq Forum.");
             } else {
                 offer.setErrorMessage("An error occurred.\n" +

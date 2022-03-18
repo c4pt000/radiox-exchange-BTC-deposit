@@ -803,8 +803,8 @@ public class MainViewModel implements ViewModel, BisqSetup.BisqSetupListener {
         return bisqSetup.getBtcSplashSyncIconId();
     }
 
-    BooleanProperty getUseTorForRADC() {
-        return bisqSetup.getUseTorForRADC();
+    BooleanProperty getUseTorForBTC() {
+        return bisqSetup.getUseTorForBTC();
     }
 
     // P2P

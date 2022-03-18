@@ -78,7 +78,7 @@ class BsqSwapCreateOfferDataModel extends BsqSwapOfferDataModel {
                                 OpenBsqSwapOfferService openBsqSwapOfferService,
                                 User user,
                                 P2PService p2PService,
-                                @Named(FormattingUtils.RADC_FORMATTER_KEY) CoinFormatter btcFormatter) {
+                                @Named(FormattingUtils.BTC_FORMATTER_KEY) CoinFormatter btcFormatter) {
         super(bsqSwapOfferModel,
                 user,
                 p2PService,

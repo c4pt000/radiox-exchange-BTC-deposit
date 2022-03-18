@@ -53,15 +53,15 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * and protection tool. Only if both traders would have deactivated filter messages they could trade.
  *
  * Problem description:
- * We did not apply the check to not allow BSQ outputs after we had detected a RADC output.
+ * We did not apply the check to not allow BSQ outputs after we had detected a BTC output.
  * The supported BSQ transactions did not support such cases anyway but we missed an edge case:
- * A trade fee tx in case when the RADC input matches exactly the RADC output
- * (or RADC change was <= the miner fee) and the BSQ fee was > the miner fee. Then we
- * create a change output after the RADC output (using an address from the RADC wallet) and as
+ * A trade fee tx in case when the BTC input matches exactly the BTC output
+ * (or BTC change was <= the miner fee) and the BSQ fee was > the miner fee. Then we
+ * create a change output after the BTC output (using an address from the BTC wallet) and as
  * available BSQ was >= as spent BSQ it was considered a valid BSQ output.
- * There have been observed 5 such transactions where 4 got spent later to a RADC address and by that burned
+ * There have been observed 5 such transactions where 4 got spent later to a BTC address and by that burned
  * the pending BSQ (spending amount was higher than sending amount). One was still unspent.
- * The BSQ was sitting in the RADC wallet so not even visible as BSQ to the user.
+ * The BSQ was sitting in the BTC wallet so not even visible as BSQ to the user.
  * If the user would have crafted a custom BSQ tx he could have avoided that the full trade fee was burned.
  *
  * Not a universal rule:
@@ -69,8 +69,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * where we need to permit this case.
  * For instance in case we confiscate a lockupTx we have usually 2 BSQ outputs: The first one is the bond which
  * should be confiscated and the second one is the BSQ change output.
- * At confiscating we set the first to TxOutputType.RADC_OUTPUT but we do not want to confiscate
- * the second BSQ change output as well. So we do not apply the rule that no BSQ is allowed once a RADC output is
+ * At confiscating we set the first to TxOutputType.BTC_OUTPUT but we do not want to confiscate
+ * the second BSQ change output as well. So we do not apply the rule that no BSQ is allowed once a BTC output is
  * found. Theoretically other transactions could be confiscated as well and all BSQ tx which allow > 1 BSQ outputs
  * would have the same issue as well if the first output gets confiscated.
  * We also don't enforce the rule for irregular or invalid txs which are usually set and detected at the end of
@@ -169,7 +169,7 @@ class TxOutputParser {
                 // output to not be BSQ output at all
                 handleUnlockBondTx(tempTxOutput);
             } else if (isBtcOutputOfBurnFeeTx(tempTxOutput)) {
-                // In case we have the opReturn for a burn fee tx all outputs after 1st output are considered RADC
+                // In case we have the opReturn for a burn fee tx all outputs after 1st output are considered BTC
                 handleBtcOutput(tempTxOutput, index);
             } else if (isHardForkActivated(tempTxOutput) && isIssuanceCandidateTxOutput(tempTxOutput)) {
                 // After the hard fork activation we fix a bug with a transaction which would have interpreted the
@@ -193,7 +193,7 @@ class TxOutputParser {
 
             // We must not set prohibitMoreBsqOutputs at confiscation transactions as optional
             // BSQ change output (output 2) must not be confiscated.
-            tempTxOutput.setTxOutputType(TxOutputType.RADC_OUTPUT);
+            tempTxOutput.setTxOutputType(TxOutputType.BTC_OUTPUT);
         }
     }
 
@@ -202,11 +202,11 @@ class TxOutputParser {
     }
 
     /**
-     * This sets all outputs to RADC_OUTPUT and doesn't add any txOutputs to the unspentTxOutput map in daoStateService
+     * This sets all outputs to BTC_OUTPUT and doesn't add any txOutputs to the unspentTxOutput map in daoStateService
      */
     void invalidateUTXOCandidates() {
-        // We do not need to apply prohibitMoreBsqOutputs as all spendable outputs are set to RADC_OUTPUT anyway.
-        utxoCandidates.forEach(output -> output.setTxOutputType(TxOutputType.RADC_OUTPUT));
+        // We do not need to apply prohibitMoreBsqOutputs as all spendable outputs are set to BTC_OUTPUT anyway.
+        utxoCandidates.forEach(output -> output.setTxOutputType(TxOutputType.BTC_OUTPUT));
     }
 
 
@@ -316,7 +316,7 @@ class TxOutputParser {
 
                     // Case 2: 17 BSQ fee to burn
                     // In: 17 BSQ
-                    // Out: burned BSQ change 7 BSQ -> RADC (7 BSQ burned)
+                    // Out: burned BSQ change 7 BSQ -> BTC (7 BSQ burned)
                     // Out: OpReturn
                     // Miner fee: 1000 sat  (10 BSQ burned)
                     return index >= 1;
@@ -382,9 +382,9 @@ class TxOutputParser {
 
     private void handleBtcOutput(TempTxOutput txOutput, int index) {
         if (isHardForkActivated(txOutput)) {
-            txOutput.setTxOutputType(TxOutputType.RADC_OUTPUT);
+            txOutput.setTxOutputType(TxOutputType.BTC_OUTPUT);
 
-            // For regular transactions we don't permit BSQ outputs after a RADC output was detected.
+            // For regular transactions we don't permit BSQ outputs after a BTC output was detected.
             prohibitMoreBsqOutputs = true;
         } else {
             // If we have BSQ left as fee and we are at the second output it might be a compensation request output.
@@ -400,9 +400,9 @@ class TxOutputParser {
                 // We do not permit more BSQ outputs after the issuance candidate.
                 prohibitMoreBsqOutputs = true;
             } else {
-                txOutput.setTxOutputType(TxOutputType.RADC_OUTPUT);
+                txOutput.setTxOutputType(TxOutputType.BTC_OUTPUT);
 
-                // For regular transactions we don't permit BSQ outputs after a RADC output was detected.
+                // For regular transactions we don't permit BSQ outputs after a BTC output was detected.
                 prohibitMoreBsqOutputs = true;
             }
         }

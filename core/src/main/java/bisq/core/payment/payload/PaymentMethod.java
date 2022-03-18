@@ -60,10 +60,10 @@ public final class PaymentMethod implements PersistablePayload, Comparable<Payme
     // risk factor so the relation between the risk categories stays the same as with the default values.
     // We must not change those values as it could lead to invalid offers if amount becomes lower then new trade limit.
     // Increasing might be ok, but needs more thought as well...
-    private static final Coin DEFAULT_TRADE_LIMIT_VERY_LOW_RISK = Coin.parseCoin("1");
-    private static final Coin DEFAULT_TRADE_LIMIT_LOW_RISK = Coin.parseCoin("0.5");
-    private static final Coin DEFAULT_TRADE_LIMIT_MID_RISK = Coin.parseCoin("0.25");
-    private static final Coin DEFAULT_TRADE_LIMIT_HIGH_RISK = Coin.parseCoin("0.125");
+    private static final Coin DEFAULT_TRADE_LIMIT_VERY_LOW_RISK = Coin.parseCoin("100000000");
+    private static final Coin DEFAULT_TRADE_LIMIT_LOW_RISK = Coin.parseCoin("100000000");
+    private static final Coin DEFAULT_TRADE_LIMIT_MID_RISK = Coin.parseCoin("100000000");
+    private static final Coin DEFAULT_TRADE_LIMIT_HIGH_RISK = Coin.parseCoin("100000000");
 
     public static final String UPHOLD_ID = "UPHOLD";
     public static final String MONEY_BEAM_ID = "MONEY_BEAM";
@@ -377,7 +377,7 @@ public final class PaymentMethod implements PersistablePayload, Comparable<Payme
     }
 
     public Coin getMaxTradeLimitAsCoin(String currencyCode) {
-        // Hack for SF as the smallest unit is 1 SF ;-( and price is about 3 RADC!
+        // Hack for SF as the smallest unit is 1 SF ;-( and price is about 3 BTC!
         if (currencyCode.equals("SF"))
             return Coin.parseCoin("4");
         // payment methods which define their own trade limits

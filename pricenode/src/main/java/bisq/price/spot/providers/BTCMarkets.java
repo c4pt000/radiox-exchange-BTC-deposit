@@ -20,7 +20,7 @@ package bisq.price.spot.providers;
 import bisq.price.spot.ExchangeRate;
 import bisq.price.spot.ExchangeRateProvider;
 
-import org.knowm.xchange.btcmarkets.RADCMarketsExchange;
+import org.knowm.xchange.btcmarkets.BTCMarketsExchange;
 
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
@@ -30,17 +30,17 @@ import java.time.Duration;
 import java.util.Set;
 
 @Component
-class RADCMarkets extends ExchangeRateProvider {
+class BTCMarkets extends ExchangeRateProvider {
 
-    public RADCMarkets(Environment env) {
-        super(env, "RADCMARKETS", "btcmarkets", Duration.ofMinutes(1));
+    public BTCMarkets(Environment env) {
+        super(env, "BTCMARKETS", "btcmarkets", Duration.ofMinutes(1));
     }
 
     @Override
     public Set<ExchangeRate> doGet() {
         // Supported fiat: AUD
         // Supported alts: ETH, LTC
-        return doGet(RADCMarketsExchange.class);
+        return doGet(BTCMarketsExchange.class);
     }
 
 }

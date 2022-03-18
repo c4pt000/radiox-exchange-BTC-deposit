@@ -25,7 +25,7 @@ import static bisq.cli.table.builder.TableBuilderConstants.COL_HEADER_AVAILABLE_
 import static bisq.cli.table.builder.TableBuilderConstants.COL_HEADER_LOCKED_BALANCE;
 import static bisq.cli.table.builder.TableBuilderConstants.COL_HEADER_RESERVED_BALANCE;
 import static bisq.cli.table.builder.TableBuilderConstants.COL_HEADER_TOTAL_AVAILABLE_BALANCE;
-import static bisq.cli.table.builder.TableType.RADC_BALANCE_TBL;
+import static bisq.cli.table.builder.TableType.BTC_BALANCE_TBL;
 
 
 
@@ -46,7 +46,7 @@ class BtcBalanceTableBuilder extends AbstractTableBuilder {
     private final Column<Long> colLockedBalance;
 
     BtcBalanceTableBuilder(List<?> protos) {
-        super(RADC_BALANCE_TBL, protos);
+        super(BTC_BALANCE_TBL, protos);
         this.colAvailableBalance = new SatoshiColumn(COL_HEADER_AVAILABLE_BALANCE);
         this.colReservedBalance = new SatoshiColumn(COL_HEADER_RESERVED_BALANCE);
         this.colTotalAvailableBalance = new SatoshiColumn(COL_HEADER_TOTAL_AVAILABLE_BALANCE);

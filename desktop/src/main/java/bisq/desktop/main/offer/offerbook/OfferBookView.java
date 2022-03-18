@@ -167,7 +167,7 @@ public class OfferBookView extends ActivatableViewAndModel<GridPane, OfferBookVi
                   Navigation navigation,
                   OfferDetailsWindow offerDetailsWindow,
                   BsqSwapOfferDetailsWindow bsqSwapOfferDetailsWindow,
-                  @Named(FormattingUtils.RADC_FORMATTER_KEY) CoinFormatter formatter,
+                  @Named(FormattingUtils.BTC_FORMATTER_KEY) CoinFormatter formatter,
                   PrivateNotificationManager privateNotificationManager,
                   @Named(Config.USE_DEV_PRIVILEGE_KEYS) boolean useDevPrivilegeKeys,
                   AccountAgeWitnessService accountAgeWitnessService,
@@ -814,7 +814,7 @@ public class OfferBookView extends ActivatableViewAndModel<GridPane, OfferBookVi
     ///////////////////////////////////////////////////////////////////////////////////////////
 
     private AutoTooltipTableColumn<OfferBookListItem, OfferBookListItem> getAmountColumn() {
-        AutoTooltipTableColumn<OfferBookListItem, OfferBookListItem> column = new AutoTooltipTableColumn<>(Res.get("shared.RADCMinMax"), Res.get("shared.amountHelp"));
+        AutoTooltipTableColumn<OfferBookListItem, OfferBookListItem> column = new AutoTooltipTableColumn<>(Res.get("shared.BTCMinMax"), Res.get("shared.amountHelp"));
         column.setMinWidth(100);
         column.getStyleClass().add("number-column");
         column.setCellValueFactory((offer) -> new ReadOnlyObjectWrapper<>(offer.getValue()));

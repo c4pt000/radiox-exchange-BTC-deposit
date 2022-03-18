@@ -122,7 +122,7 @@ public class LockedView extends ActivatableView<VBox, Void> {
                        TradeManager tradeManager,
                        OpenOfferManager openOfferManager,
                        Preferences preferences,
-                       @Named(FormattingUtils.RADC_FORMATTER_KEY) CoinFormatter formatter,
+                       @Named(FormattingUtils.BTC_FORMATTER_KEY) CoinFormatter formatter,
                        OfferDetailsWindow offerDetailsWindow,
                        TradeDetailsWindow tradeDetailsWindow) {
         this.btcWalletService = btcWalletService;

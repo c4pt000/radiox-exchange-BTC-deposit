@@ -150,7 +150,7 @@ public class PendingTradesDataModel extends ActivatableDataModel {
                                   WalletPasswordWindow walletPasswordWindow,
                                   NotificationCenter notificationCenter,
                                   OfferUtil offerUtil,
-                                  @Named(FormattingUtils.RADC_FORMATTER_KEY) CoinFormatter formatter) {
+                                  @Named(FormattingUtils.BTC_FORMATTER_KEY) CoinFormatter formatter) {
         this.tradeManager = tradeManager;
         this.btcWalletService = btcWalletService;
         this.pubKeyRing = pubKeyRing;
@@ -281,7 +281,7 @@ public class PendingTradesDataModel extends ActivatableDataModel {
         return isMaker;
     }
 
-    Coin getTradeFeeInRADC() {
+    Coin getTradeFeeInBTC() {
         Trade trade = getTrade();
         if (trade != null) {
             Offer offer = trade.getOffer();
@@ -340,7 +340,7 @@ public class PendingTradesDataModel extends ActivatableDataModel {
                 Offer offer = trade.getOffer();
                 if (offer != null) {
                     if (offer.isCurrencyForMakerFeeBtc()) {
-                        return Coin.ZERO; // getTradeFeeInRADC is used for RADC
+                        return Coin.ZERO; // getTradeFeeInBTC is used for BTC
                     } else {
                         return offer.getMakerFee();
                     }
@@ -350,7 +350,7 @@ public class PendingTradesDataModel extends ActivatableDataModel {
                 }
             } else {
                 if (trade.isCurrencyForTakerFeeBtc())
-                    return Coin.ZERO; // getTradeFeeInRADC is used for RADC
+                    return Coin.ZERO; // getTradeFeeInBTC is used for BTC
                 else
                     return trade.getTakerFee();
             }

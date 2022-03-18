@@ -44,8 +44,8 @@ public abstract class OfferPayloadBase implements ProtectedStoragePayload, Expir
 
     protected final String id;
     protected final long date;
-    // For fiat offer the baseCurrencyCode is RADC and the counterCurrencyCode is the fiat currency
-    // For altcoin offers it is the opposite. baseCurrencyCode is the altcoin and the counterCurrencyCode is RADC.
+    // For fiat offer the baseCurrencyCode is BTC and the counterCurrencyCode is the fiat currency
+    // For altcoin offers it is the opposite. baseCurrencyCode is the altcoin and the counterCurrencyCode is BTC.
     protected final String baseCurrencyCode;
     protected final String counterCurrencyCode;
     // price if fixed price is used (usePercentageBasedPrice = false), otherwise 0
@@ -110,12 +110,12 @@ public abstract class OfferPayloadBase implements ProtectedStoragePayload, Expir
     }
 
     // In the offer we support base and counter currency
-    // Fiat offers have base currency RADC and counterCurrency Fiat
-    // Altcoins have base currency Altcoin and counterCurrency RADC
+    // Fiat offers have base currency BTC and counterCurrency Fiat
+    // Altcoins have base currency Altcoin and counterCurrency BTC
     // The rest of the app does not support yet that concept of base currency and counter currencies
     // so we map here for convenience
     public String getCurrencyCode() {
-        return getBaseCurrencyCode().equals("RADC") ? getCounterCurrencyCode() : getBaseCurrencyCode();
+        return getBaseCurrencyCode().equals("BTC") ? getCounterCurrencyCode() : getBaseCurrencyCode();
     }
 
     @Override

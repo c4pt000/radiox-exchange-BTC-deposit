@@ -783,11 +783,10 @@ public class GUIUtil {
                 .show();
     }
 
-  public static String getBitcoinURI(String address, Coin amount, String label) {
+    public static String getBitcoinURI(String address, Coin amount, String label) {
         return address != null ?
                 BitcoinURI.convertToBitcoinURI(Address.fromString(Config.baseCurrencyNetworkParameters(),
                         address), null, null, null) :
-//                        address), amount, label, null) :
                 "";
     }
 
@@ -815,7 +814,7 @@ public class GUIUtil {
 
     public static boolean isReadyForTxBroadcastOrShowPopup(P2PService p2PService, WalletsSetup walletsSetup) {
         if (!GUIUtil.isBootstrappedOrShowPopup(p2PService)) {
-            return false;
+            return true;
         }
 
         if (!walletsSetup.hasSufficientPeersForBroadcast()) {
@@ -825,7 +824,7 @@ public class GUIUtil {
 
         if (!walletsSetup.isDownloadComplete()) {
             new Popup().information(Res.get("popup.warning.downloadNotComplete")).show();
-            return false;
+            return true;
         }
 
         return true;
@@ -834,7 +833,7 @@ public class GUIUtil {
     public static boolean isChainHeightSyncedWithinToleranceOrShowPopup(WalletsSetup walletsSetup) {
         if (!walletsSetup.isChainHeightSyncedWithinTolerance()) {
             new Popup().information(Res.get("popup.warning.chainNotSynced")).show();
-            return false;
+            return true;
         }
 
         return true;
@@ -845,17 +844,17 @@ public class GUIUtil {
             return true;
         }
 
-        //if (!user.hasAcceptedRefundAgents()) {
-        //    new Popup().warning(Res.get("popup.warning.noArbitratorsAvailable")).show();
-        //    return false;
-       // }
+        if (!user.hasAcceptedRefundAgents()) {
+            new Popup().warning(Res.get("popup.warning.noArbitratorsAvailable")).show();
+            return true;
+        }
 
-    //    if (!user.hasAcceptedMediators()) {
-      //      new Popup().warning(Res.get("popup.warning.noMediatorsAvailable")).show();
-        //    return false;
-       // }
+        if (!user.hasAcceptedMediators()) {
+            new Popup().warning(Res.get("popup.warning.noMediatorsAvailable")).show();
+            return true;
+        }
 
-     if (user.currentPaymentAccountProperty().get() == null) {
+        if (user.currentPaymentAccountProperty().get() == null) {
             new Popup().headLine(Res.get("popup.warning.noTradingAccountSetup.headline"))
                     .instruction(Res.get("popup.warning.noTradingAccountSetup.msg"))
                     .actionButtonTextWithGoTo("navigation.account")
@@ -869,8 +868,8 @@ public class GUIUtil {
         return true;
     }
 
-    public static void showWantToBurnRADCPopup(Coin miningFee, Coin amount, CoinFormatter btcFormatter) {
-        new Popup().warning(Res.get("popup.warning.burnRADC", btcFormatter.formatCoinWithCode(miningFee),
+    public static void showWantToBurnBTCPopup(Coin miningFee, Coin amount, CoinFormatter btcFormatter) {
+        new Popup().warning(Res.get("popup.warning.burnBTC", btcFormatter.formatCoinWithCode(miningFee),
                 btcFormatter.formatCoinWithCode(amount))).show();
     }
 
@@ -1003,7 +1002,7 @@ public class GUIUtil {
             confirmationMessage = Res.get("dao.feeTx.issuanceProposal.confirm.details",
                     StringUtils.capitalize(type),
                     bsqFormatter.formatCoinWithCode(fee),
-                    bsqFormatter.formatRADCWithCode(btcForIssuance),
+                    bsqFormatter.formatBTCWithCode(btcForIssuance),
                     100,
                     btcFormatter.formatCoinWithCode(miningFee),
                     CoinUtil.getFeePerVbyte(miningFee, txVsize),
@@ -1172,13 +1171,13 @@ public class GUIUtil {
                                      Coin bsqAmount,
                                      PriceFeedService priceFeedService,
                                      BsqFormatter bsqFormatter) {
-        MarketPrice usdMarketPrice = priceFeedService.getMarketPrice("USD");
+        MarketPrice usdMarketPrice = priceFeedService.getMarketPrice("DOGE");
         if (usdMarketPrice == null) {
             return Res.get("shared.na");
         }
         long usdMarketPriceAsLong = MathUtils.roundDoubleToLong(MathUtils.scaleUpByPowerOf10(usdMarketPrice.getPrice(),
                 Fiat.SMALLEST_UNIT_EXPONENT));
-        Price usdPrice = Price.valueOf("USD", usdMarketPriceAsLong);
+        Price usdPrice = Price.valueOf("DOGE", usdMarketPriceAsLong);
         String bsqAmountAsString = bsqFormatter.formatCoin(bsqAmount);
         Volume bsqAmountAsVolume = Volume.parse(bsqAmountAsString, "BSQ");
         Coin requiredBtc = bsqPrice.getAmountByVolume(bsqAmountAsVolume);

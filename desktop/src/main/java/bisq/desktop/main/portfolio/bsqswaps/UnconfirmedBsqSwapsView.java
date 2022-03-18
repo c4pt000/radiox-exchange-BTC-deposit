@@ -189,9 +189,9 @@ public class UnconfirmedBsqSwapsView extends ActivatableViewAndModel<VBox, Uncon
         //
         tradeFeeColumn.setComparator(Comparator.comparing(item -> {
             String tradeFee = item.getTradeFeeAsString();
-            // We want to separate BSQ and RADC fees so we use a prefix
+            // We want to separate BSQ and BTC fees so we use a prefix
             if (item.getBsqSwapTrade().getOffer().isCurrencyForMakerFeeBtc()) {
-                return "RADC" + tradeFee;
+                return "BTC" + tradeFee;
             } else {
                 return "BSQ" + tradeFee;
             }

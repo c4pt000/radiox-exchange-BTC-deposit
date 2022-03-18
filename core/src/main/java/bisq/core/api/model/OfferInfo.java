@@ -64,8 +64,8 @@ public class OfferInfo implements Payload {
     private final String paymentAccountId;
     private final String paymentMethodId;
     private final String paymentMethodShortName;
-    // Fiat offer:  baseCurrencyCode = RADC, counterCurrencyCode = fiat ccy code.
-    // Altcoin offer:  baseCurrencyCode = altcoin ccy code, counterCurrencyCode = RADC.
+    // Fiat offer:  baseCurrencyCode = BTC, counterCurrencyCode = fiat ccy code.
+    // Altcoin offer:  baseCurrencyCode = altcoin ccy code, counterCurrencyCode = BTC.
     private final String baseCurrencyCode;
     private final String counterCurrencyCode;
     private final long date;

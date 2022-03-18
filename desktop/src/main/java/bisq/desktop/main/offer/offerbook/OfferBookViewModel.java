@@ -165,7 +165,7 @@ class OfferBookViewModel extends ActivatableViewModel {
                               Navigation navigation,
                               PriceUtil priceUtil,
                               OfferFilterService offerFilterService,
-                              @Named(FormattingUtils.RADC_FORMATTER_KEY) CoinFormatter btcFormatter,
+                              @Named(FormattingUtils.BTC_FORMATTER_KEY) CoinFormatter btcFormatter,
                               BsqFormatter bsqFormatter,
                               BsqWalletService bsqWalletService,
                               CoreApi coreApi) {
@@ -659,7 +659,7 @@ class OfferBookViewModel extends ActivatableViewModel {
 
     private static String getDirectionWithCodeDetailed(OfferDirection direction, String currencyCode) {
         if (CurrencyUtil.isFiatCurrency(currencyCode))
-            return (direction == OfferDirection.BUY) ? Res.get("shared.buyingRADCWith", currencyCode) : Res.get("shared.sellingRADCFor", currencyCode);
+            return (direction == OfferDirection.BUY) ? Res.get("shared.buyingBTCWith", currencyCode) : Res.get("shared.sellingBTCFor", currencyCode);
         else
             return (direction == OfferDirection.SELL) ? Res.get("shared.buyingCurrency", currencyCode) : Res.get("shared.sellingCurrency", currencyCode);
     }

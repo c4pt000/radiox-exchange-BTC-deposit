@@ -543,7 +543,7 @@ public class BsqTxView extends ActivatableView<GridPane, Void> implements BsqBal
                                             setGraphic(field);
                                         }
                                     } else {
-                                        if (item.isWithdrawalToRADCWallet())
+                                        if (item.isWithdrawalToBTCWallet())
                                             labelString = Res.get("dao.tx.withdrawnFromWallet");
 
                                         label = new AutoTooltipLabel(labelString);
@@ -585,7 +585,7 @@ public class BsqTxView extends ActivatableView<GridPane, Void> implements BsqBal
                             if (item.getConfirmations() > 0) {
                                 if (isValidType(txType))
                                     bsqAmount = item.getAmountAsString();
-                                else if (item.isWithdrawalToRADCWallet())
+                                else if (item.isWithdrawalToBTCWallet())
                                     bsqAmount = bsqFormatter.formatBSQSatoshis(0L);
                             }
 

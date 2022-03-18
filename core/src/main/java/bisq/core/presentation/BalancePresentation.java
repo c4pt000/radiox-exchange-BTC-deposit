@@ -40,10 +40,10 @@ public class BalancePresentation {
     private final StringProperty lockedBalance = new SimpleStringProperty();
 
     @Inject
-    public BalancePresentation(Balances balances, @Named(FormattingUtils.RADC_FORMATTER_KEY) CoinFormatter formatter) {
+    public BalancePresentation(Balances balances, @Named(FormattingUtils.BTC_FORMATTER_KEY) CoinFormatter formatter) {
         balances.getAvailableBalance().addListener((observable, oldValue, newValue) -> {
             String value = formatter.formatCoinWithCode(newValue);
-            // If we get full precision the RADC postfix breaks layout so we omit it
+            // If we get full precision the BTC postfix breaks layout so we omit it
             if (value.length() > 11)
                 value = formatter.formatCoin(newValue);
             availableBalance.set(value);

@@ -62,7 +62,7 @@ public class CurrencyUtil {
 
     private static final AssetRegistry assetRegistry = new AssetRegistry();
 
-    private static String baseCurrencyCode = "RADC";
+    private static String baseCurrencyCode = "BTC";
 
     // Calls to isFiatCurrency and isCryptoCurrency are very frequent so we use a cache of the results.
     // The main improvement was already achieved with using memoize for the source maps, but
@@ -153,11 +153,11 @@ public class CurrencyUtil {
         result.add(new CryptoCurrency("DCR", "Decred"));
         result.add(new CryptoCurrency("ETH", "Ether"));
         result.add(new CryptoCurrency("GRIN", "Grin"));
-        result.add(new CryptoCurrency("L-RADC", "Liquid Bitcoin"));
+        result.add(new CryptoCurrency("L-BTC", "Liquid Bitcoin"));
         result.add(new CryptoCurrency("LTC", "Litecoin"));
         result.add(new CryptoCurrency("XMR", "Monero"));
         result.add(new CryptoCurrency("NMC", "Namecoin"));
-        result.add(new CryptoCurrency("R-RADC", "RSK Smart Bitcoin"));
+        result.add(new CryptoCurrency("R-BTC", "RSK Smart Bitcoin"));
         result.add(new CryptoCurrency("SF", "Siafund"));
         result.add(new CryptoCurrency("ZEC", "Zcash"));
         result.sort(TradeCurrency::compareTo);
@@ -544,7 +544,7 @@ public class CurrencyUtil {
     }
 
     /**
-     * We return true if it is RADC or any of our currencies available in the assetRegistry.
+     * We return true if it is BTC or any of our currencies available in the assetRegistry.
      * For removed assets it would fail as they are not found but we don't want to conclude that they are fiat then.
      * As the caller might not deal with the case that a currency can be neither a cryptoCurrency nor Fiat if not found
      * we return true as well in case we have no fiat currency for the code.
@@ -563,8 +563,8 @@ public class CurrencyUtil {
         if (currencyCode == null) {
             // Some tests call that method with null values. Should be fixed in the tests but to not break them return false.
             isCryptoCurrency = false;
-        } else if (currencyCode.equals("RADC")) {
-            // RADC is not part of our assetRegistry so treat it extra here. Other old base currencies (LTC, DOGE, DASH)
+        } else if (currencyCode.equals("BTC")) {
+            // BTC is not part of our assetRegistry so treat it extra here. Other old base currencies (LTC, DOGE, DASH)
             // are not supported anymore so we can ignore that case.
             isCryptoCurrency = true;
         } else if (getCryptoCurrency(currencyCode).isPresent()) {
@@ -642,12 +642,12 @@ public class CurrencyUtil {
     public static String getNameByCode(String currencyCode) {
         if (isCryptoCurrency(currencyCode)) {
             // We might not find the name in case we have a call for a removed asset.
-            // If RADC is the code (used in tests) we also want return Bitcoin as name.
+            // If BTC is the code (used in tests) we also want return Bitcoin as name.
             final Optional<CryptoCurrency> removedCryptoCurrency = getRemovedCryptoCurrencies().stream()
                     .filter(cryptoCurrency -> cryptoCurrency.getCode().equals(currencyCode))
                     .findAny();
 
-            String btcOrRemovedAsset = "RADC".equals(currencyCode) ? "Radiocoin" :
+            String btcOrRemovedAsset = "BTC".equals(currencyCode) ? "Bitcoin" :
                     removedCryptoCurrency.isPresent() ? removedCryptoCurrency.get().getName() : Res.get("shared.na");
             return getCryptoCurrency(currencyCode).map(TradeCurrency::getName).orElse(btcOrRemovedAsset);
         }
@@ -723,7 +723,7 @@ public class CurrencyUtil {
         if (currencyCode.equals("BSQ") && baseCurrencyNetwork.isMainnet() && !daoTradingActivated)
             return Optional.empty();
 
-        // We check for exact match with network, e.g. RADC$TESTNET
+        // We check for exact match with network, e.g. BTC$TESTNET
         Optional<Asset> optionalAssetMatchesNetwork = assets.stream()
                 .filter(asset -> assetMatchesNetwork(asset, baseCurrencyNetwork))
                 .findFirst();
@@ -798,7 +798,7 @@ public class CurrencyUtil {
         // Although this method is only used by the core.api package, its
         // presence here avoids creating a new util class just for this method.
         if (isCryptoCurrency(currencyCode))
-            return currencyCode.equals("RADC")
+            return currencyCode.equals("BTC")
                     || currencyCode.equals("BSQ")
                     || currencyCode.equals("XMR");
         else

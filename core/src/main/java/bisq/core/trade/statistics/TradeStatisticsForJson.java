@@ -43,7 +43,7 @@ public final class TradeStatisticsForJson {
     public final long tradeDate;
     public final String paymentMethod;
 
-    // primaryMarket fields are based on industry standard where primaryMarket is always in the focus (in the app RADC is always in the focus - will be changed in a larger refactoring once)
+    // primaryMarket fields are based on industry standard where primaryMarket is always in the focus (in the app BTC is always in the focus - will be changed in a larger refactoring once)
     public String currencyPair;
 
     public long primaryMarketTradePrice;

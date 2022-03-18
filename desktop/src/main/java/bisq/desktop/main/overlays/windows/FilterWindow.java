@@ -75,7 +75,7 @@ public class FilterWindow extends Overlay<FilterWindow> {
     @Inject
     public FilterWindow(FilterManager filterManager,
                         BsqFormatter bsqFormatter,
-                        @Named(FormattingUtils.RADC_FORMATTER_KEY) CoinFormatter btcFormatter,
+                        @Named(FormattingUtils.BTC_FORMATTER_KEY) CoinFormatter btcFormatter,
                         @Named(Config.USE_DEV_PRIVILEGE_KEYS) boolean useDevPrivilegeKeys) {
         this.filterManager = filterManager;
         this.bsqFormatter = bsqFormatter;

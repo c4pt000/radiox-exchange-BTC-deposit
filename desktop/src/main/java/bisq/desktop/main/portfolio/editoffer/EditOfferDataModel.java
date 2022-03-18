@@ -78,7 +78,7 @@ class EditOfferDataModel extends MutableOfferDataModel {
                        PriceFeedService priceFeedService,
                        AccountAgeWitnessService accountAgeWitnessService,
                        FeeService feeService,
-                       @Named(FormattingUtils.RADC_FORMATTER_KEY) CoinFormatter btcFormatter,
+                       @Named(FormattingUtils.BTC_FORMATTER_KEY) CoinFormatter btcFormatter,
                        CorePersistenceProtoResolver corePersistenceProtoResolver,
                        TradeStatisticsManager tradeStatisticsManager,
                        Navigation navigation) {

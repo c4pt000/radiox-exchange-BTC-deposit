@@ -146,7 +146,7 @@ public class MakeProposalView extends ActivatableView<GridPane, Void> implements
                              BsqWalletService bsqWalletService,
                              PhasesView phasesView,
                              ChangeParamValidator changeParamValidator,
-                             @Named(FormattingUtils.RADC_FORMATTER_KEY) CoinFormatter btcFormatter,
+                             @Named(FormattingUtils.BTC_FORMATTER_KEY) CoinFormatter btcFormatter,
                              BsqFormatter bsqFormatter,
                              Navigation navigation) {
         this.daoFacade = daoFacade;

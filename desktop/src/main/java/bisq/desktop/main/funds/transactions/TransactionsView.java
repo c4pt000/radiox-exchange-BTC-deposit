@@ -147,7 +147,7 @@ public class TransactionsView extends ActivatableView<VBox, Void> {
     private TransactionsView(BtcWalletService btcWalletService,
                              BsqWalletService bsqWalletService,
                              DaoFacade daoFacade,
-                             @Named(FormattingUtils.RADC_FORMATTER_KEY) CoinFormatter formatter,
+                             @Named(FormattingUtils.BTC_FORMATTER_KEY) CoinFormatter formatter,
                              P2PService p2PService,
                              WalletsSetup walletsSetup,
                              Preferences preferences,

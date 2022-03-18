@@ -14,7 +14,7 @@ public class BtcBalanceInfo implements Payload {
             -1,
             -1);
 
-    // All balances are in RADC satoshis.
+    // All balances are in BTC satoshis.
     private final long availableBalance;
     private final long reservedBalance;
     private final long totalAvailableBalance; // available + reserved

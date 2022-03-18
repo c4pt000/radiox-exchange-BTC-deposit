@@ -52,7 +52,7 @@ class ExchangeRateController extends PriceController {
 
     static String translateFieldName(String name) {
         if (name.equals(Config.LEGACY_FEE_DATAMAP))
-            name = Config.RADC_FEE_INFO;                 // name changed for clarity
+            name = Config.BTC_FEE_INFO;                 // name changed for clarity
         return name;
     }
 }

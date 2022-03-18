@@ -61,7 +61,7 @@ public class AveragePriceUtil {
                 usdAllTradePastXDays;
 
         Price usdPrice = Price.valueOf("USD", getUSDAverage(bsqTradePastXDays, usdTradePastXDays));
-        Price bsqPrice = Price.valueOf("BSQ", getRADCAverage(bsqTradePastXDays));
+        Price bsqPrice = Price.valueOf("BSQ", getBTCAverage(bsqTradePastXDays));
         return new Tuple2<>(usdPrice, bsqPrice);
     }
 
@@ -80,13 +80,13 @@ public class AveragePriceUtil {
                 .collect(Collectors.toList());
     }
 
-    private static long getRADCAverage(List<TradeStatistics3> list) {
+    private static long getBTCAverage(List<TradeStatistics3> list) {
         long accumulatedVolume = 0;
         long accumulatedAmount = 0;
 
         for (TradeStatistics3 item : list) {
             accumulatedVolume += item.getTradeVolume().getValue();
-            accumulatedAmount += item.getTradeAmount().getValue(); // Amount of RADC traded
+            accumulatedAmount += item.getTradeAmount().getValue(); // Amount of BTC traded
         }
         long averagePrice;
         double accumulatedAmountAsDouble = MathUtils.scaleUpByPowerOf10((double) accumulatedAmount, Altcoin.SMALLEST_UNIT_EXPONENT);
@@ -96,25 +96,25 @@ public class AveragePriceUtil {
     }
 
     private static long getUSDAverage(List<TradeStatistics3> bsqList, List<TradeStatistics3> usdList) {
-        // Use next USD/RADC print as price to calculate BSQ/USD rate
+        // Use next USD/BTC print as price to calculate BSQ/USD rate
         // Store each trade as amount of USD and amount of BSQ traded
         List<Tuple2<Double, Double>> usdBsqList = new ArrayList<>(bsqList.size());
         usdList.sort(Comparator.comparing(TradeStatistics3::getDateAsLong));
-        var usdRADCPrice = 10000d; // Default to 10000 USD per RADC if there is no USD feed at all
+        var usdBTCPrice = 10000d; // Default to 10000 USD per BTC if there is no USD feed at all
 
         for (TradeStatistics3 item : bsqList) {
             // Find usdprice for trade item
-            usdRADCPrice = usdList.stream()
+            usdBTCPrice = usdList.stream()
                     .filter(usd -> usd.getDateAsLong() > item.getDateAsLong())
                     .map(usd -> MathUtils.scaleDownByPowerOf10((double) usd.getTradePrice().getValue(),
                             Fiat.SMALLEST_UNIT_EXPONENT))
                     .findFirst()
-                    .orElse(usdRADCPrice);
+                    .orElse(usdBTCPrice);
             var bsqAmount = MathUtils.scaleDownByPowerOf10((double) item.getTradeVolume().getValue(),
                     Altcoin.SMALLEST_UNIT_EXPONENT);
             var btcAmount = MathUtils.scaleDownByPowerOf10((double) item.getTradeAmount().getValue(),
                     Altcoin.SMALLEST_UNIT_EXPONENT);
-            usdBsqList.add(new Tuple2<>(usdRADCPrice * btcAmount, bsqAmount));
+            usdBsqList.add(new Tuple2<>(usdBTCPrice * btcAmount, bsqAmount));
         }
         long averagePrice;
         var usdTraded = usdBsqList.stream()

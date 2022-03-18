@@ -790,11 +790,11 @@ public class DaoFacade implements DaoSetupService {
     public Set<String> getAllDonationAddresses() {
         // We support any of the past addresses as well as in case the peer has not enabled the DAO or is out of sync we
         // do not want to break validation.
-        Set<String> allPastParamValues = getAllPastParamValues(Param.RECIPIENT_RADC_ADDRESS);
+        Set<String> allPastParamValues = getAllPastParamValues(Param.RECIPIENT_BTC_ADDRESS);
 
         // If Dao is deactivated we need to add the default address as getAllPastParamValues will not return us any.
         if (allPastParamValues.isEmpty()) {
-            allPastParamValues.add(Param.RECIPIENT_RADC_ADDRESS.getDefaultValue());
+            allPastParamValues.add(Param.RECIPIENT_BTC_ADDRESS.getDefaultValue());
         }
 
         if (Config.baseCurrencyNetwork().isMainnet()) {

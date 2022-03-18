@@ -11,14 +11,14 @@ gettransaction
 
 DESCRIPTION
 -----------
-Returns a very brief summary of a RADC transaction created by the Bisq server.
+Returns a very brief summary of a BTC transaction created by the Bisq server.
 
 To see full transaction details, use a bitcoin-core client or an online block explorer.
 
 OPTIONS
 -------
 --transaction-id
-		The ID of the RADC transaction.
+		The ID of the BTC transaction.
 
 EXAMPLES
 --------

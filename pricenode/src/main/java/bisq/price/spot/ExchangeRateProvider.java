@@ -125,7 +125,7 @@ public abstract class ExchangeRateProvider extends PriceProvider<Set<ExchangeRat
     protected void onRefresh() {
         get().stream()
             .filter(e -> "USD".equals(e.getCurrency()) || "LTC".equals(e.getCurrency()))
-            .forEach(e -> log.info("RADC/{}: {}", e.getCurrency(), e.getPrice()));
+            .forEach(e -> log.info("BTC/{}: {}", e.getCurrency(), e.getPrice()));
     }
 
     /**
@@ -153,15 +153,15 @@ public abstract class ExchangeRateProvider extends PriceProvider<Set<ExchangeRat
         // 2) the pairs Bisq considers relevant / valid
         // This will result in two lists of desired pairs (fiat and alts)
 
-        // Find the desired fiat pairs (pair format is RADC-FIAT)
+        // Find the desired fiat pairs (pair format is BTC-FIAT)
         List<CurrencyPair> desiredFiatPairs = allCurrencyPairsOnExchange.stream()
-                .filter(cp -> cp.base.equals(Currency.RADC))
+                .filter(cp -> cp.base.equals(Currency.BTC))
                 .filter(cp -> getSupportedFiatCurrencies().contains(cp.counter.getCurrencyCode()))
                 .collect(Collectors.toList());
 
-        // Find the desired altcoin pairs (pair format is ALT-RADC)
+        // Find the desired altcoin pairs (pair format is ALT-BTC)
         List<CurrencyPair> desiredCryptoPairs = allCurrencyPairsOnExchange.stream()
-                .filter(cp -> cp.counter.equals(Currency.RADC))
+                .filter(cp -> cp.counter.equals(Currency.BTC))
                 .filter(cp -> getSupportedCryptoCurrencies().contains(cp.base.getCurrencyCode()))
                 .collect(Collectors.toList());
 
@@ -269,15 +269,15 @@ public abstract class ExchangeRateProvider extends PriceProvider<Set<ExchangeRat
                 .forEach(t -> {
                     // All tickers here match all requirements
 
-                    // We have two kinds of currency pairs, RADC-FIAT and ALT-RADC
-                    // In the first one, RADC is the first currency of the pair
-                    // In the second type, RADC is listed as the second currency
+                    // We have two kinds of currency pairs, BTC-FIAT and ALT-BTC
+                    // In the first one, BTC is the first currency of the pair
+                    // In the second type, BTC is listed as the second currency
                     // Distinguish between the two and create ExchangeRates accordingly
 
-                    // In every Bisq ExchangeRate, RADC is one currency in the pair
+                    // In every Bisq ExchangeRate, BTC is one currency in the pair
                     // Extract the other currency from the ticker, to create ExchangeRates
                     String otherExchangeRateCurrency;
-                    if (t.getCurrencyPair().base.equals(Currency.RADC)) {
+                    if (t.getCurrencyPair().base.equals(Currency.BTC)) {
                         otherExchangeRateCurrency = t.getCurrencyPair().counter.getCurrencyCode();
                     } else {
                         otherExchangeRateCurrency = t.getCurrencyPair().base.getCurrencyCode();

@@ -125,7 +125,7 @@ public class TradeWalletService {
     ///////////////////////////////////////////////////////////////////////////////////////////
 
     /**
-     * Create a RADC trading fee transaction for the maker or taker of an offer. The first output of the tx is for the
+     * Create a BTC trading fee transaction for the maker or taker of an offer. The first output of the tx is for the
      * fee receiver. The second output is the reserve of the trade. There is an optional third output for change.
      *
      * @param fundingAddress          the provided source of funds in case the savings wallet is not used
@@ -216,17 +216,17 @@ public class TradeWalletService {
             // outputs [0-1] BSQ change output
             // mining fee: burned BSQ fee
 
-            // We add RADC mining fee. Result tx looks like:
+            // We add BTC mining fee. Result tx looks like:
             // inputs [1-n] BSQ inputs
-            // inputs [1-n] RADC inputs
+            // inputs [1-n] BTC inputs
             // outputs [0-1] BSQ change output
-            // outputs [1] RADC reservedForTrade output
-            // outputs [0-1] RADC change output
-            // mining fee: RADC mining fee + burned BSQ fee
+            // outputs [1] BTC reservedForTrade output
+            // outputs [0-1] BTC change output
+            // mining fee: BTC mining fee + burned BSQ fee
 
             // In case all BSQ were burnt as fees we have no receiver output and it might be that there are no change outputs
             // We need to guarantee that min. 1 valid output is added (OP_RETURN does not count). So we use a higher input
-            // for RADC to force an additional change output.
+            // for BTC to force an additional change output.
 
             final int preparedBsqTxInputsSize = preparedBsqTx.getInputs().size();
             final boolean hasBsqOutputs = !preparedBsqTx.getOutputs().isEmpty();
@@ -234,7 +234,7 @@ public class TradeWalletService {
             // If there are no BSQ change outputs an output larger than the burnt BSQ amount has to be added as the first
             // output to make sure the reserved funds are in output 1, deposit tx input creation depends on the reserve
             // being output 1. The amount has to be larger than the BSQ input to make sure the inputs get burnt.
-            // The RADC changeAddress is used, so it might get used for both output 0 and output 2.
+            // The BTC changeAddress is used, so it might get used for both output 0 and output 2.
             if (!hasBsqOutputs) {
                 var bsqInputValue = preparedBsqTx.getInputs().stream()
                         .map(TransactionInput::getValue)
@@ -273,7 +273,7 @@ public class TradeWalletService {
             Transaction resultTx = sendRequest.tx;
             removeDust(resultTx);
 
-            // Sign all RADC inputs
+            // Sign all BTC inputs
             for (int i = preparedBsqTxInputsSize; i < resultTx.getInputs().size(); i++) {
                 TransactionInput txIn = resultTx.getInputs().get(i);
                 checkArgument(txIn.getConnectedOutput() != null &&

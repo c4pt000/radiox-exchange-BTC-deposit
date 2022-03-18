@@ -215,14 +215,14 @@ class CoreOffersService {
                     .sorted(priceComparator(direction))
                     .collect(Collectors.toList());
         } else {
-            // In fiat offers, the baseCurrencyCode=RADC, counterCurrencyCode=FiatCode.
-            // In altcoin offers, baseCurrencyCode=AltcoinCode, counterCurrencyCode=RADC.
-            // This forces an extra filtering step below:  get all RADC offers,
+            // In fiat offers, the baseCurrencyCode=BTC, counterCurrencyCode=FiatCode.
+            // In altcoin offers, baseCurrencyCode=AltcoinCode, counterCurrencyCode=BTC.
+            // This forces an extra filtering step below:  get all BTC offers,
             // then filter on the currencyCode param (the altcoin code).
             if (apiSupportsCryptoCurrency(upperCaseCurrencyCode))
                 return offerBookService.getOffers().stream()
                         .filter(o -> !o.isMyOffer(keyRing))
-                        .filter(o -> offerMatchesDirectionAndCurrency(o, direction, "RADC"))
+                        .filter(o -> offerMatchesDirectionAndCurrency(o, direction, "BTC"))
                         .filter(o -> o.getBaseCurrencyCode().equalsIgnoreCase(upperCaseCurrencyCode))
                         .filter(o -> offerFilterService.canTakeOffer(o, coreContext.isApiUser()).isValid())
                         .sorted(priceComparator(direction))
@@ -242,14 +242,14 @@ class CoreOffersService {
                     .sorted(openOfferPriceComparator(direction))
                     .collect(Collectors.toList());
         } else {
-            // In fiat offers, the baseCurrencyCode=RADC, counterCurrencyCode=FiatCode.
-            // In altcoin offers, baseCurrencyCode=AltcoinCode, counterCurrencyCode=RADC.
-            // This forces an extra filtering step below:  get all RADC offers,
+            // In fiat offers, the baseCurrencyCode=BTC, counterCurrencyCode=FiatCode.
+            // In altcoin offers, baseCurrencyCode=AltcoinCode, counterCurrencyCode=BTC.
+            // This forces an extra filtering step below:  get all BTC offers,
             // then filter on the currencyCode param (the altcoin code).
             if (apiSupportsCryptoCurrency(upperCaseCurrencyCode))
                 return openOfferManager.getObservableList().stream()
                         .filter(o -> o.getOffer().isMyOffer(keyRing))
-                        .filter(o -> offerMatchesDirectionAndCurrency(o.getOffer(), direction, "RADC"))
+                        .filter(o -> offerMatchesDirectionAndCurrency(o.getOffer(), direction, "BTC"))
                         .filter(o -> o.getOffer().getBaseCurrencyCode().equalsIgnoreCase(upperCaseCurrencyCode))
                         .sorted(openOfferPriceComparator(direction))
                         .collect(Collectors.toList());

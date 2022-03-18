@@ -156,12 +156,12 @@ public class TradeInfo implements Payload {
                                         int numConfirmations,
                                         String closingStatus) {
         var offerInfo = toOfferInfo.apply(bsqSwapTrade, isMyOffer);
-        // A BSQ Swap miner tx fee is paid in full by the RADC seller (buying BSQ).
-        // The RADC buyer's payout = tradeamount minus his share of miner fee.
+        // A BSQ Swap miner tx fee is paid in full by the BTC seller (buying BSQ).
+        // The BTC buyer's payout = tradeamount minus his share of miner fee.
         var isBtcSeller = (isMyOffer && bsqSwapTrade.getOffer().getDirection().equals(SELL))
                 || (!isMyOffer && bsqSwapTrade.getOffer().getDirection().equals(BUY));
         var txFeeInBtc = isBtcSeller ? bsqSwapTrade.getTxFee().value : 0L;
-        // A BSQ Swap trade fee is paid in full by the RADC buyer (selling BSQ).
+        // A BSQ Swap trade fee is paid in full by the BTC buyer (selling BSQ).
         // The transferred BSQ (payout) is reduced by the peer's trade fee.
         var takerFeeInBsq = !isMyOffer && bsqSwapTrade.getOffer().getDirection().equals(SELL)
                 ? bsqSwapTrade.getTakerFeeAsLong()

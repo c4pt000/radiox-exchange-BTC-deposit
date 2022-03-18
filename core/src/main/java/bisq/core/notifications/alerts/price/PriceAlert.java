@@ -94,7 +94,7 @@ public class PriceAlert {
         String msg = Res.get("account.notifications.priceAlert.message.msg",
                 currencyName,
                 "6023.34",
-                "RADC/USD");
+                "BTC/USD");
         return new MobileMessage(Res.get("account.notifications.priceAlert.message.title", currencyName),
                 msg,
                 MobileMessageType.PRICE);

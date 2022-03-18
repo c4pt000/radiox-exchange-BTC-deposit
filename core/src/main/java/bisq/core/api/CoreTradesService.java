@@ -218,7 +218,7 @@ class CoreTradesService {
         var trade = getOpenTrade(tradeId).orElseThrow(() ->
                 new NotFoundException(format("trade with id '%s' not found", tradeId)));
 
-        verifyIsValidRADCAddress(toAddress);
+        verifyIsValidBTCAddress(toAddress);
 
         var fromAddressEntry = btcWalletService.getOrCreateAddressEntry(trade.getId(), TRADE_PAYOUT);
         verifyFundsNotWithdrawn(fromAddressEntry);
@@ -379,7 +379,7 @@ class CoreTradesService {
     }
 
     // Throws a RuntimeException if address is not valid.
-    private void verifyIsValidRADCAddress(String address) {
+    private void verifyIsValidBTCAddress(String address) {
         try {
             new BtcAddressValidator().validate(address);
         } catch (Throwable t) {

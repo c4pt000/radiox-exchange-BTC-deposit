@@ -63,7 +63,7 @@ import bisq.cli.opts.CreateOfferOptionParser;
 import bisq.cli.opts.CreatePaymentAcctOptionParser;
 import bisq.cli.opts.EditOfferOptionParser;
 import bisq.cli.opts.GetAddressBalanceOptionParser;
-import bisq.cli.opts.GetRADCMarketPriceOptionParser;
+import bisq.cli.opts.GetBTCMarketPriceOptionParser;
 import bisq.cli.opts.GetBalanceOptionParser;
 import bisq.cli.opts.GetOffersOptionParser;
 import bisq.cli.opts.GetPaymentAcctFormOptionParser;
@@ -176,13 +176,13 @@ public class CliMain {
                         case "BSQ":
                             new TableBuilder(BSQ_BALANCE_TBL, balances.getBsq()).build().print(out);
                             break;
-                        case "RADC":
-                            new TableBuilder(RADC_BALANCE_TBL, balances.getBtc()).build().print(out);
+                        case "BTC":
+                            new TableBuilder(BTC_BALANCE_TBL, balances.getBtc()).build().print(out);
                             break;
                         case "":
                         default: {
-                            out.println("RADC");
-                            new TableBuilder(RADC_BALANCE_TBL, balances.getBtc()).build().print(out);
+                            out.println("BTC");
+                            new TableBuilder(BTC_BALANCE_TBL, balances.getBtc()).build().print(out);
                             out.println("BSQ");
                             new TableBuilder(BSQ_BALANCE_TBL, balances.getBsq()).build().print(out);
                             break;
@@ -202,7 +202,7 @@ public class CliMain {
                     return;
                 }
                 case getbtcprice: {
-                    var opts = new GetRADCMarketPriceOptionParser(args).parse();
+                    var opts = new GetBTCMarketPriceOptionParser(args).parse();
                     if (opts.isForHelp()) {
                         out.println(client.getMethodHelp(method));
                         return;
@@ -828,14 +828,14 @@ public class CliMain {
             stream.println();
             stream.format(rowFormat, getbtcprice.name(), "--currency-code=<currency-code>", "Get current market btc price");
             stream.println();
-            stream.format(rowFormat, getfundingaddresses.name(), "", "Get RADC funding addresses");
+            stream.format(rowFormat, getfundingaddresses.name(), "", "Get BTC funding addresses");
             stream.println();
             stream.format(rowFormat, getunusedbsqaddress.name(), "", "Get unused BSQ address");
             stream.println();
             stream.format(rowFormat, sendbsq.name(), "--address=<bsq-address> --amount=<bsq-amount>  \\", "Send BSQ");
             stream.format(rowFormat, "", "[--tx-fee-rate=<sats/byte>]", "");
             stream.println();
-            stream.format(rowFormat, sendbtc.name(), "--address=<btc-address> --amount=<btc-amount> \\", "Send RADC");
+            stream.format(rowFormat, sendbtc.name(), "--address=<btc-address> --amount=<btc-amount> \\", "Send BTC");
             stream.format(rowFormat, "", "[--tx-fee-rate=<sats/byte>]", "");
             stream.format(rowFormat, "", "[--memo=<\"memo\">]", "");
             stream.println();

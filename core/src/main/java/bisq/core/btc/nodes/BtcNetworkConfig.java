@@ -25,8 +25,7 @@ import bisq.common.config.Config;
 
 import org.bitcoinj.core.NetworkParameters;
 import org.bitcoinj.core.PeerAddress;
-//import org.bitcoinj.params.MainNetParams;
-import org.libdohj.params.DogecoinMainNetParams;
+import org.bitcoinj.params.MainNetParams;
 
 import com.runjva.sourceforge.jsocks.protocol.Socks5Proxy;
 
@@ -61,7 +60,7 @@ public class BtcNetworkConfig {
             delegate.setPeerNodes(peerAddresses);
         } else if (proxy != null) {
             if (log.isWarnEnabled()) {
-                DogecoinMainNetParams mainNetParams = DogecoinMainNetParams.get();
+                MainNetParams mainNetParams = MainNetParams.get();
                 if (parameters.equals(mainNetParams)) {
                     log.warn("You use the public Bitcoin network and are exposed to privacy issues " +
                             "caused by the broken bloom filters. See https://bisq.network/blog/privacy-in-bitsquare/ " +

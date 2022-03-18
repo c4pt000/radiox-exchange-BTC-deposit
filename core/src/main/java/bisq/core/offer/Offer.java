@@ -460,7 +460,7 @@ public class Offer implements NetworkPayload, PersistablePayload {
             return currencyCode;
         }
 
-        currencyCode = getBaseCurrencyCode().equals("RADC") ?
+        currencyCode = getBaseCurrencyCode().equals("BTC") ?
                 getCounterCurrencyCode() :
                 getBaseCurrencyCode();
         return currencyCode;

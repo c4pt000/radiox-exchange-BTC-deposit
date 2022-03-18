@@ -53,7 +53,7 @@ class UnconfirmedBsqSwapsDataModel extends ActivatableDataModel {
     public UnconfirmedBsqSwapsDataModel(BsqSwapTradeManager bsqSwapTradeManager,
                                         BsqWalletService bsqWalletService,
                                         BsqFormatter bsqFormatter,
-                                        @Named(FormattingUtils.RADC_FORMATTER_KEY) CoinFormatter btcFormatter,
+                                        @Named(FormattingUtils.BTC_FORMATTER_KEY) CoinFormatter btcFormatter,
                                         ClosedTradableManager closedTradableManager) {
         this.bsqSwapTradeManager = bsqSwapTradeManager;
         this.bsqWalletService = bsqWalletService;

@@ -94,7 +94,7 @@ public class OfferViewUtil {
         buyBsqButton.setOnAction(e -> openBuyBsqOfferBook(navigation, preferences)
         );
 
-        var info = new AutoTooltipLabel("BSQ is colored RADC that helps fund Bisq developers.");
+        var info = new AutoTooltipLabel("BSQ is colored BTC that helps fund Bisq developers.");
         var learnMore = new HyperlinkWithIcon("Learn More");
         learnMore.setOnAction(e -> new Popup().headLine(buyBsqText)
                 .information(Res.get("createOffer.buyBsq.popupMessage"))

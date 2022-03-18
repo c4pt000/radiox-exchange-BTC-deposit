@@ -117,7 +117,7 @@ public class AssetFeeView extends ActivatableView<GridPane, Void> implements Bsq
                         BsqValidator bsqValidator,
                         AssetService assetService,
                         DaoStateService daoStateService,
-                        @Named(FormattingUtils.RADC_FORMATTER_KEY) CoinFormatter btcFormatter) {
+                        @Named(FormattingUtils.BTC_FORMATTER_KEY) CoinFormatter btcFormatter) {
         this.bsqFormatter = bsqFormatter;
         this.bsqWalletService = bsqWalletService;
         this.bsqValidator = bsqValidator;

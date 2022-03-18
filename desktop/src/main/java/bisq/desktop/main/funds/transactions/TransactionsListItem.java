@@ -239,7 +239,7 @@ class TransactionsListItem implements FilterableListItem {
                             } else {
                                 // We have spent the deposit tx outputs to the Bisq donation address to enable
                                 // the refund process (refund agent -> reimbursement). As the funds have left our wallet
-                                // already when funding the deposit tx we show 0 RADC as amount.
+                                // already when funding the deposit tx we show 0 BTC as amount.
                                 // Confirmation is not known from the BitcoinJ side (not 100% clear why) as no funds
                                 // left our wallet nor we received funds. So we set indicator invisible.
                                 amountAsCoin = Coin.ZERO;
@@ -260,7 +260,7 @@ class TransactionsListItem implements FilterableListItem {
                 direction = amountAsCoin.isPositive() ? Res.get("funds.tx.bsqSwapBuy") :
                         Res.get("funds.tx.bsqSwapSell");
 
-                // Find my RADC output address
+                // Find my BTC output address
                 var tx = btcWalletService.getTransaction(((BsqSwapTrade) tradable).getTxId());
                 addressString = tx != null ?
                         tx.getOutputs().stream()

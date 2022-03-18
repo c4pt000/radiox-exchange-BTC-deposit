@@ -131,7 +131,7 @@ public class BsqSendView extends ActivatableView<GridPane, Void> implements BsqB
                         WalletsSetup walletsSetup,
                         P2PService p2PService,
                         BsqFormatter bsqFormatter,
-                        @Named(FormattingUtils.RADC_FORMATTER_KEY) CoinFormatter btcFormatter,
+                        @Named(FormattingUtils.BTC_FORMATTER_KEY) CoinFormatter btcFormatter,
                         Navigation navigation,
                         BsqBalanceUtil bsqBalanceUtil,
                         BsqValidator bsqValidator,
@@ -434,7 +434,7 @@ public class BsqSendView extends ActivatableView<GridPane, Void> implements BsqB
         }
 
         String receiversAddressString = receiversBtcAddressInputTextField.getText();
-        Coin receiverAmount = bsqFormatter.parseToRADC(btcAmountInputTextField.getText());
+        Coin receiverAmount = bsqFormatter.parseToBTC(btcAmountInputTextField.getText());
         try {
             Transaction preparedSendTx = bsqWalletService.getPreparedSendBtcTx(receiversAddressString, receiverAmount, btcUtxoCandidates);
             Transaction txWithBtcFee = btcWalletService.completePreparedSendBsqTx(preparedSendTx);
@@ -442,7 +442,7 @@ public class BsqSendView extends ActivatableView<GridPane, Void> implements BsqB
             Coin miningFee = signedTx.getFee();
 
             if (miningFee.getValue() >= receiverAmount.getValue())
-                GUIUtil.showWantToBurnRADCPopup(miningFee, receiverAmount, btcFormatter);
+                GUIUtil.showWantToBurnBTCPopup(miningFee, receiverAmount, btcFormatter);
             else {
                 int txVsize = signedTx.getVsize();
                 showPublishTxPopup(receiverAmount,
@@ -489,7 +489,7 @@ public class BsqSendView extends ActivatableView<GridPane, Void> implements BsqB
                                     TxType txType,
                                     Coin miningFee,
                                     int txVsize, String address,
-                                    CoinFormatter amountFormatter, // can be BSQ or RADC formatter
+                                    CoinFormatter amountFormatter, // can be BSQ or BTC formatter
                                     CoinFormatter feeFormatter,
                                     ResultHandler resultHandler) {
         new Popup().headLine(Res.get("dao.wallet.send.sendFunds.headline"))

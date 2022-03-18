@@ -211,7 +211,7 @@ public class FiatAccountsView extends PaymentAccountsView<GridPane, FiatAccounts
                             AdvancedCashValidator advancedCashValidator,
                             TransferwiseValidator transferwiseValidator,
                             AccountAgeWitnessService accountAgeWitnessService,
-                            @Named(FormattingUtils.RADC_FORMATTER_KEY) CoinFormatter formatter) {
+                            @Named(FormattingUtils.BTC_FORMATTER_KEY) CoinFormatter formatter) {
         super(model, accountAgeWitnessService);
 
         this.ibanValidator = ibanValidator;

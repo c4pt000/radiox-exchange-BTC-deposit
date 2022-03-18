@@ -109,8 +109,8 @@ public class PortfolioView extends ActivatableView<TabPane, Void> {
                 navigation.navigateTo(MainView.class, PortfolioView.class, PendingTradesView.class);
             else if (newValue == closedTradesTab)
                 navigation.navigateTo(MainView.class, PortfolioView.class, ClosedTradesView.class);
-        //    else if (newValue == bsqSwapTradesTab)
-          //      navigation.navigateTo(MainView.class, PortfolioView.class, UnconfirmedBsqSwapsView.class);
+           // else if (newValue == bsqSwapTradesTab)
+           //     navigation.navigateTo(MainView.class, PortfolioView.class, UnconfirmedBsqSwapsView.class);
             else if (newValue == failedTradesTab)
                 navigation.navigateTo(MainView.class, PortfolioView.class, FailedTradesView.class);
             else if (newValue == editOpenOfferTab)
@@ -174,8 +174,8 @@ public class PortfolioView extends ActivatableView<TabPane, Void> {
             navigation.navigateTo(MainView.class, PortfolioView.class, PendingTradesView.class);
         else if (root.getSelectionModel().getSelectedItem() == closedTradesTab)
             navigation.navigateTo(MainView.class, PortfolioView.class, ClosedTradesView.class);
-   //     else if (root.getSelectionModel().getSelectedItem() == bsqSwapTradesTab)
-     //       navigation.navigateTo(MainView.class, PortfolioView.class, UnconfirmedBsqSwapsView.class);
+    ///  else if (root.getSelectionModel().getSelectedItem() == bsqSwapTradesTab)
+        //    navigation.navigateTo(MainView.class, PortfolioView.class, UnconfirmedBsqSwapsView.class);
         else if (root.getSelectionModel().getSelectedItem() == failedTradesTab)
             navigation.navigateTo(MainView.class, PortfolioView.class, FailedTradesView.class);
         else if (root.getSelectionModel().getSelectedItem() == editOpenOfferTab) {
@@ -209,8 +209,8 @@ public class PortfolioView extends ActivatableView<TabPane, Void> {
             currentTab = pendingTradesTab;
         } else if (view instanceof ClosedTradesView) {
             currentTab = closedTradesTab;
-    //    } else if (view instanceof UnconfirmedBsqSwapsView) {
-      //      currentTab = bsqSwapTradesTab;
+     //   } else if (view instanceof UnconfirmedBsqSwapsView) {
+     //       currentTab = bsqSwapTradesTab;
         } else if (view instanceof FailedTradesView) {
             currentTab = failedTradesTab;
         } else if (view instanceof EditOfferView) {

@@ -23,11 +23,10 @@ import bisq.asset.Coin;
 
 import org.bitcoinj.core.NetworkParameters;
 
-
-
 //import org.bitcoinj.params.MainNetParams;
 //import org.bitcoinj.params.RegTestParams;
 //import org.bitcoinj.params.TestNet3Params;
+
 
 import org.libdohj.params.DogecoinMainNetParams;
 import org.libdohj.params.DogecoinRegTestParams;

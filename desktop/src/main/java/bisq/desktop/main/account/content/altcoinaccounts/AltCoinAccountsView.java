@@ -92,7 +92,7 @@ public class AltCoinAccountsView extends PaymentAccountsView<GridPane, AltCoinAc
                                AccountAgeWitnessService accountAgeWitnessService,
                                AssetService assetService,
                                FilterManager filterManager,
-                               @Named(FormattingUtils.RADC_FORMATTER_KEY) CoinFormatter formatter,
+                               @Named(FormattingUtils.BTC_FORMATTER_KEY) CoinFormatter formatter,
                                Preferences preferences) {
         super(model, accountAgeWitnessService);
 

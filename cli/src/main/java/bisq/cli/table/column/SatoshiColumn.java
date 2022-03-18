@@ -22,7 +22,7 @@ import static bisq.cli.CurrencyFormat.formatSatoshis;
 import static bisq.cli.table.column.Column.JUSTIFICATION.RIGHT;
 
 /**
- * For displaying RADC or BSQ satoshi values with appropriate precision.
+ * For displaying BTC or BSQ satoshi values with appropriate precision.
  */
 public class SatoshiColumn extends LongColumn {
 

@@ -33,7 +33,7 @@ import lombok.Value;
 import javax.annotation.concurrent.Immutable;
 
 /**
- * A block derived from the RADC blockchain and filtered for BSQ relevant transactions, though the transactions are not
+ * A block derived from the BTC blockchain and filtered for BSQ relevant transactions, though the transactions are not
  * verified at that stage. That block is passed to lite nodes over the P2P network. The validation is done by the lite
  * nodes themselves but the transactions are already filtered for BSQ only transactions to keep bandwidth requirements
  * low.

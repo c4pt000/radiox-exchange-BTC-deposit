@@ -123,7 +123,7 @@ public class ProofOfBurnView extends ActivatableView<GridPane, Void> implements 
                             SignVerifyService signVerifyService,
                             MyProofOfBurnListService myProofOfBurnListService,
                             Preferences preferences,
-                            @Named(FormattingUtils.RADC_FORMATTER_KEY) CoinFormatter btcFormatter) {
+                            @Named(FormattingUtils.BTC_FORMATTER_KEY) CoinFormatter btcFormatter) {
         this.bsqFormatter = bsqFormatter;
         this.bsqWalletService = bsqWalletService;
         this.bsqValidator = bsqValidator;

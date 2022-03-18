@@ -514,7 +514,7 @@ public class BsqWalletService extends WalletService implements DaoStateListener 
 
 
     ///////////////////////////////////////////////////////////////////////////////////////////
-    // Send BSQ with RADC fee
+    // Send BSQ with BTC fee
     ///////////////////////////////////////////////////////////////////////////////////////////
 
     public Transaction getPreparedSendBsqTx(String receiverAddress, Coin receiverAmount)
@@ -536,7 +536,7 @@ public class BsqWalletService extends WalletService implements DaoStateListener 
 
 
     ///////////////////////////////////////////////////////////////////////////////////////////
-    // Send RADC (non-BSQ) with RADC fee (e.g. the issuance output from a  lost comp. request)
+    // Send BTC (non-BSQ) with BTC fee (e.g. the issuance output from a  lost comp. request)
     ///////////////////////////////////////////////////////////////////////////////////////////
 
     public Transaction getPreparedSendBtcTx(String receiverAddress, Coin receiverAmount)
@@ -648,7 +648,7 @@ public class BsqWalletService extends WalletService implements DaoStateListener 
 
     // Case 2: 17 BSQ fee to burn
     // In: 17 BSQ
-    // Out: burned BSQ change 7 BSQ -> RADC (7 BSQ burned)
+    // Out: burned BSQ change 7 BSQ -> BTC (7 BSQ burned)
     // Out: OpReturn
     // Miner fee: 1000 sat  (10 BSQ burned)
 
@@ -662,7 +662,7 @@ public class BsqWalletService extends WalletService implements DaoStateListener 
             Coin change = bsqCoinSelector.getChange(fee, coinSelection);
             if (change.isZero() || Restrictions.isDust(change)) {
                 // If change is zero or below dust we increase required input amount to enforce a BSQ change output.
-                // All outputs after that are considered RADC and therefore would be burned BSQ if BSQ is left from what
+                // All outputs after that are considered BTC and therefore would be burned BSQ if BSQ is left from what
                 // we use for miner fee.
 
                 Coin minDustThreshold = Coin.valueOf(preferences.getIgnoreDustThreshold());

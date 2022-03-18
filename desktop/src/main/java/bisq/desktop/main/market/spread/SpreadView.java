@@ -63,7 +63,7 @@ public class SpreadView extends ActivatableViewAndModel<GridPane, SpreadViewMode
     ///////////////////////////////////////////////////////////////////////////////////////////
 
     @Inject
-    public SpreadView(SpreadViewModel model, @Named(FormattingUtils.RADC_FORMATTER_KEY) CoinFormatter formatter) {
+    public SpreadView(SpreadViewModel model, @Named(FormattingUtils.BTC_FORMATTER_KEY) CoinFormatter formatter) {
         super(model);
         this.formatter = formatter;
     }

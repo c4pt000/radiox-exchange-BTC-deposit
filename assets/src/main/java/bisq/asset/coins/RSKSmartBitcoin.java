@@ -24,6 +24,6 @@ import bisq.asset.I18n;
 public class RSKSmartBitcoin extends Coin {
 
     public RSKSmartBitcoin() {
-        super("RSK Smart Bitcoin", "R-RADC", new EtherAddressValidator(I18n.DISPLAY_STRINGS.getString("account.altcoin.popup.validation.RRADC")));
+        super("RSK Smart Bitcoin", "R-BTC", new EtherAddressValidator(I18n.DISPLAY_STRINGS.getString("account.altcoin.popup.validation.RBTC")));
     }
 }

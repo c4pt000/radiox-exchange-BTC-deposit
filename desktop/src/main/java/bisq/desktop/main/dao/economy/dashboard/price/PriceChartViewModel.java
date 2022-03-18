@@ -109,12 +109,12 @@ public class PriceChartViewModel extends ChartViewModel<PriceChartDataModel> {
         priceFormat.setMaximumFractionDigits(8);
         yAxisFormatter = value -> {
             value = MathUtils.scaleDownByPowerOf10(value.longValue(), 8);
-            return priceFormat.format(value) + " BSQ/RADC";
+            return priceFormat.format(value) + " BSQ/BTC";
         };
     }
 
     void setBtcUsdPriceFormatter() {
         priceFormat.setMaximumFractionDigits(0);
-        yAxisFormatter = value -> priceFormat.format(value) + " RADC/USD";
+        yAxisFormatter = value -> priceFormat.format(value) + " BTC/USD";
     }
 }

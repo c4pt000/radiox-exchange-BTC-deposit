@@ -303,7 +303,7 @@ public final class TradeStatistics2 implements ProcessOncePersistableNetworkPayl
     }
 
     public String getCurrencyCode() {
-        return baseCurrency.equals("RADC") ? counterCurrency : baseCurrency;
+        return baseCurrency.equals("BTC") ? counterCurrency : baseCurrency;
     }
 
     public Coin getTradeAmount() {

@@ -51,7 +51,7 @@ public class OfferForJson {
     public final String paymentMethod;
     public final String id;
 
-    // primaryMarket fields are based on industry standard where primaryMarket is always in the focus (in the app RADC is always in the focus - will be changed in a larger refactoring once)
+    // primaryMarket fields are based on industry standard where primaryMarket is always in the focus (in the app BTC is always in the focus - will be changed in a larger refactoring once)
     public String currencyPair;
     public OfferDirection primaryMarketDirection;
 

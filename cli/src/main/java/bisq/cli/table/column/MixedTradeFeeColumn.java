@@ -22,7 +22,7 @@ import static bisq.cli.CurrencyFormat.formatSatoshis;
 import static bisq.cli.table.column.Column.JUSTIFICATION.RIGHT;
 
 /**
- * For displaying a mix of BSQ and RADC trade fees with appropriate precision.
+ * For displaying a mix of BSQ and BTC trade fees with appropriate precision.
  */
 public class MixedTradeFeeColumn extends LongColumn {
 
@@ -40,7 +40,7 @@ public class MixedTradeFeeColumn extends LongColumn {
 
         String s = isBsq
                 ? formatBsq(value) + " BSQ"
-                : formatSatoshis(value) + " RADC";
+                : formatSatoshis(value) + " BTC";
         stringColumn.addRow(s);
 
         if (isNewMaxWidth.test(s))

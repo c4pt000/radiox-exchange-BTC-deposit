@@ -30,7 +30,7 @@
 # Example:
 #
 #    Create a sell/eur offer to sell 0.125 btc at a fixed-price of 38,000 euros, using a France face to face
-#    payment account, when the RADC market price rises to or above 40,000 EUR:
+#    payment account, when the BTC market price rises to or above 40,000 EUR:
 #
 #       `$ apitest/scripts/limit-order-simulation.sh -l 40000 -d sell -c fr -m 0.00 -a 0.125`
 

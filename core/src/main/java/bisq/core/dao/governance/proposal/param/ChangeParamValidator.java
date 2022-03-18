@@ -99,7 +99,7 @@ public class ChangeParamValidator extends ProposalValidator implements Consensus
                     inputValueAsCoin = daoStateService.getParamValueAsCoin(param, inputValue);
                     validateBsqValue(currentParamValueAsCoin, inputValueAsCoin, param);
                     break;
-                case RADC:
+                case BTC:
                     currentParamValueAsCoin = daoStateService.getParamValueAsCoin(param, currentParamValue);
                     inputValueAsCoin = daoStateService.getParamValueAsCoin(param, inputValue);
                     validateBtcValue(currentParamValueAsCoin, inputValueAsCoin, param);
@@ -171,10 +171,10 @@ public class ChangeParamValidator extends ProposalValidator implements Consensus
 
     private void validateBtcValue(Coin currentParamValueAsCoin, Coin inputValueAsCoin, Param param) throws ParamValidationException {
         switch (param) {
-            case DEFAULT_MAKER_FEE_RADC:
-            case DEFAULT_TAKER_FEE_RADC:
-            case MIN_MAKER_FEE_RADC:
-            case MIN_TAKER_FEE_RADC:
+            case DEFAULT_MAKER_FEE_BTC:
+            case DEFAULT_TAKER_FEE_BTC:
+            case MIN_MAKER_FEE_BTC:
+            case MIN_TAKER_FEE_BTC:
                 checkArgument(inputValueAsCoin.value >= Restrictions.getMinNonDustOutput().value,
                         Res.get("validation.amountBelowDust", Restrictions.getMinNonDustOutput().value));
                 break;
@@ -303,8 +303,8 @@ public class ChangeParamValidator extends ProposalValidator implements Consensus
             case BSQ:
                 value = bsqFormatter.formatBSQSatoshis((long) val);
                 break;
-            case RADC:
-                value = bsqFormatter.formatRADCSatoshis((long) val);
+            case BTC:
+                value = bsqFormatter.formatBTCSatoshis((long) val);
                 break;
             case PERCENT:
                 value = String.valueOf(val * 100);

@@ -57,7 +57,7 @@ class FailedTradesDataModel extends ActivatableDataModel {
                                  TradeManager tradeManager,
                                  P2PService p2PService,
                                  KeyRing keyRing,
-                                 @Named(FormattingUtils.RADC_FORMATTER_KEY) CoinFormatter btcFormatter) {
+                                 @Named(FormattingUtils.BTC_FORMATTER_KEY) CoinFormatter btcFormatter) {
         this.failedTradesManager = failedTradesManager;
         this.tradeManager = tradeManager;
         this.p2PService = p2PService;

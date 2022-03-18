@@ -94,7 +94,7 @@ public class ContractWindow extends Overlay<ContractWindow> {
                           MediationManager mediationManager,
                           RefundManager refundManager,
                           AccountAgeWitnessService accountAgeWitnessService,
-                          @Named(FormattingUtils.RADC_FORMATTER_KEY) CoinFormatter formatter) {
+                          @Named(FormattingUtils.BTC_FORMATTER_KEY) CoinFormatter formatter) {
         this.arbitrationManager = arbitrationManager;
         this.mediationManager = mediationManager;
         this.refundManager = refundManager;

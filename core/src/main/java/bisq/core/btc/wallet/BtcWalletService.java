@@ -194,12 +194,12 @@ public class BtcWalletService extends WalletService {
 
         // preparedCompensationRequestTx has following structure:
         // inputs [1-n] BSQ inputs for request fee
-        // inputs [1-n] RADC inputs for BSQ issuance and miner fee
+        // inputs [1-n] BTC inputs for BSQ issuance and miner fee
         // outputs [1] Mandatory BSQ request fee change output (>= 546 Satoshi)
         // outputs [1] Potentially BSQ issuance output (>= 546 Satoshi) - in case of a issuance tx, otherwise that output does not exist
-        // outputs [0-1] RADC change output from issuance and miner fee inputs (>= 546 Satoshi)
+        // outputs [0-1] BTC change output from issuance and miner fee inputs (>= 546 Satoshi)
         // outputs [1] OP_RETURN with opReturnData and amount 0
-        // mining fee: RADC mining fee + burned BSQ fee
+        // mining fee: BTC mining fee + burned BSQ fee
 
         Transaction preparedTx = new Transaction(params);
         // Copy inputs from BSQ fee tx
@@ -283,13 +283,13 @@ public class BtcWalletService extends WalletService {
         }
         while (isFeeOutsideTolerance);
 
-        // Sign all RADC inputs
+        // Sign all BTC inputs
         signAllBtcInputs(indexOfBtcFirstInput, resultTx);
 
         checkWalletConsistency(wallet);
         verifyTransaction(resultTx);
 
-        // printTx("RADC wallet: Signed tx", resultTx);
+        // printTx("BTC wallet: Signed tx", resultTx);
         return resultTx;
     }
 
@@ -298,7 +298,7 @@ public class BtcWalletService extends WalletService {
     // Blind vote tx
     ///////////////////////////////////////////////////////////////////////////////////////////
 
-    // We add RADC inputs to pay miner fees and sign the RADC tx inputs
+    // We add BTC inputs to pay miner fees and sign the BTC tx inputs
 
     // (BsqFee)tx has following structure:
     // inputs [1-n] BSQ inputs (fee + stake)
@@ -307,12 +307,12 @@ public class BtcWalletService extends WalletService {
 
     // preparedVoteTx has following structure:
     // inputs [1-n] BSQ inputs (fee + stake)
-    // inputs [1-n] RADC inputs for miner fee
+    // inputs [1-n] BTC inputs for miner fee
     // outputs [1] BSQ stake
     // outputs [0-1] BSQ change output (>= 546 Satoshi)
-    // outputs [0-1] RADC change output from miner fee inputs (>= 546 Satoshi)
+    // outputs [0-1] BTC change output from miner fee inputs (>= 546 Satoshi)
     // outputs [1] OP_RETURN with opReturnData and amount 0
-    // mining fee: RADC mining fee + burned BSQ fee
+    // mining fee: BTC mining fee + burned BSQ fee
     public Transaction completePreparedBlindVoteTx(Transaction preparedTx, byte[] opReturnData)
             throws TransactionVerificationException, WalletException, InsufficientMoneyException {
         // First input index for btc inputs (they get added after bsq inputs)
@@ -321,7 +321,7 @@ public class BtcWalletService extends WalletService {
 
     private Transaction completePreparedBsqTxWithBtcFee(Transaction preparedTx,
                                                         byte[] opReturnData) throws InsufficientMoneyException, TransactionVerificationException, WalletException {
-        // Remember index for first RADC input
+        // Remember index for first BTC input
         int indexOfBtcFirstInput = preparedTx.getInputs().size();
 
         Transaction tx = addInputsForMinerFee(preparedTx, opReturnData);
@@ -330,7 +330,7 @@ public class BtcWalletService extends WalletService {
         checkWalletConsistency(wallet);
         verifyTransaction(tx);
 
-        // printTx("RADC wallet: Signed tx", tx);
+        // printTx("BTC wallet: Signed tx", tx);
         return tx;
     }
 
@@ -418,18 +418,18 @@ public class BtcWalletService extends WalletService {
     // Vote reveal tx
     ///////////////////////////////////////////////////////////////////////////////////////////
 
-    // We add RADC fees to the prepared reveal tx
+    // We add BTC fees to the prepared reveal tx
     // (BsqFee)tx has following structure:
     // inputs [1] BSQ input (stake)
     // output [1] BSQ unlocked stake
 
     // preparedVoteTx has following structure:
     // inputs [1] BSQ inputs (stake)
-    // inputs [1-n] RADC inputs for miner fee
+    // inputs [1-n] BTC inputs for miner fee
     // outputs [1] BSQ unlocked stake
-    // outputs [0-1] RADC change output from miner fee inputs (>= 546 Satoshi)
+    // outputs [0-1] BTC change output from miner fee inputs (>= 546 Satoshi)
     // outputs [1] OP_RETURN with opReturnData and amount 0
-    // mining fee: RADC mining fee + burned BSQ fee
+    // mining fee: BTC mining fee + burned BSQ fee
     public Transaction completePreparedVoteRevealTx(Transaction preparedTx, byte[] opReturnData)
             throws TransactionVerificationException, WalletException, InsufficientMoneyException {
         return completePreparedBsqTxWithBtcFee(preparedTx, opReturnData);
@@ -447,13 +447,13 @@ public class BtcWalletService extends WalletService {
         // outputs [1] BSQ receiver's output
         // outputs [0-1] BSQ change output
 
-        // We add RADC mining fee. Result tx looks like:
+        // We add BTC mining fee. Result tx looks like:
         // inputs [1-n] BSQ inputs
-        // inputs [1-n] RADC inputs
+        // inputs [1-n] BTC inputs
         // outputs [1] BSQ receiver's output
         // outputs [0-1] BSQ change output
-        // outputs [0-1] RADC change output
-        // mining fee: RADC mining fee
+        // outputs [0-1] BTC change output
+        // mining fee: BTC mining fee
         Coin txFeePerVbyte = getTxFeeForWithdrawalPerVbyte();
         return completePreparedBsqTx(preparedBsqTx, null, txFeePerVbyte);
     }
@@ -481,18 +481,18 @@ public class BtcWalletService extends WalletService {
         // outputs [0-1] BSQ change output
         // mining fee: optional burned BSQ fee (only if opReturnData != null)
 
-        // We add RADC mining fee. Result tx looks like:
+        // We add BTC mining fee. Result tx looks like:
         // inputs [1-n] BSQ inputs
-        // inputs [1-n] RADC inputs
+        // inputs [1-n] BTC inputs
         // outputs [0-1] BSQ receiver's output
         // outputs [0-1] BSQ change output
-        // outputs [0-1] RADC change output
+        // outputs [0-1] BTC change output
         // outputs [0-1] OP_RETURN with opReturnData (only if opReturnData != null)
-        // mining fee: RADC mining fee + optional burned BSQ fee (only if opReturnData != null)
+        // mining fee: BTC mining fee + optional burned BSQ fee (only if opReturnData != null)
 
         // In case of txs for burned BSQ fees we have no receiver output and it might be that there is no change outputs
         // We need to guarantee that min. 1 valid output is added (OP_RETURN does not count). So we use a higher input
-        // for RADC to force an additional change output.
+        // for BTC to force an additional change output.
 
         // safety check counter to avoid endless loops
         int counter = 0;
@@ -500,7 +500,7 @@ public class BtcWalletService extends WalletService {
         int sigSizePerInput = 106;
         // typical size for a tx with 2 inputs
         int txVsizeWithUnsignedInputs = 203;
-        // In case there are no change outputs we force a change by adding min dust to the RADC input
+        // In case there are no change outputs we force a change by adding min dust to the BTC input
         Coin forcedChangeValue = Coin.ZERO;
 
         Address changeAddress = getFreshAddressEntry().getAddress();
@@ -512,7 +512,7 @@ public class BtcWalletService extends WalletService {
         List<TransactionOutput> preparedBsqTxOutputs = preparedBsqTx.getOutputs();
         // We don't know at this point what type the btc input would be (segwit/legacy).
         // We use legacy to be on the safe side.
-        int numLegacyInputs = preparedBsqTxInputs.size() + 1; // We add 1 for the RADC fee input
+        int numLegacyInputs = preparedBsqTxInputs.size() + 1; // We add 1 for the BTC fee input
         int numSegwitInputs = 0;
         Transaction resultTx = null;
         boolean isFeeOutsideTolerance;
@@ -578,13 +578,13 @@ public class BtcWalletService extends WalletService {
                 isFeeOutsideTolerance ||
                 resultTx.getFee().value < txFeePerVbyte.multiply(resultTx.getVsize()).value);
 
-        // Sign all RADC inputs
+        // Sign all BTC inputs
         signAllBtcInputs(preparedBsqTxInputs.size(), resultTx);
 
         checkWalletConsistency(wallet);
         verifyTransaction(resultTx);
 
-        printTx("RADC wallet: Signed tx", resultTx);
+        printTx("BTC wallet: Signed tx", resultTx);
         return resultTx;
     }
 
@@ -614,7 +614,7 @@ public class BtcWalletService extends WalletService {
 
     public void commitTx(Transaction tx) {
         wallet.commitTx(tx);
-        // printTx("RADC commit Tx", tx);
+        // printTx("BTC commit Tx", tx);
     }
 
 

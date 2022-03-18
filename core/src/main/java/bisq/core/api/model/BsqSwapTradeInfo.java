@@ -73,7 +73,7 @@ public class BsqSwapTradeInfo implements Payload {
         var makerBtcAddress = wasMyOffer ? protocolModel.getBtcAddress() : swapPeer.getBtcAddress();
         var takerBsqAddress = wasMyOffer ? swapPeer.getBsqAddress() : protocolModel.getBsqAddress();
         var takerBtcAddress = wasMyOffer ? swapPeer.getBtcAddress() : protocolModel.getBtcAddress();
-        // A BSQ Swap trade fee is paid in full by the RADC buyer (selling BSQ).
+        // A BSQ Swap trade fee is paid in full by the BTC buyer (selling BSQ).
         // The transferred BSQ (payout) is reduced by the fee of the peer.
         var makerTradeFee = wasMyOffer && trade.getOffer().getDirection().equals(BUY)
                 ? trade.getMakerFeeAsLong()

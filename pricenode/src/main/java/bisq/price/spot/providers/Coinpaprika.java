@@ -43,12 +43,12 @@ class Coinpaprika extends ExchangeRateProvider {
     private final RestTemplate restTemplate = new RestTemplate();
 
     /**
-     * Used to determine the currencies in which the RADC price can be quoted. There seems
+     * Used to determine the currencies in which the BTC price can be quoted. There seems
      * to be no programatic way to retrieve it, so we get the value from the API
      * documentation (see "quotes" param decsribed at
      * https://api.coinpaprika.com/#operation/getTickersById ). The hardcoded value below
-     * is the list of allowed values as per the API documentation, but without RADC and ETH
-     * as it makes no sense to quote the RADC price in them.
+     * is the list of allowed values as per the API documentation, but without BTC and ETH
+     * as it makes no sense to quote the BTC price in them.
      */
     private final static String SUPPORTED_CURRENCIES =
             ("USD, EUR, PLN, KRW, GBP, CAD, JPY, RUB, TRY, NZD, AUD, CHF, UAH, HKD, " +

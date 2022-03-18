@@ -63,7 +63,7 @@ class ClosedTradeTableBuilder extends AbstractTradeListBuilder {
             colMinerTxFee.addRow(toMyMinerTxFee.apply(t));
 
             if (t.getOffer().getIsBsqSwapOffer()) {
-                // For BSQ Swaps, RADC buyer pays the BSQ trade fee for both sides (RADC seller pays no fee).
+                // For BSQ Swaps, BTC buyer pays the BSQ trade fee for both sides (BTC seller pays no fee).
                 var optionalTradeFeeBsq = isBtcSeller.test(t) ? 0L : toTradeFeeBsq.apply(t);
                 colMixedTradeFee.addRow(optionalTradeFeeBsq, true);
             } else if (isTradeFeeBtc.test(t)) {

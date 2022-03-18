@@ -185,12 +185,12 @@ public class MainView extends InitializableView<StackPane, MainViewModel>
         ToggleButton supportButton = new NavButton(SupportView.class, Res.get("mainView.menu.support"));
         ToggleButton settingsButton = new NavButton(SettingsView.class, Res.get("mainView.menu.settings"));
         ToggleButton accountButton = new NavButton(AccountView.class, Res.get("mainView.menu.account"));
-//      ToggleButton daoButton = new NavButton(DaoView.class, Res.get("mainView.menu.dao"));
+        //ToggleButton daoButton = new NavButton(DaoView.class, Res.get("mainView.menu.dao"));
 
         JFXBadge portfolioButtonWithBadge = new JFXBadge(portfolioButton);
         JFXBadge supportButtonWithBadge = new JFXBadge(supportButton);
         JFXBadge settingsButtonWithBadge = new JFXBadge(settingsButton);
-//        JFXBadge daoButtonWithBadge = new JFXBadge(daoButton);
+    /// JFXBadge daoButtonWithBadge = new JFXBadge(daoButton);
 
         Locale locale = GlobalSettings.getLocale();
         DecimalFormat currencyFormat = (DecimalFormat) NumberFormat.getNumberInstance(locale);
@@ -216,9 +216,10 @@ public class MainView extends InitializableView<StackPane, MainViewModel>
                         settingsButton.fire();
                     } else if (Utilities.isAltOrCtrlPressed(KeyCode.DIGIT8, keyEvent)) {
                         accountButton.fire();
-                  //  } else if (Utilities.isAltOrCtrlPressed(KeyCode.DIGIT9, keyEvent)) {
-                  //      if (daoButton.isVisible())
-                    //        daoButton.fire();
+                    
+   //else if (Utilities.isAltOrCtrlPressed(KeyCode.DIGIT9, keyEvent)) {
+                      //  if (daoButton.isVisible())
+                        //    daoButton.fire();
                     }
                 });
             }
@@ -253,7 +254,7 @@ public class MainView extends InitializableView<StackPane, MainViewModel>
                 try {
                     String preferredTradeCurrency = model.getPreferences().getPreferredTradeCurrency().getCode();
                     double availableBalance = Double.parseDouble(
-                            model.getAvailableBalance().getValue().replace("RADC", ""));
+                            model.getAvailableBalance().getValue().replace("BTC", ""));
                     double marketPrice = Double.parseDouble(model.getMarketPrice(preferredTradeCurrency).getValue());
                     tooltipText += "\n" + currencyFormat.format(availableBalance * marketPrice) +
                             " " + preferredTradeCurrency;
@@ -278,7 +279,7 @@ public class MainView extends InitializableView<StackPane, MainViewModel>
                 try {
                     String preferredTradeCurrency = model.getPreferences().getPreferredTradeCurrency().getCode();
                     double reservedBalance = Double.parseDouble(
-                            model.getReservedBalance().getValue().replace("RADC", ""));
+                            model.getReservedBalance().getValue().replace("BTC", ""));
                     double marketPrice = Double.parseDouble(model.getMarketPrice(preferredTradeCurrency).getValue());
                     tooltipText += "\n" + currencyFormat.format(reservedBalance * marketPrice) +
                             " " + preferredTradeCurrency;
@@ -303,7 +304,7 @@ public class MainView extends InitializableView<StackPane, MainViewModel>
                 try {
                     String preferredTradeCurrency = model.getPreferences().getPreferredTradeCurrency().getCode();
                     double lockedBalance = Double.parseDouble(
-                            model.getLockedBalance().getValue().replace("RADC", ""));
+                            model.getLockedBalance().getValue().replace("BTC", ""));
                     double marketPrice = Double.parseDouble(model.getMarketPrice(preferredTradeCurrency).getValue());
                     tooltipText += "\n" + currencyFormat.format(lockedBalance * marketPrice) +
                             " " + preferredTradeCurrency;
@@ -370,8 +371,8 @@ public class MainView extends InitializableView<StackPane, MainViewModel>
         setupBadge(settingsButtonWithBadge, new SimpleStringProperty(Res.get("shared.new")), model.getShowSettingsUpdatesNotification());
         settingsButtonWithBadge.getStyleClass().add("new");
 
-      //  setupBadge(daoButtonWithBadge, new SimpleStringProperty(Res.get("shared.new")), model.getShowDaoUpdatesNotification());
-      //  daoButtonWithBadge.getStyleClass().add("new");
+        //setupBadge(daoButtonWithBadge, new SimpleStringProperty(Res.get("shared.new")), model.getShowDaoUpdatesNotification());
+        //daoButtonWithBadge.getStyleClass().add("new");
 
         navigation.addListener((viewPath, data) -> {
             if (viewPath.size() != 2 || viewPath.indexOf(MainView.class) != 0)
@@ -535,7 +536,7 @@ public class MainView extends InitializableView<StackPane, MainViewModel>
         MarketPrice selectedMarketPrice = model.getPriceFeedService().getMarketPrice(selectedCurrencyCode);
 
         return Res.get("mainView.marketPrice.tooltip",
-                "RadioX Price Index for " + selectedCurrencyCode,
+                "Bisq Price Index for " + selectedCurrencyCode,
                 "",
                 selectedMarketPrice != null ? DisplayUtils.formatTime(new Date(selectedMarketPrice.getTimestampSec())) : Res.get("shared.na"),
                 model.getPriceFeedService().getProviderNodeAddress());
@@ -611,8 +612,8 @@ public class MainView extends InitializableView<StackPane, MainViewModel>
                 splashP2PNetworkBusyAnimation.stop();
                 showTorNetworkSettingsButton.setVisible(true);
                 showTorNetworkSettingsButton.setManaged(true);
-                if (model.getUseTorForRADC().get()) {
-                    // If using tor for RADC, hide the RADC status since tor is not working
+                if (model.getUseTorForBTC().get()) {
+                    // If using tor for BTC, hide the BTC status since tor is not working
                     btcSyncIndicator.setVisible(false);
                     btcSplashInfo.setVisible(false);
                 }
@@ -687,7 +688,7 @@ public class MainView extends InitializableView<StackPane, MainViewModel>
         setRightAnchor(separator, 0d);
         setTopAnchor(separator, 0d);
 
-        // RADC
+        // BTC
         Label btcInfoLabel = new AutoTooltipLabel();
         btcInfoLabel.setId("footer-pane");
         btcInfoLabel.textProperty().bind(model.getBtcInfo());

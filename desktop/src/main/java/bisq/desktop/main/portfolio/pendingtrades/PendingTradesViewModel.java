@@ -131,7 +131,7 @@ public class PendingTradesViewModel extends ActivatableWithDataModel<PendingTrad
 
     @Inject
     public PendingTradesViewModel(PendingTradesDataModel dataModel,
-                                  @Named(FormattingUtils.RADC_FORMATTER_KEY) CoinFormatter btcFormatter,
+                                  @Named(FormattingUtils.BTC_FORMATTER_KEY) CoinFormatter btcFormatter,
                                   BsqFormatter bsqFormatter,
                                   BtcAddressValidator btcAddressValidator,
                                   P2PService p2PService,
@@ -317,15 +317,15 @@ public class PendingTradesViewModel extends ActivatableWithDataModel<PendingTrad
             checkNotNull(dataModel.getTrade());
             if (dataModel.isMaker() && dataModel.getOffer().isCurrencyForMakerFeeBtc() ||
                     !dataModel.isMaker() && dataModel.getTrade().isCurrencyForTakerFeeBtc()) {
-                Coin tradeFeeInRADC = dataModel.getTradeFeeInRADC();
+                Coin tradeFeeInBTC = dataModel.getTradeFeeInBTC();
 
                 Coin minTradeFee = dataModel.isMaker() ?
                         FeeService.getMinMakerFee(true) :
                         FeeService.getMinTakerFee(true);
 
-                String percentage = GUIUtil.getPercentageOfTradeAmount(tradeFeeInRADC, trade.getAmount(),
+                String percentage = GUIUtil.getPercentageOfTradeAmount(tradeFeeInBTC, trade.getAmount(),
                         minTradeFee);
-                return btcFormatter.formatCoinWithCode(tradeFeeInRADC) + percentage;
+                return btcFormatter.formatCoinWithCode(tradeFeeInBTC) + percentage;
             } else {
                 return bsqFormatter.formatCoinWithCode(dataModel.getTradeFeeAsBsq());
             }

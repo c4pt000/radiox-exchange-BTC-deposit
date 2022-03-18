@@ -68,7 +68,7 @@ public class EditOfferView extends MutableOfferView<EditOfferViewModel> {
                           Navigation navigation,
                           Preferences preferences,
                           OfferDetailsWindow offerDetailsWindow,
-                          @Named(FormattingUtils.RADC_FORMATTER_KEY) CoinFormatter btcFormatter,
+                          @Named(FormattingUtils.BTC_FORMATTER_KEY) CoinFormatter btcFormatter,
                           BsqFormatter bsqFormatter) {
         super(model, navigation, preferences, offerDetailsWindow, btcFormatter, bsqFormatter);
     }

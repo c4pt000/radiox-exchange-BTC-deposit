@@ -108,7 +108,7 @@ public class ClosedTradesView extends ActivatableViewAndModel<VBox, ClosedTrades
         VOLUME(Res.get("shared.amount")),
         VOLUME_CURRENCY(Res.get("shared.currency")),
         TX_FEE(Res.get("shared.txFee")),
-        TRADE_FEE_RADC(Res.get("shared.tradeFee") + " RADC"),
+        TRADE_FEE_BTC(Res.get("shared.tradeFee") + " BTC"),
         TRADE_FEE_BSQ(Res.get("shared.tradeFee") + " BSQ"),
         BUYER_SEC(Res.get("shared.buyerSecurityDeposit")),
         SELLER_SEC(Res.get("shared.sellerSecurityDeposit")),
@@ -179,7 +179,7 @@ public class ClosedTradesView extends ActivatableViewAndModel<VBox, ClosedTrades
     public void initialize() {
         widthListener = (observable, oldValue, newValue) -> onWidthChange((double) newValue);
         txFeeColumn.setGraphic(new AutoTooltipLabel(ColumnNames.TX_FEE.toString()));
-        tradeFeeColumn.setGraphic(new AutoTooltipLabel(ColumnNames.TRADE_FEE_RADC.toString().replace(" RADC", "")));
+        tradeFeeColumn.setGraphic(new AutoTooltipLabel(ColumnNames.TRADE_FEE_BTC.toString().replace(" BTC", "")));
         buyerSecurityDepositColumn.setGraphic(new AutoTooltipLabel(ColumnNames.BUYER_SEC.toString()));
         sellerSecurityDepositColumn.setGraphic(new AutoTooltipLabel(ColumnNames.SELLER_SEC.toString()));
         priceColumn.setGraphic(new AutoTooltipLabel(ColumnNames.PRICE.toString()));
@@ -233,9 +233,9 @@ public class ClosedTradesView extends ActivatableViewAndModel<VBox, ClosedTrades
         //
         tradeFeeColumn.setComparator(Comparator.comparing(item -> {
             String tradeFee = item.getTradeFeeAsString(true);
-            // We want to separate BSQ and RADC fees so we use a prefix
+            // We want to separate BSQ and BTC fees so we use a prefix
             if (item.getTradable().getOffer().isCurrencyForMakerFeeBtc()) {
-                return "RADC" + tradeFee;
+                return "BTC" + tradeFee;
             } else {
                 return "BSQ" + tradeFee;
             }
@@ -306,10 +306,10 @@ public class ClosedTradesView extends ActivatableViewAndModel<VBox, ClosedTrades
                 columns[ColumnNames.VOLUME_CURRENCY.ordinal()] = item.getVolumeCurrencyAsString();
                 columns[ColumnNames.TX_FEE.ordinal()] = item.getTxFeeAsString();
                 if (model.dataModel.isCurrencyForTradeFeeBtc(item.getTradable())) {
-                    columns[ColumnNames.TRADE_FEE_RADC.ordinal()] = item.getTradeFeeAsString(false);
+                    columns[ColumnNames.TRADE_FEE_BTC.ordinal()] = item.getTradeFeeAsString(false);
                     columns[ColumnNames.TRADE_FEE_BSQ.ordinal()] = "";
                 } else {
-                    columns[ColumnNames.TRADE_FEE_RADC.ordinal()] = "";
+                    columns[ColumnNames.TRADE_FEE_BTC.ordinal()] = "";
                     columns[ColumnNames.TRADE_FEE_BSQ.ordinal()] = item.getTradeFeeAsString(false);
                 }
                 columns[ColumnNames.BUYER_SEC.ordinal()] = item.getBuyerSecurityDepositAsString();

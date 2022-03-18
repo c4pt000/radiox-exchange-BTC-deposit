@@ -31,7 +31,7 @@ import org.jetbrains.annotations.NotNull;
 
 @Slf4j
 public class FormattingUtils {
-    public static final String RADC_FORMATTER_KEY = "RADC";
+    public static final String BTC_FORMATTER_KEY = "BTC";
 
     public final static String RANGE_SEPARATOR = " - ";
 
@@ -46,7 +46,7 @@ public class FormattingUtils {
     public static String formatCoinWithCode(Coin coin, MonetaryFormat coinFormat) {
         if (coin != null) {
             try {
-                // we don't use the code feature from coinFormat as it does automatic switching between mRADC and RADC and
+                // we don't use the code feature from coinFormat as it does automatic switching between mBTC and BTC and
                 // pre and post fixing
                 return coinFormat.postfixCode().format(coin).toString();
             } catch (Throwable t) {

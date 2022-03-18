@@ -50,8 +50,8 @@ public class CurrencyFormat {
 
     static final BigDecimal SATOSHI_DIVISOR = new BigDecimal(100_000_000);
     static final DecimalFormat SATOSHI_FORMAT = new DecimalFormat("###,##0.00000000", DECIMAL_FORMAT_SYMBOLS);
-    static final DecimalFormat RADC_FORMAT = new DecimalFormat("###,##0.########", DECIMAL_FORMAT_SYMBOLS);
-    static final DecimalFormat RADC_TX_FEE_FORMAT = new DecimalFormat("###,###,##0", DECIMAL_FORMAT_SYMBOLS);
+    static final DecimalFormat BTC_FORMAT = new DecimalFormat("###,##0.########", DECIMAL_FORMAT_SYMBOLS);
+    static final DecimalFormat BTC_TX_FEE_FORMAT = new DecimalFormat("###,###,##0", DECIMAL_FORMAT_SYMBOLS);
 
     static final BigDecimal BSQ_SATOSHI_DIVISOR = new BigDecimal(100);
     static final DecimalFormat BSQ_FORMAT = new DecimalFormat("###,###,###,##0.00", DECIMAL_FORMAT_SYMBOLS);
@@ -68,7 +68,7 @@ public class CurrencyFormat {
 
     @SuppressWarnings("BigDecimalMethodWithoutRoundingCalled")
     public static String formatBtc(long sats) {
-        return RADC_FORMAT.format(new BigDecimal(sats).divide(SATOSHI_DIVISOR));
+        return BTC_FORMAT.format(new BigDecimal(sats).divide(SATOSHI_DIVISOR));
     }
 
     @SuppressWarnings("BigDecimalMethodWithoutRoundingCalled")
@@ -126,6 +126,6 @@ public class CurrencyFormat {
     }
 
     public static String formatFeeSatoshis(long sats) {
-        return RADC_TX_FEE_FORMAT.format(BigDecimal.valueOf(sats));
+        return BTC_TX_FEE_FORMAT.format(BigDecimal.valueOf(sats));
     }
 }

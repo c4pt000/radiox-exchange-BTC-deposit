@@ -202,7 +202,7 @@ public final class TradeStatistics3 implements ProcessOncePersistableNetworkPayl
     @Getter
     private final long price;
     @Getter
-    private final long amount; // RADC amount
+    private final long amount; // BTC amount
     private final String paymentMethod;
     // As only seller is publishing it is the sellers trade date
     private final long date;

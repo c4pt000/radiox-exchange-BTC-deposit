@@ -47,7 +47,7 @@ public class TableBuilder extends AbstractTableBuilder {
                 return new AddressBalanceTableBuilder(protos).build();
             case BSQ_BALANCE_TBL:
                 return new BsqBalanceTableBuilder(protos).build();
-            case RADC_BALANCE_TBL:
+            case BTC_BALANCE_TBL:
                 return new BtcBalanceTableBuilder(protos).build();
             case CLOSED_TRADES_TBL:
                 return new ClosedTradeTableBuilder(protos).build();

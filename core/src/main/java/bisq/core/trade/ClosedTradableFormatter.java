@@ -48,7 +48,7 @@ import static bisq.core.trade.ClosedTradableUtil.*;
 import static bisq.core.trade.model.bisq_v1.Trade.DisputeState.DISPUTE_CLOSED;
 import static bisq.core.trade.model.bisq_v1.Trade.DisputeState.MEDIATION_CLOSED;
 import static bisq.core.trade.model.bisq_v1.Trade.DisputeState.REFUND_REQUEST_CLOSED;
-import static bisq.core.util.FormattingUtils.RADC_FORMATTER_KEY;
+import static bisq.core.util.FormattingUtils.BTC_FORMATTER_KEY;
 import static bisq.core.util.FormattingUtils.formatPercentagePrice;
 import static bisq.core.util.FormattingUtils.formatToPercentWithSymbol;
 import static bisq.core.util.VolumeUtil.formatVolume;
@@ -63,7 +63,7 @@ public class ClosedTradableFormatter {
     // having "generic-enough" property values to be referenced in the core layer.
     private static final String I18N_KEY_TOTAL_AMOUNT = "closedTradesSummaryWindow.totalAmount.value";
     private static final String I18N_KEY_TOTAL_TX_FEE = "closedTradesSummaryWindow.totalMinerFee.value";
-    private static final String I18N_KEY_TOTAL_TRADE_FEE_RADC = "closedTradesSummaryWindow.totalTradeFeeInBtc.value";
+    private static final String I18N_KEY_TOTAL_TRADE_FEE_BTC = "closedTradesSummaryWindow.totalTradeFeeInBtc.value";
     private static final String I18N_KEY_TOTAL_TRADE_FEE_BSQ = "closedTradesSummaryWindow.totalTradeFeeInBsq.value";
 
     private final BsqFormatter bsqFormatter;
@@ -74,7 +74,7 @@ public class ClosedTradableFormatter {
     @Inject
     public ClosedTradableFormatter(ClosedTradableManager closedTradableManager,
                                    BsqFormatter bsqFormatter,
-                                   @Named(RADC_FORMATTER_KEY) CoinFormatter btcFormatter,
+                                   @Named(BTC_FORMATTER_KEY) CoinFormatter btcFormatter,
                                    BsqWalletService bsqWalletService) {
         this.closedTradableManager = closedTradableManager;
         this.bsqFormatter = bsqFormatter;
@@ -133,7 +133,7 @@ public class ClosedTradableFormatter {
 
     public String getTotalTradeFeeInBtcAsString(Coin totalTradeAmount, Coin totalTradeFee) {
         double percentage = ((double) totalTradeFee.value) / totalTradeAmount.value;
-        return Res.get(I18N_KEY_TOTAL_TRADE_FEE_RADC,
+        return Res.get(I18N_KEY_TOTAL_TRADE_FEE_BTC,
                 btcFormatter.formatCoin(totalTradeFee, true),
                 formatToPercentWithSymbol(percentage));
     }

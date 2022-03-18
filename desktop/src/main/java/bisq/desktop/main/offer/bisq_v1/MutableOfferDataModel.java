@@ -158,7 +158,7 @@ public abstract class MutableOfferDataModel extends OfferDataModel implements Bs
                                  PriceFeedService priceFeedService,
                                  AccountAgeWitnessService accountAgeWitnessService,
                                  FeeService feeService,
-                                 @Named(FormattingUtils.RADC_FORMATTER_KEY) CoinFormatter btcFormatter,
+                                 @Named(FormattingUtils.BTC_FORMATTER_KEY) CoinFormatter btcFormatter,
                                  TradeStatisticsManager tradeStatisticsManager,
                                  Navigation navigation) {
         super(btcWalletService, offerUtil);
@@ -715,13 +715,13 @@ public abstract class MutableOfferDataModel extends OfferDataModel implements Bs
     }
 
     protected Coin getBoundedBuyerSecurityDepositAsCoin(Coin value) {
-        // We need to ensure that for small amount values we don't get a too low RADC amount. We limit it with using the
+        // We need to ensure that for small amount values we don't get a too low BTC amount. We limit it with using the
         // MinBuyerSecurityDepositAsCoin from Restrictions.
         return Coin.valueOf(Math.max(Restrictions.getMinBuyerSecurityDepositAsCoin().value, value.value));
     }
 
     private Coin getBoundedSellerSecurityDepositAsCoin(Coin value) {
-        // We need to ensure that for small amount values we don't get a too low RADC amount. We limit it with using the
+        // We need to ensure that for small amount values we don't get a too low BTC amount. We limit it with using the
         // MinSellerSecurityDepositAsCoin from Restrictions.
         return Coin.valueOf(Math.max(Restrictions.getMinSellerSecurityDepositAsCoin().value, value.value));
     }
@@ -767,8 +767,8 @@ public abstract class MutableOfferDataModel extends OfferDataModel implements Bs
     }
 
     boolean isAttemptToBuyBsq() {
-        // When you buy an asset you actually sell RADC.
-        // This is why an offer to buy BSQ is actually an offer to sell RADC for BSQ.
+        // When you buy an asset you actually sell BTC.
+        // This is why an offer to buy BSQ is actually an offer to sell BTC for BSQ.
         return !isBuyOffer() && getTradeCurrency().getCode().equals("BSQ");
     }
 

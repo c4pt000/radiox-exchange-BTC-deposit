@@ -51,12 +51,12 @@ public class InventoryMonitorMain {
     private static InventoryMonitor inventoryMonitor;
     private static boolean stopped;
 
-    // prog args for regtest: 10 1 RADC_REGTEST
+    // prog args for regtest: 10 1 BTC_REGTEST
     public static void main(String[] args) {
         // Default values
         int intervalSec = 120;
         boolean useLocalhostForP2P = false;
-        BaseCurrencyNetwork network = BaseCurrencyNetwork.RADC_MAINNET;
+        BaseCurrencyNetwork network = BaseCurrencyNetwork.BTC_MAINNET;
         int port = 80;
 
         if (args.length > 0) {

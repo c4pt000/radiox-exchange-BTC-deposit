@@ -63,7 +63,7 @@ public final class BsqEmptyWalletWindow extends Overlay<BsqEmptyWalletWindow> {
                 bsqFormatter.formatCoinWithCode(bsqWalletService.getAvailableBalance()), 10);
 
         addTopLabelTextField(gridPane, ++rowIndex, Res.get("emptyWalletWindow.bsq.btcBalance"),
-                bsqFormatter.formatRADCWithCode(bsqWalletService.getAvailableNonBsqBalance().value), 10);
+                bsqFormatter.formatBTCWithCode(bsqWalletService.getAvailableNonBsqBalance().value), 10);
 
         closeButton = new AutoTooltipButton(Res.get("shared.cancel"));
         closeButton.setOnAction(e -> {

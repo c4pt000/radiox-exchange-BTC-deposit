@@ -108,7 +108,7 @@ class BsqSwapTakeOfferViewModel extends BsqSwapOfferViewModel<BsqSwapTakeOfferDa
                               P2PService p2PService,
                               AccountAgeWitnessService accountAgeWitnessService,
                               Navigation navigation,
-                              @Named(FormattingUtils.RADC_FORMATTER_KEY) CoinFormatter btcFormatter,
+                              @Named(FormattingUtils.BTC_FORMATTER_KEY) CoinFormatter btcFormatter,
                               BsqFormatter bsqFormatter) {
         super(dataModel, btcFormatter, bsqFormatter, accountAgeWitnessService);
         this.btcValidator = btcValidator;

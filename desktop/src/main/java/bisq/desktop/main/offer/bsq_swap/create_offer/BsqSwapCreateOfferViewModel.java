@@ -118,7 +118,7 @@ class BsqSwapCreateOfferViewModel extends BsqSwapOfferViewModel<BsqSwapCreateOff
                                 BtcValidator btcValidator,
                                 BsqValidator bsqValidator,
                                 AccountAgeWitnessService accountAgeWitnessService,
-                                @Named(FormattingUtils.RADC_FORMATTER_KEY) CoinFormatter btcFormatter,
+                                @Named(FormattingUtils.BTC_FORMATTER_KEY) CoinFormatter btcFormatter,
                                 BsqFormatter bsqFormatter) {
         super(dataModel, btcFormatter, bsqFormatter, accountAgeWitnessService);
 

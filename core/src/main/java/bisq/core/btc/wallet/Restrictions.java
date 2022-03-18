@@ -49,7 +49,7 @@ public class Restrictions {
 
     public static Coin getMinTradeAmount() {
         if (MIN_TRADE_AMOUNT == null)
-            MIN_TRADE_AMOUNT = Coin.valueOf(10_000); // 0,7 USD @ 7000 USD/RADC
+            MIN_TRADE_AMOUNT = Coin.valueOf(10_000); // 0,7 USD @ 7000 USD/BTC
         return MIN_TRADE_AMOUNT;
     }
 
@@ -62,14 +62,14 @@ public class Restrictions {
     }
 
     public static double getMaxBuyerSecurityDepositAsPercent() {
-        return 0.5; // 50% of trade amount. For a 1 RADC trade it is about 3500 USD @ 7000 USD/RADC
+        return 0.5; // 50% of trade amount. For a 1 BTC trade it is about 3500 USD @ 7000 USD/BTC
     }
 
     // We use MIN_BUYER_SECURITY_DEPOSIT as well as lower bound in case of small trade amounts.
-    // So 0.0005 RADC is the min. buyer security deposit even with amount of 0.0001 RADC and 0.05% percentage value.
+    // So 0.0005 BTC is the min. buyer security deposit even with amount of 0.0001 BTC and 0.05% percentage value.
     public static Coin getMinBuyerSecurityDepositAsCoin() {
         if (MIN_BUYER_SECURITY_DEPOSIT == null)
-            MIN_BUYER_SECURITY_DEPOSIT = Coin.parseCoin("0.001"); // 0.001 RADC is 60 USD @ 60000 USD/RADC
+            MIN_BUYER_SECURITY_DEPOSIT = Coin.parseCoin("0.001"); // 0.001 BTC is 60 USD @ 60000 USD/BTC
         return MIN_BUYER_SECURITY_DEPOSIT;
     }
 
@@ -80,14 +80,14 @@ public class Restrictions {
 
     public static Coin getMinSellerSecurityDepositAsCoin() {
         if (SELLER_SECURITY_DEPOSIT == null)
-            SELLER_SECURITY_DEPOSIT = Coin.parseCoin("0.001"); // 0.001 RADC is 60 USD @ 60000 USD/RADC
+            SELLER_SECURITY_DEPOSIT = Coin.parseCoin("0.001"); // 0.001 BTC is 60 USD @ 60000 USD/BTC
         return SELLER_SECURITY_DEPOSIT;
     }
 
     // This value must be lower than MIN_BUYER_SECURITY_DEPOSIT and SELLER_SECURITY_DEPOSIT
     public static Coin getMinRefundAtMediatedDispute() {
         if (MIN_REFUND_AT_MEDIATED_DISPUTE == null)
-            MIN_REFUND_AT_MEDIATED_DISPUTE = Coin.parseCoin("0.0005"); // 0.0005 RADC is 30 USD @ 60000 USD/RADC
+            MIN_REFUND_AT_MEDIATED_DISPUTE = Coin.parseCoin("0.0005"); // 0.0005 BTC is 30 USD @ 60000 USD/BTC
         return MIN_REFUND_AT_MEDIATED_DISPUTE;
     }
 

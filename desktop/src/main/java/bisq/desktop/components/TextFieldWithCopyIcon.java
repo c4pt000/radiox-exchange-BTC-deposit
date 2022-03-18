@@ -62,7 +62,7 @@ public class TextFieldWithCopyIcon extends AnchorPane {
                 if (copyWithoutCurrencyPostFix) {
                     String[] strings = text.split(" ");
                     if (strings.length > 1)
-                        copyText = strings[0]; // exclude the RADC postfix
+                        copyText = strings[0]; // exclude the BTC postfix
                     else
                         copyText = text;
                 } else if (copyTextAfterDelimiter) {

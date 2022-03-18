@@ -25,7 +25,7 @@ enum JsonTxOutputType {
     UNDEFINED_OUTPUT("Undefined output"),
     GENESIS_OUTPUT("Genesis"),
     BSQ_OUTPUT("BSQ"),
-    RADC_OUTPUT("RADC"),
+    BTC_OUTPUT("BTC"),
     PROPOSAL_OP_RETURN_OUTPUT("Proposal opReturn"),
     COMP_REQ_OP_RETURN_OUTPUT("Compensation request opReturn"),
     REIMBURSEMENT_OP_RETURN_OUTPUT("Reimbursement request opReturn"),

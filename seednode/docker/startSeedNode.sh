@@ -21,8 +21,8 @@ fi
 if [ ! -z "$SEED_NODES" ]; then
     ARGS="$ARGS --seedNodes=$SEED_NODES"
 fi
-if [ ! -z "$RADC_NODES" ]; then
-    ARGS="$ARGS --btcNodes=$RADC_NODES"
+if [ ! -z "$BTC_NODES" ]; then
+    ARGS="$ARGS --btcNodes=$BTC_NODES"
 fi
 if [ ! -z "$USE_LOCALHOST_FOR_P2P" ]; then
     ARGS="$ARGS --useLocalhostForP2P=$USE_LOCALHOST_FOR_P2P"

@@ -59,8 +59,8 @@ public class NonBsqCoinSelector extends BisqDefaultCoinSelector {
             return false;
 
         TxOutputKey key = new TxOutputKey(parentTransaction.getTxId().toString(), output.getIndex());
-        // It might be that we received RADC in a non-BSQ tx so that will not be stored in out state and not found.
-        // So we consider any txOutput which is not in the state as RADC output.
+        // It might be that we received BTC in a non-BSQ tx so that will not be stored in out state and not found.
+        // So we consider any txOutput which is not in the state as BTC output.
         return !daoStateService.existsTxOutput(key) || daoStateService.isRejectedIssuanceOutput(key);
     }
 

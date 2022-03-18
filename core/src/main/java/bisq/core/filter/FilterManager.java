@@ -85,7 +85,7 @@ import static org.bitcoinj.core.Utils.HEX;
 public class FilterManager {
     private static final String BANNED_PRICE_RELAY_NODES = "bannedPriceRelayNodes";
     private static final String BANNED_SEED_NODES = "bannedSeedNodes";
-    private static final String BANNED_RADC_NODES = "bannedBtcNodes";
+    private static final String BANNED_BTC_NODES = "bannedBtcNodes";
 
     ///////////////////////////////////////////////////////////////////////////////////////////
     // Listener
@@ -552,7 +552,7 @@ public class FilterManager {
         // nodes at the next startup and don't update the list in the P2P network domain.
         // We persist it to the property file which is read before any other initialisation.
         saveBannedNodes(BANNED_SEED_NODES, newFilter.getSeedNodes());
-        saveBannedNodes(BANNED_RADC_NODES, newFilter.getBtcNodes());
+        saveBannedNodes(BANNED_BTC_NODES, newFilter.getBtcNodes());
 
         // Banned price relay nodes we can apply at runtime
         List<String> priceRelayNodes = newFilter.getPriceRelayNodes();
@@ -596,7 +596,7 @@ public class FilterManager {
 
     // Clears options files from banned nodes
     private void clearBannedNodes() {
-        saveBannedNodes(BANNED_RADC_NODES, null);
+        saveBannedNodes(BANNED_BTC_NODES, null);
         saveBannedNodes(BANNED_SEED_NODES, null);
         saveBannedNodes(BANNED_PRICE_RELAY_NODES, null);
 

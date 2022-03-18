@@ -74,7 +74,7 @@ public class OfferViewModelUtil {
                     .orElseGet(() -> Res.get("feeOptionWindow.btcFeeWithPercentage", feeAsBtc, percentage));
         } else {
             // For BSQ we use the fiat equivalent only. Calculating the % value would be more effort.
-            // We could calculate the RADC value if the BSQ fee and use that...
+            // We could calculate the BTC value if the BSQ fee and use that...
             return OfferViewModelUtil.getTradeFeeWithFiatEquivalent(offerUtil,
                     tradeFee,
                     false,

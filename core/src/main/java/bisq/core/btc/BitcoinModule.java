@@ -54,7 +54,7 @@ public class BitcoinModule extends AppModule {
 
     @Override
     protected void configure() {
-        // If we have selected RADC_DAO_REGTEST or RADC_DAO_TESTNET we use our master regtest node,
+        // If we have selected BTC_DAO_REGTEST or BTC_DAO_TESTNET we use our master regtest node,
         // otherwise the specified host or default (localhost)
         String regTestHost = config.bitcoinRegtestHost;
         if (regTestHost.isEmpty()) {
@@ -76,11 +76,11 @@ public class BitcoinModule extends AppModule {
 
         bind(File.class).annotatedWith(named(WALLET_DIR)).toInstance(config.walletDir);
 
-        bindConstant().annotatedWith(named(Config.RADC_NODES)).to(config.btcNodes);
+        bindConstant().annotatedWith(named(Config.BTC_NODES)).to(config.btcNodes);
         bindConstant().annotatedWith(named(Config.USER_AGENT)).to(config.userAgent);
-        bindConstant().annotatedWith(named(Config.NUM_CONNECTIONS_FOR_RADC)).to(config.numConnectionsForBtc);
+        bindConstant().annotatedWith(named(Config.NUM_CONNECTIONS_FOR_BTC)).to(config.numConnectionsForBtc);
         bindConstant().annotatedWith(named(Config.USE_ALL_PROVIDED_NODES)).to(config.useAllProvidedNodes);
-        bindConstant().annotatedWith(named(Config.IGNORE_LOCAL_RADC_NODE)).to(config.ignoreLocalBtcNode);
+        bindConstant().annotatedWith(named(Config.IGNORE_LOCAL_BTC_NODE)).to(config.ignoreLocalBtcNode);
         bindConstant().annotatedWith(named(Config.SOCKS5_DISCOVER_MODE)).to(config.socks5DiscoverMode);
         bind(new TypeLiteral<List<String>>(){}).annotatedWith(named(PROVIDERS)).toInstance(config.providers);
 

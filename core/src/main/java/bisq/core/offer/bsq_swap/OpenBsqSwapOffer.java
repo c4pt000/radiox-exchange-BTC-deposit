@@ -130,7 +130,7 @@ class OpenBsqSwapOffer {
                     this.walletBalance = newBalance;
                     evaluateFundedState();
                     applyFundingState();
-                    log.info("Updated because of RADC wallet balance change. walletBalance={}, hasMissingFunds={}",
+                    log.info("Updated because of BTC wallet balance change. walletBalance={}, hasMissingFunds={}",
                             walletBalance, hasMissingFunds);
                 }
             };

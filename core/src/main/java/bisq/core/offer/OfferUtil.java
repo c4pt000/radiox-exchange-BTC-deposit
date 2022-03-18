@@ -97,7 +97,7 @@ public class OfferUtil {
     private final TradeStatisticsManager tradeStatisticsManager;
 
     private final Predicate<String> isValidFeePaymentCurrencyCode = (c) ->
-            c.equalsIgnoreCase("BSQ") || c.equalsIgnoreCase("RADC");
+            c.equalsIgnoreCase("BSQ") || c.equalsIgnoreCase("BTC");
 
     @Inject
     public OfferUtil(AccountAgeWitnessService accountAgeWitnessService,
@@ -160,7 +160,7 @@ public class OfferUtil {
 
             if (feeCurrencyCode.equalsIgnoreCase("BSQ") && preferences.isPayFeeInBtc())
                 preferences.setPayFeeInBtc(false);
-            else if (feeCurrencyCode.equalsIgnoreCase("RADC") && !preferences.isPayFeeInBtc())
+            else if (feeCurrencyCode.equalsIgnoreCase("BTC") && !preferences.isPayFeeInBtc())
                 preferences.setPayFeeInBtc(true);
         }
     }
@@ -169,8 +169,8 @@ public class OfferUtil {
      * Given the direction, is this a BUY?
      *
      * @param direction the offer direction
-     * @return {@code true} for an offer to buy RADC from the taker, {@code false} for an
-     * offer to sell RADC to the taker
+     * @return {@code true} for an offer to buy BTC from the taker, {@code false} for an
+     * offer to sell BTC to the taker
      */
     public boolean isBuyOffer(OfferDirection direction) {
         return direction == OfferDirection.BUY;
@@ -234,9 +234,9 @@ public class OfferUtil {
     }
 
     /**
-     * Returns the makerFee as Coin, this can be priced in RADC or BSQ.
+     * Returns the makerFee as Coin, this can be priced in BTC or BSQ.
      *
-     * @param amount           the amount of RADC to trade
+     * @param amount           the amount of BTC to trade
      * @return the maker fee for the given trade amount, or {@code null} if the amount
      * is {@code null}
      */
@@ -260,11 +260,11 @@ public class OfferUtil {
     }
 
     /**
-     * Checks if the maker fee should be paid in RADC, this can be the case due to user
+     * Checks if the maker fee should be paid in BTC, this can be the case due to user
      * preference or because the user doesn't have enough BSQ.
      *
-     * @param amount           the amount of RADC to trade
-     * @return {@code true} if RADC is preferred or the trade amount is nonnull and there
+     * @param amount           the amount of BTC to trade
+     * @return {@code true} if BTC is preferred or the trade amount is nonnull and there
      * isn't enough BSQ for it.
      */
     public boolean isCurrencyForMakerFeeBtc(@Nullable Coin amount) {
@@ -276,7 +276,7 @@ public class OfferUtil {
     /**
      * Checks if the available BSQ balance is sufficient to pay for the offer's maker fee.
      *
-     * @param amount           the amount of RADC to trade
+     * @param amount           the amount of BTC to trade
      * @return {@code true} if the balance is sufficient, {@code false} otherwise
      */
     public boolean isBsqForMakerFeeAvailable(@Nullable Coin amount) {
@@ -489,11 +489,11 @@ public class OfferUtil {
     }
 
     public static boolean isFiatOffer(Offer offer) {
-        return offer.getBaseCurrencyCode().equals("RADC") && !offer.isBsqSwapOffer();
+        return offer.getBaseCurrencyCode().equals("BTC") && !offer.isBsqSwapOffer();
     }
 
     public static boolean isAltcoinOffer(Offer offer) {
-        return offer.getCounterCurrencyCode().equals("RADC") && !offer.isBsqSwapOffer();
+        return offer.getCounterCurrencyCode().equals("BTC") && !offer.isBsqSwapOffer();
     }
 
     public static Optional<String> getInvalidMakerFeeTxErrorMessage(Offer offer, BtcWalletService btcWalletService) {

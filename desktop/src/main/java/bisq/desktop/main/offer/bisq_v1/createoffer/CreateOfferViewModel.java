@@ -53,7 +53,7 @@ class CreateOfferViewModel extends MutableOfferViewModel<CreateOfferDataModel> i
                                 AccountAgeWitnessService accountAgeWitnessService,
                                 Navigation navigation,
                                 Preferences preferences,
-                                @Named(FormattingUtils.RADC_FORMATTER_KEY) CoinFormatter btcFormatter,
+                                @Named(FormattingUtils.BTC_FORMATTER_KEY) CoinFormatter btcFormatter,
                                 BsqFormatter bsqFormatter,
                                 OfferUtil offerUtil) {
         super(dataModel,

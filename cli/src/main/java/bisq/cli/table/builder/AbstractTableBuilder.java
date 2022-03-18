@@ -31,7 +31,7 @@ import bisq.cli.table.Table;
  */
 abstract class AbstractTableBuilder {
 
-    protected final Predicate<OfferInfo> isFiatOffer = (o) -> o.getBaseCurrencyCode().equals("RADC");
+    protected final Predicate<OfferInfo> isFiatOffer = (o) -> o.getBaseCurrencyCode().equals("BTC");
 
     protected final TableType tableType;
     protected final List<?> protos;

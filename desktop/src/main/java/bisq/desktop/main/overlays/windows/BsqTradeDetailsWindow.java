@@ -64,7 +64,7 @@ public class BsqTradeDetailsWindow extends Overlay<BsqTradeDetailsWindow> {
     ///////////////////////////////////////////////////////////////////////////////////////////
 
     @Inject
-    public BsqTradeDetailsWindow(@Named(FormattingUtils.RADC_FORMATTER_KEY) CoinFormatter formatter,
+    public BsqTradeDetailsWindow(@Named(FormattingUtils.BTC_FORMATTER_KEY) CoinFormatter formatter,
                                  BsqFormatter bsqFormatter,
                                  TradeManager tradeManager,
                                  BsqWalletService bsqWalletService) {

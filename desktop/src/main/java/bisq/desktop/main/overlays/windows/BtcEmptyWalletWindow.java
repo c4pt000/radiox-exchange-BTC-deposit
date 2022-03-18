@@ -67,8 +67,8 @@ public final class BtcEmptyWalletWindow extends Overlay<BtcEmptyWalletWindow> {
                                 P2PService p2PService,
                                 WalletsSetup walletsSetup,
                                 BtcWalletService btcWalletService,
-                                @Named(FormattingUtils.RADC_FORMATTER_KEY) CoinFormatter btcFormatter) {
-        headLine(Res.get("emptyWalletWindow.headline", "RADC"));
+                                @Named(FormattingUtils.BTC_FORMATTER_KEY) CoinFormatter btcFormatter) {
+        headLine(Res.get("emptyWalletWindow.headline", "BTC"));
         width = 768;
         type = Type.Instruction;
 

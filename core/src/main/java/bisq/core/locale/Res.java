@@ -115,9 +115,9 @@ public class Res {
     public static String get(String key) {
         try {
             return resourceBundle.getString(key)
-                    .replace("RADC", baseCurrencyCode)
-                    .replace("Radiocoin", baseCurrencyName)
-                    .replace("radiocoin", baseCurrencyNameLowerCase);
+                    .replace("BTC", baseCurrencyCode)
+                    .replace("Bitcoin", baseCurrencyName)
+                    .replace("bitcoin", baseCurrencyNameLowerCase);
         } catch (MissingResourceException e) {
             log.warn("Missing resource for key: {}", key);
             if (DevEnv.isDevMode()) {

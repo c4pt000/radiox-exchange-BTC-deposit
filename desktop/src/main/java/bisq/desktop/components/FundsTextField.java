@@ -61,7 +61,7 @@ public class FundsTextField extends InfoTextField {
                 String copyText;
                 String[] strings = text.split(" ");
                 if (strings.length > 1)
-                    copyText = strings[0]; // exclude the RADC postfix
+                    copyText = strings[0]; // exclude the BTC postfix
                 else
                     copyText = text;
 

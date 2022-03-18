@@ -2,7 +2,7 @@ takeoffer
 
 NAME
 ----
-takeoffer - take an offer to buy or sell RADC
+takeoffer - take an offer to buy or sell BTC
 
 SYNOPSIS
 --------
@@ -17,7 +17,7 @@ Take an existing offer. There are currently two types offers and trade protocols
 
     BSQ swap offers
 
-        The takeoffer command only requires an offer-id parameter, and sufficient BSQ and RADC
+        The takeoffer command only requires an offer-id parameter, and sufficient BSQ and BTC
         to cover the trade amount and the taker fee.  The trade (swap) will be executed immediately
         after being successfully taken.
 
@@ -36,7 +36,7 @@ OPTIONS
 		The payment account's payment method must match that of the offer.
 
 --fee-currency
-		The wallet currency used to pay the Bisq trade taker fee (BSQ|RADC).  Default is RADC
+		The wallet currency used to pay the Bisq trade taker fee (BSQ|BTC).  Default is BTC
 
 EXAMPLES
 --------

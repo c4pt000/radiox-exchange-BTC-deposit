@@ -143,7 +143,7 @@ public class OfferBookChartView extends ActivatableViewAndModel<VBox, OfferBookC
     @Inject
     public OfferBookChartView(OfferBookChartViewModel model,
                               Navigation navigation,
-                              @Named(FormattingUtils.RADC_FORMATTER_KEY) CoinFormatter formatter,
+                              @Named(FormattingUtils.BTC_FORMATTER_KEY) CoinFormatter formatter,
                               @Named(Config.USE_DEV_PRIVILEGE_KEYS) boolean useDevPrivilegeKeys) {
         super(model);
         this.navigation = navigation;
@@ -581,7 +581,7 @@ public class OfferBookChartView extends ActivatableViewAndModel<VBox, OfferBookC
                 });
 
         // amount
-        TableColumn<OfferListItem, OfferListItem> amountColumn = new AutoTooltipTableColumn<>(Res.get("shared.RADCMinMax"));
+        TableColumn<OfferListItem, OfferListItem> amountColumn = new AutoTooltipTableColumn<>(Res.get("shared.BTCMinMax"));
         amountColumn.setMinWidth(115);
         amountColumn.setSortable(false);
         amountColumn.getStyleClass().add("number-column");

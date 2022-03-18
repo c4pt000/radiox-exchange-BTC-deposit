@@ -81,7 +81,7 @@ public class TxInputParser {
                             case UNDEFINED_OUTPUT:
                             case GENESIS_OUTPUT:
                             case BSQ_OUTPUT:
-                            case RADC_OUTPUT:
+                            case BTC_OUTPUT:
                             case PROPOSAL_OP_RETURN_OUTPUT:
                             case COMP_REQ_OP_RETURN_OUTPUT:
                             case REIMBURSEMENT_OP_RETURN_OUTPUT:

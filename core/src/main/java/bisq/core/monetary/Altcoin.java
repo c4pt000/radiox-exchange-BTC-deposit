@@ -180,8 +180,8 @@ public final class Altcoin implements Monetary, Comparable<Altcoin> {
 
     /**
      * <p>
-     * Returns the value as a plain string denominated in RADC. The result is unformatted with no trailing zeroes. For
-     * instance, a value of 150000 satoshis gives an output string of "0.0015" RADC
+     * Returns the value as a plain string denominated in BTC. The result is unformatted with no trailing zeroes. For
+     * instance, a value of 150000 satoshis gives an output string of "0.0015" BTC
      * </p>
      */
     public String toPlainString() {

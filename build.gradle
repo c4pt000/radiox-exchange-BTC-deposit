@@ -32,7 +32,8 @@ configure(subprojects) {
 
     ext { // in alphabetical order
         bcVersion = '1.63'
-        bitcoinjVersion = '42bbae9'
+        //bitcoinjVersion = '42bbae9'
+        bitcoinjVersion = '65db2cd'
         codecVersion = '1.13'
         cowwocVersion = '1.2'
         easybindVersion = '1.0.3'
@@ -218,9 +219,9 @@ configure(project(':proto')) {
 
 configure(project(':assets')) {
     dependencies {
-        implementation 'com.github.c4pt000:libdohj:6c72cbe'
+        implementation 'com.github.c4pt000:libdohj:c0f2801'
 
-        implementation("com.github.bisq-network:bitcoinj:$bitcoinjVersion") {
+        implementation("com.github.c4pt000:bitcoinj:$bitcoinjVersion") {
             exclude(module: 'bcprov-jdk15on')
             exclude(module: 'guava')
             exclude(module: 'jsr305')
@@ -252,9 +253,9 @@ configure(project(':common')) {
         implementation "ch.qos.logback:logback-classic:$logbackVersion"
         implementation "ch.qos.logback:logback-core:$logbackVersion"
 
-        implementation 'com.github.c4pt000:libdohj:6c72cbe'
+        implementation 'com.github.c4pt000:libdohj:c0f2801'
 
-        implementation("com.github.bisq-network:bitcoinj:$bitcoinjVersion") {
+        implementation("com.github.c4pt000:bitcoinj:$bitcoinjVersion") {
             exclude(module: 'bcprov-jdk15on')
             exclude(module: 'guava')
             exclude(module: 'jsr305')
@@ -310,9 +311,9 @@ configure(project(':p2p')) {
             exclude(module: 'slf4j-api')
         }
 
-        implementation 'com.github.c4pt000:libdohj:6c72cbe'
+        implementation 'com.github.c4pt000:libdohj:c0f2801'
 
-        implementation("com.github.bisq-network:bitcoinj:$bitcoinjVersion") {
+        implementation("com.github.c4pt000:bitcoinj:$bitcoinjVersion") {
             exclude(module: 'bcprov-jdk15on')
             exclude(module: 'guava')
             exclude(module: 'jsr305')
@@ -390,9 +391,9 @@ configure(project(':core')) {
             exclude(module: 'slf4j-api')
         }
 
-        implementation 'com.github.c4pt000:libdohj:6c72cbe'
+        implementation 'com.github.c4pt000:libdohj:c0f2801'
 
-        implementation("com.github.bisq-network:bitcoinj:$bitcoinjVersion") {
+        implementation("com.github.c4pt000:bitcoinj:$bitcoinjVersion") {
             exclude(module: 'bcprov-jdk15on')
             exclude(module: 'guava')
             exclude(module: 'jsr305')
@@ -515,9 +516,9 @@ configure(project(':desktop')) {
 
 
 
-        implementation 'com.github.c4pt000:libdohj:6c72cbe'
+        implementation 'com.github.c4pt000:libdohj:c0f2801'
 
-        implementation("com.github.bisq-network:bitcoinj:$bitcoinjVersion") {
+        implementation("com.github.c4pt000:bitcoinj:$bitcoinjVersion") {
             exclude(module: 'bcprov-jdk15on')
             exclude(module: 'guava')
             exclude(module: 'jsr305')
@@ -739,9 +740,9 @@ configure(project(':daemon')) {
         implementation "org.jetbrains:annotations:$jetbrainsAnnotationsVersion"
         implementation "org.slf4j:slf4j-api:$slf4jVersion"
 
-        implementation 'com.github.c4pt000:libdohj:6c72cbe'
+        implementation 'com.github.c4pt000:libdohj:c0f2801'
 
-        implementation("com.github.bisq-network:bitcoinj:$bitcoinjVersion") {
+        implementation("com.github.c4pt000:bitcoinj:$bitcoinjVersion") {
             exclude(module: 'bcprov-jdk15on')
             exclude(module: 'guava')
             exclude(module: 'jsr305')
@@ -877,9 +878,9 @@ configure(project(':apitest')) {
         implementation "org.slf4j:slf4j-api:$slf4jVersion"
 
 
-        implementation 'com.github.c4pt000:libdohj:6c72cbe'
+        implementation 'com.github.c4pt000:libdohj:c0f2801'
 
-        implementation("com.github.bisq-network:bitcoinj:$bitcoinjVersion") {
+        implementation("com.github.c4pt000:bitcoinj:$bitcoinjVersion") {
             exclude(module: 'bcprov-jdk15on')
             exclude(module: 'guava')
             exclude(module: 'jsr305')

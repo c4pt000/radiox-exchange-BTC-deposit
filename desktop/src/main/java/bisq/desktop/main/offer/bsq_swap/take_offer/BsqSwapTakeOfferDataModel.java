@@ -56,7 +56,7 @@ class BsqSwapTakeOfferDataModel extends BsqSwapOfferDataModel {
     BsqSwapTakeOfferDataModel(BsqSwapTakeOfferModel bsqSwapTakeOfferModel,
                               OfferBook offerBook,
                               User user,
-                              @Named(FormattingUtils.RADC_FORMATTER_KEY) CoinFormatter btcFormatter,
+                              @Named(FormattingUtils.BTC_FORMATTER_KEY) CoinFormatter btcFormatter,
                               P2PService p2PService) {
         super(bsqSwapTakeOfferModel,
                 user,

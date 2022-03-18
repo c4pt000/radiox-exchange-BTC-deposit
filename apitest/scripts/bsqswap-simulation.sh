@@ -49,7 +49,7 @@ printbsqswapscriptparams
 printbreak
 
 # Alice creates a bsq swap offer.
-printdate "Alice creating BSQ swap offer: $DIRECTION $AMOUNT RADC for BSQ at fixed price of $FIXED_PRICE RADC per 1 BSQ."
+printdate "Alice creating BSQ swap offer: $DIRECTION $AMOUNT BTC for BSQ at fixed price of $FIXED_PRICE BTC per 1 BSQ."
 CMD=$(gencreatebsqswapoffercommand "$ALICE_PORT" "$ALICE_ACCT_ID")
 printdate "ALICE CLI: $CMD"
 OFFER_ID=$(createbsqswapoffer "$CMD")

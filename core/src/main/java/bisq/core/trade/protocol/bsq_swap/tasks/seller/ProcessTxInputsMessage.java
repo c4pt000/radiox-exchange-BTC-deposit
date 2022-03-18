@@ -47,7 +47,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * The change cannot be verified exactly as there are some scenarios with dust spent to miners which are not reflected
  * by the calculations.
  *
- * The sellersBsqPayoutAmount is calculated here independent of the peers data. The RADC change output will be calculated
+ * The sellersBsqPayoutAmount is calculated here independent of the peers data. The BTC change output will be calculated
  * in SellerCreatesAndSignsTx.
  */
 @Slf4j
@@ -117,12 +117,12 @@ public abstract class ProcessTxInputsMessage extends BsqSwapTask {
             String buyersBtcPayoutAddress = message.getBuyersBtcPayoutAddress();
             checkNotNull(buyersBtcPayoutAddress, "buyersBtcPayoutAddress must not be null");
             checkArgument(!buyersBtcPayoutAddress.isEmpty(), "buyersBtcPayoutAddress must not be empty");
-            Address.fromString(params, buyersBtcPayoutAddress); // If address is not a RADC address it throws an exception
+            Address.fromString(params, buyersBtcPayoutAddress); // If address is not a BTC address it throws an exception
 
             String buyersBsqChangeAddress = message.getBuyersBsqChangeAddress();
             checkNotNull(buyersBsqChangeAddress, "buyersBsqChangeAddress must not be null");
             checkArgument(!buyersBsqChangeAddress.isEmpty(), "buyersBsqChangeAddress must not be empty");
-            Address.fromString(params, buyersBsqChangeAddress); // If address is not a RADC address it throws an exception
+            Address.fromString(params, buyersBsqChangeAddress); // If address is not a BTC address it throws an exception
 
             // Apply data
             BsqSwapTradePeer tradePeer = protocolModel.getTradePeer();

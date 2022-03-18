@@ -109,7 +109,7 @@ public class Version {
         return p2pMessageVersion;
     }
 
-    // The version for the crypto network (RADC_Mainnet = 0, RADC_TestNet = 1, RADC_Regtest = 2, ...)
+    // The version for the crypto network (BTC_Mainnet = 0, BTC_TestNet = 1, BTC_Regtest = 2, ...)
     private static int BASE_CURRENCY_NETWORK;
 
     public static void setBaseCryptoNetworkId(int baseCryptoNetworkId) {

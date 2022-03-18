@@ -194,7 +194,7 @@ public class TradesChartsView extends ActivatableViewAndModel<VBox, TradesCharts
     @Inject
     public TradesChartsView(TradesChartsViewModel model,
                             User user,
-                            @Named(FormattingUtils.RADC_FORMATTER_KEY) CoinFormatter coinFormatter) {
+                            @Named(FormattingUtils.BTC_FORMATTER_KEY) CoinFormatter coinFormatter) {
         super(model);
         this.user = user;
         this.coinFormatter = coinFormatter;
@@ -536,7 +536,7 @@ public class TradesChartsView extends ActivatableViewAndModel<VBox, TradesCharts
 
         volumeAxisX = new NumberAxis(0, MAX_TICKS + 1, 1);
         volumeAxisY = new NumberAxis();
-        volumeChart = getVolumeChart(volumeAxisX, volumeAxisY, volumeSeries, "RADC");
+        volumeChart = getVolumeChart(volumeAxisX, volumeAxisY, volumeSeries, "BTC");
 
         volumeInUsdAxisX = new NumberAxis(0, MAX_TICKS + 1, 1);
         NumberAxis volumeInUsdAxisY = new NumberAxis();
@@ -577,7 +577,7 @@ public class TradesChartsView extends ActivatableViewAndModel<VBox, TradesCharts
         axisY.setTickLabelFormatter(new StringConverter<>() {
             @Override
             public String toString(Number volume) {
-                return currency.equals("RADC") ?
+                return currency.equals("BTC") ?
                         coinFormatter.formatCoin(Coin.valueOf(MathUtils.doubleToLong((double) volume))) :
                         VolumeUtil.formatLargeFiatWithUnitPostFix((double) volume, "USD");
             }

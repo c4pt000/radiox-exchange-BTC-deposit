@@ -107,7 +107,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
 /**
- * Abstract base class for RADC and BSQ wallet. Provides all non-trade specific functionality.
+ * Abstract base class for BTC and BSQ wallet. Provides all non-trade specific functionality.
  */
 @Slf4j
 public abstract class WalletService {

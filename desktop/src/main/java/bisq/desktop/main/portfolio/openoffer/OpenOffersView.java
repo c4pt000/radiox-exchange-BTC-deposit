@@ -95,7 +95,7 @@ public class OpenOffersView extends ActivatableViewAndModel<VBox, OpenOffersView
         PRICE(Res.get("shared.price")),
         DEVIATION(Res.get("shared.deviation")),
         TRIGGER_PRICE(Res.get("openOffer.header.triggerPrice")),
-        AMOUNT(Res.get("shared.RADCMinMax")),
+        AMOUNT(Res.get("shared.BTCMinMax")),
         VOLUME(Res.get("shared.amountMinMax")),
         PAYMENT_METHOD(Res.get("shared.paymentMethod")),
         DIRECTION(Res.get("shared.offerType")),

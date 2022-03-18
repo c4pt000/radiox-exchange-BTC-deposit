@@ -125,7 +125,7 @@ class CoreWalletsService {
                               BsqTransferService bsqTransferService,
                               BsqFormatter bsqFormatter,
                               BtcWalletService btcWalletService,
-                              @Named(FormattingUtils.RADC_FORMATTER_KEY) CoinFormatter btcFormatter,
+                              @Named(FormattingUtils.BTC_FORMATTER_KEY) CoinFormatter btcFormatter,
                               FeeService feeService,
                               Preferences preferences) {
         this.appStartupState = appStartupState;
@@ -161,7 +161,7 @@ class CoreWalletsService {
         switch (currencyCode.trim().toUpperCase()) {
             case "BSQ":
                 return new BalancesInfo(getBsqBalances(), BtcBalanceInfo.EMPTY);
-            case "RADC":
+            case "BTC":
                 return new BalancesInfo(BsqBalanceInfo.EMPTY, getBtcBalances());
             default:
                 return new BalancesInfo(getBsqBalances(), getBtcBalances());
@@ -289,7 +289,7 @@ class CoreWalletsService {
                         feeEstimationTransaction.getFee(),
                         fee.value);
             }
-            log.info("Sending {} RADC to {} with tx fee of {} sats (fee rate {} sats/byte).",
+            log.info("Sending {} BTC to {} with tx fee of {} sats (fee rate {} sats/byte).",
                     amount,
                     address,
                     fee.value,
@@ -549,13 +549,13 @@ class CoreWalletsService {
         }
     }
 
-    // Throws a RuntimeException if wallet currency code is not BSQ or RADC.
+    // Throws a RuntimeException if wallet currency code is not BSQ or BTC.
     private void verifyWalletCurrencyCodeIsValid(String currencyCode) {
         if (currencyCode == null || currencyCode.isEmpty())
             return;
 
         if (!currencyCode.equalsIgnoreCase("BSQ")
-                && !currencyCode.equalsIgnoreCase("RADC"))
+                && !currencyCode.equalsIgnoreCase("BTC"))
             throw new UnsupportedOperationException(format("wallet does not support %s", currencyCode));
     }
 

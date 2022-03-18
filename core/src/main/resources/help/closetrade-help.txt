@@ -15,8 +15,8 @@ This final step in the trade protocol moves a completed trade from the open trad
 to the closed trade list, where it becomes part of the user's trade history.
 The step is necessary for correct transition of a trade's state to CLOSED.
 
-The alternative way to close a trade is to send the received RADC to an external
-RADC wallet, using the withdrawfunds command.
+The alternative way to close a trade is to send the received BTC to an external
+BTC wallet, using the withdrawfunds command.
 
 OPTIONS
 -------
@@ -25,5 +25,5 @@ OPTIONS
 
 EXAMPLES
 --------
-The RADC buyer or seller closes out trade 83e8b2e2-51b6-4f39-a748-3ebd29c22aea:
+The BTC buyer or seller closes out trade 83e8b2e2-51b6-4f39-a748-3ebd29c22aea:
 $ ./bisq-cli --password=xyz --port=9998 closetrade --trade-id=83e8b2e2-51b6-4f39-a748-3ebd29c22aea

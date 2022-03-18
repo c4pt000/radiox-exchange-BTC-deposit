@@ -8,7 +8,7 @@
 #    see https://github.com/bats-core/bats-core
 #
 #  - Run `./bisq-daemon --apiPassword=xyz --appDataDir=$TESTDIR` where $TESTDIR
-#    is empty or otherwise contains an unencrypted wallet with a 0 RADC balance
+#    is empty or otherwise contains an unencrypted wallet with a 0 BTC balance
 #
 # Usage:
 #

@@ -244,7 +244,7 @@ class OfferTableBuilder extends AbstractTableBuilder {
         if (isFiatOffer.test(o)) {
             return o.getBaseCurrencyCode();
         } else {
-            // Return "Sell BSQ (Buy RADC)", or "Buy BSQ (Sell RADC)".
+            // Return "Sell BSQ (Buy BTC)", or "Buy BSQ (Sell BTC)".
             String direction = o.getDirection();
             String mirroredDirection = toMirroredDirection.apply(direction);
             Function<String, String> mixedCase = (word) -> word.charAt(0) + word.substring(1).toLowerCase();

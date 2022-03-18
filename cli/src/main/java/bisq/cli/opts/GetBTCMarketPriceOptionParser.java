@@ -22,16 +22,16 @@ import joptsimple.OptionSpec;
 
 import static bisq.cli.opts.OptLabel.OPT_CURRENCY_CODE;
 
-public class GetRADCMarketPriceOptionParser extends AbstractMethodOptionParser implements MethodOpts {
+public class GetBTCMarketPriceOptionParser extends AbstractMethodOptionParser implements MethodOpts {
 
     final OptionSpec<String> currencyCodeOpt = parser.accepts(OPT_CURRENCY_CODE, "currency-code")
             .withRequiredArg();
 
-    public GetRADCMarketPriceOptionParser(String[] args) {
+    public GetBTCMarketPriceOptionParser(String[] args) {
         super(args);
     }
 
-    public GetRADCMarketPriceOptionParser parse() {
+    public GetBTCMarketPriceOptionParser parse() {
         super.parse();
 
         // Short circuit opt validation if user just wants help.

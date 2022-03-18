@@ -31,7 +31,7 @@ public class DelayedPayoutAddressProvider {
     public static final String BM3_ADDRESS = "34VLFgtFKAtwTdZ5rengTT2g2zC99sWQLC";
 
     public static String getDelayedPayoutAddress(DaoFacade daoFacade) {
-        String address = daoFacade.getParamValue(Param.RECIPIENT_RADC_ADDRESS);
+        String address = daoFacade.getParamValue(Param.RECIPIENT_BTC_ADDRESS);
         if (isOutdatedAddress(address)) {
             log.warn("Outdated delayed payout address. " +
                     "This can be the case if the DAO is deactivated or if the user has an invalid DAO state." +

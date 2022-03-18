@@ -71,7 +71,7 @@ public class IssuanceService {
                     // We don't check atm if the output is unspent. We cannot use the bsqWallet as that would not
                     // reflect our current block state (could have been spent at later block which is valid and
                     // bsqWallet would show that spent state). We would need to support a spent status for the outputs
-                    // which are interpreted as RADC (as a not yet accepted comp. request).
+                    // which are interpreted as BTC (as a not yet accepted comp. request).
                     Optional<Tx> optionalTx = daoStateService.getTx(issuanceProposal.getTxId());
                     checkArgument(optionalTx.isPresent(), "optionalTx must be present");
                     long amount = issuanceProposal.getRequestedBsq().value;

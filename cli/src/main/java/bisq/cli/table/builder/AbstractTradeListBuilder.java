@@ -219,7 +219,7 @@ abstract class AbstractTradeListBuilder extends AbstractTableBuilder {
 
     protected final Function<TradeInfo, Long> toMyMinerTxFee = (t) -> {
         if (isBsqSwapTrade.test(t)) {
-            // The RADC seller pays the miner fee for both sides.
+            // The BTC seller pays the miner fee for both sides.
             return isBtcSeller.test(t) ? t.getTxFeeAsLong() : 0L;
         } else {
             return isTaker.test(t)
@@ -232,11 +232,11 @@ abstract class AbstractTradeListBuilder extends AbstractTableBuilder {
         var isMyOffer = t.getOffer().getIsMyOffer();
         if (isMyOffer) {
             return t.getOffer().getIsCurrencyForMakerFeeBtc()
-                    ? 0L // Maker paid RADC fee, return 0.
+                    ? 0L // Maker paid BTC fee, return 0.
                     : t.getOffer().getMakerFee();
         } else {
             return t.getIsCurrencyForTakerFeeBtc()
-                    ? 0L // Taker paid RADC fee, return 0.
+                    ? 0L // Taker paid BTC fee, return 0.
                     : t.getTakerFeeAsLong();
         }
     };
@@ -296,7 +296,7 @@ abstract class AbstractTradeListBuilder extends AbstractTableBuilder {
         if (showAltCoinBuyerAddress.test(t)) {
             ContractInfo contract = t.getContract();
             boolean isBuyerMakerAndSellerTaker = contract.getIsBuyerMakerAndSellerTaker();
-            return isBuyerMakerAndSellerTaker  // (is RADC buyer / maker)
+            return isBuyerMakerAndSellerTaker  // (is BTC buyer / maker)
                     ? contract.getTakerPaymentAccountPayload().getAddress()
                     : contract.getMakerPaymentAccountPayload().getAddress();
         } else {

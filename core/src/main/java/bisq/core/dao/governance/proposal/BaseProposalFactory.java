@@ -95,7 +95,7 @@ public abstract class BaseProposalFactory<R extends Proposal> {
             byte[] hashOfPayload = ProposalConsensus.getHashOfPayload(proposal);
             byte[] opReturnData = getOpReturnData(hashOfPayload);
 
-            // We add the RADC inputs for the miner fee.
+            // We add the BTC inputs for the miner fee.
             Transaction txWithBtcFee = completeTx(preparedBurnFeeTx, opReturnData, proposal);
 
             // We sign the BSQ inputs of the final tx.

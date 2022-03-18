@@ -169,7 +169,7 @@ public class WithdrawalView extends ActivatableView<VBox, Void> {
                            TradeManager tradeManager,
                            P2PService p2PService,
                            WalletsSetup walletsSetup,
-                           @Named(FormattingUtils.RADC_FORMATTER_KEY) CoinFormatter formatter,
+                           @Named(FormattingUtils.BTC_FORMATTER_KEY) CoinFormatter formatter,
                            Preferences preferences,
                            BtcAddressValidator btcAddressValidator,
                            WalletPasswordWindow walletPasswordWindow,
@@ -256,7 +256,7 @@ public class WithdrawalView extends ActivatableView<VBox, Void> {
                     if (withdrawalTxFeePerVbyte < minFeePerVbyte) {
                         new Popup().warning(Res.get("funds.withdrawal.txFeeMin", minFeePerVbyte)).show();
                         transactionFeeInputTextField.setText(estimatedFee);
-                    } else if (withdrawalTxFeePerVbyte > 5000) {
+                    } else if (withdrawalTxFeePerVbyte > 550001) {
                         new Popup().warning(Res.get("funds.withdrawal.txFeeTooLarge")).show();
                         transactionFeeInputTextField.setText(estimatedFee);
                     } else {

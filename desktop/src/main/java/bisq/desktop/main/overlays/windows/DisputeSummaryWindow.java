@@ -138,7 +138,7 @@ public class DisputeSummaryWindow extends Overlay<DisputeSummaryWindow> {
     ///////////////////////////////////////////////////////////////////////////////////////////
 
     @Inject
-    public DisputeSummaryWindow(@Named(FormattingUtils.RADC_FORMATTER_KEY) CoinFormatter formatter,
+    public DisputeSummaryWindow(@Named(FormattingUtils.BTC_FORMATTER_KEY) CoinFormatter formatter,
                                 MediationManager mediationManager,
                                 RefundManager refundManager,
                                 TradeWalletService tradeWalletService,

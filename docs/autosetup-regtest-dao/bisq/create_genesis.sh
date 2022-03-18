@@ -13,12 +13,12 @@ echo -en "bitcoind is running, all is ok!\n"
 
 echo "Please provide Alice's BSQ Address"
 read address_alice
-echo "How much RADC to turn to BSQ for Alice? (sum must be 2.5RADC)"
+echo "How much BTC to turn to BSQ for Alice? (sum must be 2.5BTC)"
 read value_alice
 echo "Alice will receive $(echo "scale=2; $value_alice * 1000000.00"|bc -l) BSQ to $address_alice"
 echo "Please provide Bob's BSQ Address"
 read address_bob
-echo "How much RADC to turn to BSQ for Bob? (sum must be 2.5RADC)"
+echo "How much BTC to turn to BSQ for Bob? (sum must be 2.5BTC)"
 read value_bob
 echo "Bob will receive $(echo "scale=2; $value_bob * 1000000.00"|bc) BSQ to $address_bob"
 
@@ -59,7 +59,7 @@ function edit_conf_file() {
 genesis_input_address=$($bitcoin_cli getnewaddress "genesis tx")
 echo "got address $genesis_input_address"
 
-echo "sending 2.5001 RADC to $genesis_input_address"
+echo "sending 2.5001 BTC to $genesis_input_address"
 genesis_input_txid=$($bitcoin_cli sendtoaddress $genesis_input_address 2.5001)
 echo "txid is: $genesis_input_txid"
 

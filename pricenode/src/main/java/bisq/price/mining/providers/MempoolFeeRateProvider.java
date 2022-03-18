@@ -85,7 +85,7 @@ abstract class MempoolFeeRateProvider extends FeeRateProvider {
             log.error("Error retrieving bitcoin mining fee estimation: " + e.getMessage());
         }
 
-        return new FeeRate("RADC", MIN_FEE_RATE_FOR_TRADING, MIN_FEE_RATE_FOR_WITHDRAWAL, Instant.now().getEpochSecond());
+        return new FeeRate("BTC", MIN_FEE_RATE_FOR_TRADING, MIN_FEE_RATE_FOR_WITHDRAWAL, Instant.now().getEpochSecond());
     }
 
     private FeeRate getEstimatedFeeRate() {
@@ -104,7 +104,7 @@ abstract class MempoolFeeRateProvider extends FeeRateProvider {
                 .map(r -> Math.multiplyExact(r, 2)) // multiply the minimumFee by 2 (per wiz)
                 .orElse(MIN_FEE_RATE_FOR_WITHDRAWAL);
         log.info("Retrieved estimated mining fee of {} sat/vB and minimumFee of {} sat/vB from {}", estimatedFeeRate, minimumFee, getMempoolApiHostname());
-        return new FeeRate("RADC", estimatedFeeRate, minimumFee, Instant.now().getEpochSecond());
+        return new FeeRate("BTC", estimatedFeeRate, minimumFee, Instant.now().getEpochSecond());
     }
 
     private Set<Map.Entry<String, Long>> getFeeRatePredictions() {

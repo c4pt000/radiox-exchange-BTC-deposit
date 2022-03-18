@@ -284,13 +284,13 @@ public class CreateOfferService {
     }
 
     private Coin getBoundedBuyerSecurityDeposit(Coin value) {
-        // We need to ensure that for small amount values we don't get a too low RADC amount. We limit it with using the
+        // We need to ensure that for small amount values we don't get a too low BTC amount. We limit it with using the
         // MinBuyerSecurityDepositAsCoin from Restrictions.
         return Coin.valueOf(Math.max(Restrictions.getMinBuyerSecurityDepositAsCoin().value, value.value));
     }
 
     private Coin getBoundedSellerSecurityDeposit(Coin value) {
-        // We need to ensure that for small amount values we don't get a too low RADC amount. We limit it with using the
+        // We need to ensure that for small amount values we don't get a too low BTC amount. We limit it with using the
         // MinSellerSecurityDepositAsCoin from Restrictions.
         return Coin.valueOf(Math.max(Restrictions.getMinSellerSecurityDepositAsCoin().value, value.value));
     }

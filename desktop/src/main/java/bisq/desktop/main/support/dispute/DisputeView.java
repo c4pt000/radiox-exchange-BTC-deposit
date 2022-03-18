@@ -794,17 +794,17 @@ public abstract class DisputeView extends ActivatableView<VBox, Void> implements
                 String buyerNodeAddress = contract.getBuyerNodeAddress().getFullAddress();
                 String sellerNodeAddress = contract.getSellerNodeAddress().getFullAddress();
                 csvStringBuilder.append(currency).append(";")
-                        .append(tradeAmount.replace(" RADC", "")).append(";")
+                        .append(tradeAmount.replace(" BTC", "")).append(";")
                         .append(paymentMethod).append(";")
                         .append(buyerPaymentAccountPayload).append(";")
                         .append(sellerPaymentAccountPayload).append(";")
                         .append(buyerNodeAddress.replace(".onion:9999", "")).append(";")
                         .append(sellerNodeAddress.replace(".onion:9999", "")).append(";")
-                        .append(buyerDeposit.replace(" RADC", "")).append(";")
-                        .append(sellerDeposit.replace(" RADC", "")).append(";")
+                        .append(buyerDeposit.replace(" BTC", "")).append(";")
+                        .append(sellerDeposit.replace(" BTC", "")).append(";")
                         .append(opener).append(";")
-                        .append(buyerPayoutAmount.replace(" RADC", "")).append(";")
-                        .append(sellerPayoutAmount.replace(" RADC", "")).append(";")
+                        .append(buyerPayoutAmount.replace(" BTC", "")).append(";")
+                        .append(sellerPayoutAmount.replace(" BTC", "")).append(";")
                         .append(winner).append(";");
 
                 if (disputeResult != null) {

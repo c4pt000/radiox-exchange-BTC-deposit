@@ -93,7 +93,7 @@ public class OfferDetailsWindow extends Overlay<OfferDetailsWindow> {
     ///////////////////////////////////////////////////////////////////////////////////////////
 
     @Inject
-    public OfferDetailsWindow(@Named(FormattingUtils.RADC_FORMATTER_KEY) CoinFormatter formatter,
+    public OfferDetailsWindow(@Named(FormattingUtils.BTC_FORMATTER_KEY) CoinFormatter formatter,
                               User user,
                               KeyRing keyRing,
                               Navigation navigation,

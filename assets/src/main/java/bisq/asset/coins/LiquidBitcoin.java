@@ -25,6 +25,6 @@ import bisq.asset.LiquidBitcoinAddressValidator;
 public class LiquidBitcoin extends Coin {
 
     public LiquidBitcoin() {
-        super("Liquid Bitcoin", "L-RADC", new LiquidBitcoinAddressValidator());
+        super("Liquid Bitcoin", "L-BTC", new LiquidBitcoinAddressValidator());
     }
 }

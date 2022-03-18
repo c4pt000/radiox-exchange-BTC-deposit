@@ -200,7 +200,7 @@ class GrpcWalletsService extends WalletsImplBase {
                         @Override
                         public void onSuccess(Transaction tx) {
                             if (tx != null) {
-                                log.info("Successfully published RADC tx: id {}, output sum {} sats, fee {} sats, size {} bytes",
+                                log.info("Successfully published BTC tx: id {}, output sum {} sats, fee {} sats, size {} bytes",
                                         tx.getTxId().toString(),
                                         tx.getOutputSum(),
                                         tx.getFee(),

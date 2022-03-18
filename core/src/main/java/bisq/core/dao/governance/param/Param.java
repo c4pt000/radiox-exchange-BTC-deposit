@@ -48,20 +48,20 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public enum Param {
     UNDEFINED("N/A", ParamType.UNDEFINED),
 
-    // Fee in RADC for a 1 RADC trade. 0.001 is 0.1%. @5000 USD/RADC price 0.1% fee is 5 USD.
-    DEFAULT_MAKER_FEE_RADC("0.001", ParamType.RADC, 5, 5),
-    DEFAULT_TAKER_FEE_RADC("0.003", ParamType.RADC, 5, 5),       // 0.2% of trade amount
-    MIN_MAKER_FEE_RADC("0.00005", ParamType.RADC, 5, 5),         // 0.005% of trade amount
-    MIN_TAKER_FEE_RADC("0.00005", ParamType.RADC, 5, 5),
+    // Fee in BTC for a 1 BTC trade. 0.001 is 0.1%. @5000 USD/BTC price 0.1% fee is 5 USD.
+    DEFAULT_MAKER_FEE_BTC("0.001", ParamType.BTC, 5, 5),
+    DEFAULT_TAKER_FEE_BTC("0.003", ParamType.BTC, 5, 5),       // 0.2% of trade amount
+    MIN_MAKER_FEE_BTC("0.00005", ParamType.BTC, 5, 5),         // 0.005% of trade amount
+    MIN_TAKER_FEE_BTC("0.00005", ParamType.BTC, 5, 5),
 
-    // Fee in BSQ satoshis for a 1 RADC trade. 100 satoshis = 1 BSQ
-    // If 1 BTS is 1 USD the fee @5000 USD/RADC is 0.5 USD which is 10% of the RADC fee of 5 USD.
-    // Might need adjustment if BSQ/RADC rate changes.
+    // Fee in BSQ satoshis for a 1 BTC trade. 100 satoshis = 1 BSQ
+    // If 1 BTS is 1 USD the fee @5000 USD/BTC is 0.5 USD which is 10% of the BTC fee of 5 USD.
+    // Might need adjustment if BSQ/BTC rate changes.
     DEFAULT_MAKER_FEE_BSQ("0.50", ParamType.BSQ, 5, 5),     // ~ 0.01% of trade amount
     DEFAULT_TAKER_FEE_BSQ("1.5", ParamType.BSQ, 5, 5),
     // Min fee is the  smallest fee allowed for a trade. If the default fee would be less than min fee the
     // min fee is used instead.
-    // 0.03 BSQ (3 satoshis) for a 1 RADC trade. 0.05 USD if 1 BSQ = 1 USD, 10 % of the RADC fee
+    // 0.03 BSQ (3 satoshis) for a 1 BTC trade. 0.05 USD if 1 BSQ = 1 USD, 10 % of the BTC fee
     MIN_MAKER_FEE_BSQ("0.03", ParamType.BSQ, 5, 5),           // 0.0003%.
     MIN_TAKER_FEE_BSQ("0.03", ParamType.BSQ, 5, 5),
 
@@ -102,11 +102,11 @@ public enum Param {
     THRESHOLD_GENERIC("50.01", ParamType.PERCENT, 1.2, 1.2),
     THRESHOLD_REMOVE_ASSET("50.01", ParamType.PERCENT, 1.2, 1.2),
 
-    // RADC address as recipient for RADC trade fee once the arbitration system is replaced as well as destination for
+    // BTC address as recipient for BTC trade fee once the arbitration system is replaced as well as destination for
     // the time locked payout tx in case the traders do not cooperate. Will be likely a donation address (Bisq, Tor,...)
-    // but can be also a burner address if we prefer to burn the RADC
+    // but can be also a burner address if we prefer to burn the BTC
     @SuppressWarnings("SpellCheckingInspection")
-    RECIPIENT_RADC_ADDRESS(Config.baseCurrencyNetwork().isMainnet() ? "1BVxNn3T12veSK6DgqwU4Hdn7QHcDDRag7" :  // mainnet
+    RECIPIENT_BTC_ADDRESS(Config.baseCurrencyNetwork().isMainnet() ? "1BVxNn3T12veSK6DgqwU4Hdn7QHcDDRag7" :  // mainnet
             Config.baseCurrencyNetwork().isDaoBetaNet() ? "1BVxNn3T12veSK6DgqwU4Hdn7QHcDDRag7" :  // daoBetaNet
                     Config.baseCurrencyNetwork().isTestnet() ? "2N4mVTpUZAnhm9phnxB7VrHB4aBhnWrcUrV" : // testnet
                             "2MzBNTJDjjXgViKBGnatDU3yWkJ8pJkEg9w", // regtest or DAO testnet (regtest)
@@ -115,11 +115,11 @@ public enum Param {
     // Fee for activating an asset or re-listing after deactivation due lack of trade activity. Fee per day of trial period without activity checks.
     ASSET_LISTING_FEE_PER_DAY("1", ParamType.BSQ, 10, 10),
     // Min required trade volume to not get de-listed. Check starts after trial period and use trial period afterwards to look back for trade activity.
-    ASSET_MIN_VOLUME("0.01", ParamType.RADC, 10, 10),
+    ASSET_MIN_VOLUME("0.01", ParamType.BTC, 10, 10),
 
     LOCK_TIME_TRADE_PAYOUT("4320", ParamType.BLOCK), // 30 days, can be disabled by setting to 0
     ARBITRATOR_FEE("0", ParamType.PERCENT),  // % of trade. For new trade protocol. Arbitration will become optional and we can apply a fee to it. Initially we start with no fee.
-    MAX_TRADE_LIMIT("2", ParamType.RADC, 2, 2), // max trade limit for lowest risk payment method. Others will get derived from that.
+    MAX_TRADE_LIMIT("100000000", ParamType.BTC, 2, 2), // max trade limit for lowest risk payment method. Others will get derived from that.
 
     // The base factor to multiply the bonded role amount. E.g. If Twitter admin has 20 as amount and BONDED_ROLE_FACTOR is 1000 we get 20000 BSQ as required bond.
     // Using BSQ as type is not really the best option but we don't want to introduce a new ParamType just for that one Param.

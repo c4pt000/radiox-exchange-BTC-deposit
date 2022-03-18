@@ -2,7 +2,7 @@ getmyoffer
 
 NAME
 ----
-getmyoffer - get your offer to buy or sell RADC
+getmyoffer - get your offer to buy or sell BTC
 
 SYNOPSIS
 --------

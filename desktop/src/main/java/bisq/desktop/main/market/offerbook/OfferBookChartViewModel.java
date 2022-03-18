@@ -288,7 +288,7 @@ class OfferBookChartViewModel extends ActivatableViewModel {
         // Offer price can be null (if price feed unavailable), thus a null-tolerant comparator is used.
         Comparator<Offer> offerPriceComparator = Comparator.comparing(Offer::getPrice, Comparator.nullsLast(Comparator.naturalOrder()));
 
-        // Trading btc-fiat is considered as buying/selling RADC, but trading btc-altcoin is
+        // Trading btc-fiat is considered as buying/selling BTC, but trading btc-altcoin is
         // considered as buying/selling Altcoin. Because of this, when viewing a btc-altcoin pair,
         // the buy column is actually the sell column and vice versa. To maintain the expected
         // ordering, we have to reverse the price comparator.
