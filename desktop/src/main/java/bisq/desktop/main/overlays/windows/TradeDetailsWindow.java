@@ -76,6 +76,7 @@ import javafx.beans.value.ChangeListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static bisq.desktop.util.DisplayUtils.getAccountWitnessDescription;
 import static bisq.desktop.util.FormBuilder.*;
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -99,7 +100,7 @@ public class TradeDetailsWindow extends Overlay<TradeDetailsWindow> {
     ///////////////////////////////////////////////////////////////////////////////////////////
 
     @Inject
-    public TradeDetailsWindow(@Named(FormattingUtils.BTC_FORMATTER_KEY) CoinFormatter formatter,
+    public TradeDetailsWindow(@Named(FormattingUtils.RADC_FORMATTER_KEY) CoinFormatter formatter,
                               ArbitrationManager arbitrationManager,
                               TradeManager tradeManager,
                               BtcWalletService btcWalletService,
@@ -252,27 +253,18 @@ public class TradeDetailsWindow extends Overlay<TradeDetailsWindow> {
         }
 
         if (contract != null) {
+            buyersAccountAge = getAccountWitnessDescription(accountAgeWitnessService, offer.getPaymentMethod(), buyerPaymentAccountPayload, contract.getBuyerPubKeyRing());
+            sellersAccountAge = getAccountWitnessDescription(accountAgeWitnessService, offer.getPaymentMethod(), sellerPaymentAccountPayload, contract.getSellerPubKeyRing());
             if (buyerPaymentAccountPayload != null) {
                 String paymentDetails = buyerPaymentAccountPayload.getPaymentDetails();
-                long age = accountAgeWitnessService.getAccountAge(buyerPaymentAccountPayload, contract.getBuyerPubKeyRing());
-                buyersAccountAge = CurrencyUtil.isFiatCurrency(offer.getCurrencyCode()) ?
-                        age > -1 ? Res.get("peerInfoIcon.tooltip.age", DisplayUtils.formatAccountAge(age)) :
-                                Res.get("peerInfoIcon.tooltip.unknownAge") :
-                        "";
-
-                String postFix = buyersAccountAge.isEmpty() ? "" : " / " + buyersAccountAge;
+                String postFix = " / " + buyersAccountAge;
                 addConfirmationLabelTextField(gridPane, ++rowIndex,
                         Res.get("shared.paymentDetails", Res.get("shared.buyer")),
                         paymentDetails + postFix).second.setTooltip(new Tooltip(paymentDetails + postFix));
             }
             if (sellerPaymentAccountPayload != null) {
                 String paymentDetails = sellerPaymentAccountPayload.getPaymentDetails();
-                long age = accountAgeWitnessService.getAccountAge(sellerPaymentAccountPayload, contract.getSellerPubKeyRing());
-                sellersAccountAge = CurrencyUtil.isFiatCurrency(offer.getCurrencyCode()) ?
-                        age > -1 ? Res.get("peerInfoIcon.tooltip.age", DisplayUtils.formatAccountAge(age)) :
-                                Res.get("peerInfoIcon.tooltip.unknownAge") :
-                        "";
-                String postFix = sellersAccountAge.isEmpty() ? "" : " / " + sellersAccountAge;
+                String postFix = " / " + sellersAccountAge;
                 addConfirmationLabelTextField(gridPane, ++rowIndex,
                         Res.get("shared.paymentDetails", Res.get("shared.seller")),
                         paymentDetails + postFix).second.setTooltip(new Tooltip(paymentDetails + postFix));
@@ -358,8 +350,8 @@ public class TradeDetailsWindow extends Overlay<TradeDetailsWindow> {
                     data += "\n\nRaw deposit transaction as hex:\n" + depositTxAsHex;
                 }
 
-                data += "\n\nSelected mediator: " + DisputeAgentLookupMap.getKeyBaseUserName(contract.getMediatorNodeAddress().getFullAddress());
-                data += "\nSelected arbitrator (refund agent): " + DisputeAgentLookupMap.getKeyBaseUserName(contract.getRefundAgentNodeAddress().getFullAddress());
+                data += "\n\nSelected mediator: " + DisputeAgentLookupMap.getMatrixUserName(contract.getMediatorNodeAddress().getFullAddress());
+                data += "\nSelected arbitrator (refund agent): " + DisputeAgentLookupMap.getMatrixUserName(contract.getRefundAgentNodeAddress().getFullAddress());
 
                 textArea.setText(data);
                 textArea.setPrefHeight(50);

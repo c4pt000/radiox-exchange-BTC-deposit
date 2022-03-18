@@ -22,9 +22,16 @@ import bisq.asset.BitcoinAddressValidator;
 import bisq.asset.Coin;
 
 import org.bitcoinj.core.NetworkParameters;
-import org.bitcoinj.params.MainNetParams;
-import org.bitcoinj.params.RegTestParams;
-import org.bitcoinj.params.TestNet3Params;
+
+
+
+//import org.bitcoinj.params.MainNetParams;
+//import org.bitcoinj.params.RegTestParams;
+//import org.bitcoinj.params.TestNet3Params;
+
+import org.libdohj.params.DogecoinMainNetParams;
+import org.libdohj.params.DogecoinRegTestParams;
+import org.libdohj.params.DogecoinTestNet3Params;
 
 public class BSQ extends Coin {
 
@@ -36,7 +43,7 @@ public class BSQ extends Coin {
     public static class Mainnet extends BSQ {
 
         public Mainnet() {
-            super(Network.MAINNET, MainNetParams.get());
+            super(Network.MAINNET, DogecoinMainNetParams.get());
         }
     }
 
@@ -44,7 +51,7 @@ public class BSQ extends Coin {
     public static class Testnet extends BSQ {
 
         public Testnet() {
-            super(Network.TESTNET, TestNet3Params.get());
+            super(Network.TESTNET, DogecoinTestNet3Params.get());
         }
     }
 
@@ -52,7 +59,7 @@ public class BSQ extends Coin {
     public static class Regtest extends BSQ {
 
         public Regtest() {
-            super(Network.REGTEST, RegTestParams.get());
+            super(Network.REGTEST, DogecoinRegTestParams.get());
         }
     }
 

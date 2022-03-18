@@ -1,6 +1,7 @@
 package bisq.common.config;
 
 import org.bitcoinj.core.NetworkParameters;
+//import org.libdohj.core.AltcoinNetworkParameters;
 
 import joptsimple.AbstractOptionSpec;
 import joptsimple.ArgumentAcceptingOptionSpec;
@@ -62,7 +63,7 @@ public class Config {
     public static final String CONFIG_FILE = "configFile";
     public static final String MAX_MEMORY = "maxMemory";
     public static final String LOG_LEVEL = "logLevel";
-    public static final String BANNED_BTC_NODES = "bannedBtcNodes";
+    public static final String BANNED_RADC_NODES = "bannedBtcNodes";
     public static final String BANNED_PRICE_RELAY_NODES = "bannedPriceRelayNodes";
     public static final String BANNED_SEED_NODES = "bannedSeedNodes";
     public static final String BASE_CURRENCY_NETWORK = "baseCurrencyNetwork";
@@ -82,9 +83,9 @@ public class Config {
     public static final String NODE_PORT = "nodePort";
     public static final String USE_LOCALHOST_FOR_P2P = "useLocalhostForP2P";
     public static final String MAX_CONNECTIONS = "maxConnections";
-    public static final String SOCKS_5_PROXY_BTC_ADDRESS = "socks5ProxyBtcAddress";
+    public static final String SOCKS_5_PROXY_RADC_ADDRESS = "socks5ProxyBtcAddress";
     public static final String SOCKS_5_PROXY_HTTP_ADDRESS = "socks5ProxyHttpAddress";
-    public static final String USE_TOR_FOR_BTC = "useTorForBtc";
+    public static final String USE_TOR_FOR_RADC = "useTorForBtc";
     public static final String TORRC_FILE = "torrcFile";
     public static final String TORRC_OPTIONS = "torrcOptions";
     public static final String TOR_CONTROL_PORT = "torControlPort";
@@ -96,13 +97,13 @@ public class Config {
     public static final String MSG_THROTTLE_PER_10_SEC = "msgThrottlePer10Sec";
     public static final String SEND_MSG_THROTTLE_TRIGGER = "sendMsgThrottleTrigger";
     public static final String SEND_MSG_THROTTLE_SLEEP = "sendMsgThrottleSleep";
-    public static final String IGNORE_LOCAL_BTC_NODE = "ignoreLocalBtcNode";
+    public static final String IGNORE_LOCAL_RADC_NODE = "ignoreLocalBtcNode";
     public static final String BITCOIN_REGTEST_HOST = "bitcoinRegtestHost";
-    public static final String BTC_NODES = "btcNodes";
+    public static final String RADC_NODES = "btcNodes";
     public static final String SOCKS5_DISCOVER_MODE = "socks5DiscoverMode";
     public static final String USE_ALL_PROVIDED_NODES = "useAllProvidedNodes";
     public static final String USER_AGENT = "userAgent";
-    public static final String NUM_CONNECTIONS_FOR_BTC = "numConnectionsForBtc";
+    public static final String NUM_CONNECTIONS_FOR_RADC = "numConnectionsForBtc";
     public static final String RPC_USER = "rpcUser";
     public static final String RPC_PASSWORD = "rpcPassword";
     public static final String RPC_HOST = "rpcHost";
@@ -122,24 +123,24 @@ public class Config {
     public static final String PREVENT_PERIODIC_SHUTDOWN_AT_SEED_NODE = "preventPeriodicShutdownAtSeedNode";
     public static final String REPUBLISH_MAILBOX_ENTRIES = "republishMailboxEntries";
     public static final String LEGACY_FEE_DATAMAP = "dataMap";
-    public static final String BTC_TX_FEE = "btcTxFee";
-    public static final String BTC_MIN_TX_FEE = "btcMinTxFee";
-    public static final String BTC_FEES_TS = "bitcoinFeesTs";
-    public static final String BTC_FEE_INFO = "bitcoinFeeInfo";
+    public static final String RADC_TX_FEE = "btcTxFee";
+    public static final String RADC_MIN_TX_FEE = "btcMinTxFee";
+    public static final String RADC_FEES_TS = "bitcoinFeesTs";
+    public static final String RADC_FEE_INFO = "bitcoinFeeInfo";
     public static final String BYPASS_MEMPOOL_VALIDATION = "bypassMempoolValidation";
 
     // Default values for certain options
     public static final int UNSPECIFIED_PORT = -1;
     public static final String DEFAULT_REGTEST_HOST = "localhost";
-    public static final int DEFAULT_NUM_CONNECTIONS_FOR_BTC_PROVIDED = 7; // down from BitcoinJ default of 12
-    public static final int DEFAULT_NUM_CONNECTIONS_FOR_BTC_PUBLIC = 9;
+    public static final int DEFAULT_NUM_CONNECTIONS_FOR_RADC_PROVIDED = 10; // down from RadiocoinJ default of 12
+    public static final int DEFAULT_NUM_CONNECTIONS_FOR_RADC_PUBLIC = 10;
     public static final boolean DEFAULT_FULL_DAO_NODE = false;
-    static final String DEFAULT_CONFIG_FILE_NAME = "bisq.properties";
+    static final String DEFAULT_CONFIG_FILE_NAME = "radiox.properties";
 
     // Static fields that provide access to Config properties in locations where injecting
     // a Config instance is not feasible. See Javadoc for corresponding static accessors.
     private static File APP_DATA_DIR_VALUE;
-    private static BaseCurrencyNetwork BASE_CURRENCY_NETWORK_VALUE = BaseCurrencyNetwork.BTC_MAINNET;
+    private static BaseCurrencyNetwork BASE_CURRENCY_NETWORK_VALUE = BaseCurrencyNetwork.RADC_MAINNET;
 
     // Default "data dir properties", i.e. properties that can determine the location of
     // Bisq's application data directory (appDataDir)
@@ -299,13 +300,13 @@ public class Config {
                 parser.accepts(NODE_PORT, "Port to listen on")
                         .withRequiredArg()
                         .ofType(Integer.class)
-                        .defaultsTo(9999);
+                        .defaultsTo(8000);
 
         ArgumentAcceptingOptionSpec<Integer> maxMemoryOpt =
                 parser.accepts(MAX_MEMORY, "Max. permitted memory (used only by headless versions)")
                         .withRequiredArg()
                         .ofType(int.class)
-                        .defaultsTo(1200);
+                        .defaultsTo(1100);
 
         ArgumentAcceptingOptionSpec<String> logLevelOpt =
                 parser.accepts(LOG_LEVEL, "Set logging level")
@@ -315,7 +316,7 @@ public class Config {
                         .defaultsTo(Level.INFO.levelStr);
 
         ArgumentAcceptingOptionSpec<String> bannedBtcNodesOpt =
-                parser.accepts(BANNED_BTC_NODES, "List Bitcoin nodes to ban")
+                parser.accepts(BANNED_RADC_NODES, "List Radiocoin nodes to ban")
                         .withRequiredArg()
                         .ofType(String.class)
                         .withValuesSeparatedBy(',')
@@ -341,17 +342,17 @@ public class Config {
                         .withRequiredArg()
                         .ofType(BaseCurrencyNetwork.class)
                         .withValuesConvertedBy(new EnumValueConverter(BaseCurrencyNetwork.class))
-                        .defaultsTo(BaseCurrencyNetwork.BTC_MAINNET);
+                        .defaultsTo(BaseCurrencyNetwork.RADC_MAINNET);
 
         ArgumentAcceptingOptionSpec<Boolean> ignoreLocalBtcNodeOpt =
-                parser.accepts(IGNORE_LOCAL_BTC_NODE,
-                        "If set to true a Bitcoin Core node running locally will be ignored")
+                parser.accepts(IGNORE_LOCAL_RADC_NODE,
+                        "If set to true a Radiocoin Core node running locally will be ignored")
                         .withRequiredArg()
                         .ofType(Boolean.class)
-                        .defaultsTo(false);
+                        .defaultsTo(true);
 
         ArgumentAcceptingOptionSpec<String> bitcoinRegtestHostOpt =
-                parser.accepts(BITCOIN_REGTEST_HOST, "Bitcoin Core node when using BTC_REGTEST network")
+                parser.accepts(BITCOIN_REGTEST_HOST, "Radiocoin Core node when using RADC_REGTEST network")
                         .withRequiredArg()
                         .ofType(String.class)
                         .describedAs("host[:port]")
@@ -407,10 +408,11 @@ public class Config {
 
         ArgumentAcceptingOptionSpec<String> seedNodesOpt =
                 parser.accepts(SEED_NODES, "Override hard coded seed nodes as comma separated list e.g. " +
-                        "'rxdkppp3vicnbgqt.onion:8002,mfla72c4igh5ta2t.onion:8002'")
+                        "")
                         .withRequiredArg()
                         .withValuesSeparatedBy(',')
-                        .describedAs("host:port[,...]");
+                        .describedAs("host:port")
+                        .defaultsTo("niufjbsvrby32m55vekfvzfk4ifbsz22ddywsm7lojtbftbtavjvbhad.onion:8000");
 
         ArgumentAcceptingOptionSpec<String> banListOpt =
                 parser.accepts(BAN_LIST, "Nodes to exclude from network connections.")
@@ -419,7 +421,7 @@ public class Config {
                         .describedAs("host:port[,...]");
 
         ArgumentAcceptingOptionSpec<Boolean> useLocalhostForP2POpt =
-                parser.accepts(USE_LOCALHOST_FOR_P2P, "Use localhost P2P network for development. Only available for non-BTC_MAINNET configuration.")
+                parser.accepts(USE_LOCALHOST_FOR_P2P, "Use localhost P2P network for development. Only available for non-RADC_MAINNET configuration.")
                         .availableIf(BASE_CURRENCY_NETWORK)
                         .withRequiredArg()
                         .ofType(boolean.class)
@@ -429,10 +431,10 @@ public class Config {
                 parser.accepts(MAX_CONNECTIONS, "Max. connections a peer will try to keep")
                         .withRequiredArg()
                         .ofType(int.class)
-                        .defaultsTo(12);
+                        .defaultsTo(8);
 
         ArgumentAcceptingOptionSpec<String> socks5ProxyBtcAddressOpt =
-                parser.accepts(SOCKS_5_PROXY_BTC_ADDRESS, "A proxy address to be used for Bitcoin network.")
+                parser.accepts(SOCKS_5_PROXY_RADC_ADDRESS, "A proxy address to be used for Radiocoin network.")
                         .withRequiredArg()
                         .describedAs("host:port")
                         .defaultsTo("");
@@ -518,19 +520,20 @@ public class Config {
                         .defaultsTo(50); // Pause in ms to sleep if we get too many messages to send
 
         ArgumentAcceptingOptionSpec<String> btcNodesOpt =
-                parser.accepts(BTC_NODES, "Custom nodes used for BitcoinJ as comma separated IP addresses.")
-                        .withRequiredArg()
-                        .describedAs("ip[,...]")
-                        .defaultsTo("");
+                parser.accepts(RADC_NODES, "Custom nodes used for RadiocoinJ as comma separated IP addresses.")
+                        .withRequiredArg() 
+                       .describedAs("ip[,...]")  
+//                      .defaultsTo("129.146.9.111,34.64.109.126,34.125.77.92,54.193.21.65,radiopool.me,172.105.240.205");
+                      .defaultsTo("46.101.169.238");
 
         ArgumentAcceptingOptionSpec<Boolean> useTorForBtcOpt =
-                parser.accepts(USE_TOR_FOR_BTC, "If set to true BitcoinJ is routed over tor (socks 5 proxy).")
+                parser.accepts(USE_TOR_FOR_RADC, "If set to true RadiocoinJ is routed over tor (socks 5 proxy).")
                         .withRequiredArg()
                         .ofType(Boolean.class)
                         .defaultsTo(false);
 
         ArgumentAcceptingOptionSpec<String> socks5DiscoverModeOpt =
-                parser.accepts(SOCKS5_DISCOVER_MODE, "Specify discovery mode for Bitcoin nodes. " +
+                parser.accepts(SOCKS5_DISCOVER_MODE, "Specify discovery mode for Radiocoin nodes. " +
                         "One or more of: [ADDR, DNS, ONION, ALL] (comma separated, they get OR'd together).")
                         .withRequiredArg()
                         .describedAs("mode[,...]")
@@ -541,63 +544,63 @@ public class Config {
                         "Set to true if connection of bitcoin nodes should include clear net nodes")
                         .withRequiredArg()
                         .ofType(boolean.class)
-                        .defaultsTo(false);
+                        .defaultsTo(true);
 
         ArgumentAcceptingOptionSpec<String> userAgentOpt =
                 parser.accepts(USER_AGENT,
-                        "User agent at btc node connections")
+                        "User agent at radc node connections")
                         .withRequiredArg()
-                        .defaultsTo("Bisq");
+                        .defaultsTo("RadioX");
 
         ArgumentAcceptingOptionSpec<Integer> numConnectionsForBtcOpt =
-                parser.accepts(NUM_CONNECTIONS_FOR_BTC, "Number of connections to the Bitcoin network")
+                parser.accepts(NUM_CONNECTIONS_FOR_RADC, "Number of connections to the Radiocoin network")
                         .withRequiredArg()
                         .ofType(int.class)
-                        .defaultsTo(DEFAULT_NUM_CONNECTIONS_FOR_BTC_PROVIDED);
+                        .defaultsTo(DEFAULT_NUM_CONNECTIONS_FOR_RADC_PROVIDED);
 
         ArgumentAcceptingOptionSpec<String> rpcUserOpt =
-                parser.accepts(RPC_USER, "Bitcoind rpc username")
+                parser.accepts(RPC_USER, "Radiocoind rpc username")
                         .withRequiredArg()
-                        .defaultsTo("");
+                        .defaultsTo("rpcuser");
 
         ArgumentAcceptingOptionSpec<String> rpcPasswordOpt =
-                parser.accepts(RPC_PASSWORD, "Bitcoind rpc password")
+                parser.accepts(RPC_PASSWORD, "Radiocoind rpc password")
                         .withRequiredArg()
-                        .defaultsTo("");
+                        .defaultsTo("rpcpassword");
 
         ArgumentAcceptingOptionSpec<String> rpcHostOpt =
-                parser.accepts(RPC_HOST, "Bitcoind rpc host")
+                parser.accepts(RPC_HOST, "Radiocoind rpc host")
                         .withRequiredArg()
-                        .defaultsTo("");
+                        .defaultsTo("127.0.0.1");
 
         ArgumentAcceptingOptionSpec<Integer> rpcPortOpt =
-                parser.accepts(RPC_PORT, "Bitcoind rpc port")
+                parser.accepts(RPC_PORT, "Radiocoind rpc port")
                         .withRequiredArg()
                         .ofType(int.class)
-                        .defaultsTo(UNSPECIFIED_PORT);
+                        .defaultsTo(9332);
 
         ArgumentAcceptingOptionSpec<Integer> rpcBlockNotificationPortOpt =
-                parser.accepts(RPC_BLOCK_NOTIFICATION_PORT, "Bitcoind rpc port for block notifications")
+                parser.accepts(RPC_BLOCK_NOTIFICATION_PORT, "Radiocoind rpc port for block notifications")
                         .withRequiredArg()
                         .ofType(int.class)
-                        .defaultsTo(UNSPECIFIED_PORT);
+                        .defaultsTo(4159);
 
         ArgumentAcceptingOptionSpec<String> rpcBlockNotificationHostOpt =
                 parser.accepts(RPC_BLOCK_NOTIFICATION_HOST,
-                        "Bitcoind rpc accepted incoming host for block notifications")
+                        "Radiocoind rpc accepted incoming host for block notifications")
                         .withRequiredArg()
-                        .defaultsTo("");
+                        .defaultsTo("127.0.0.1");
 
         ArgumentAcceptingOptionSpec<Boolean> dumpBlockchainDataOpt =
                 parser.accepts(DUMP_BLOCKCHAIN_DATA, "If set to true the blockchain data " +
-                        "from RPC requests to Bitcoin Core are stored as json file in the data dir.")
+                        "from RPC requests to Radiocoin Core are stored as json file in the data dir.")
                         .withRequiredArg()
                         .ofType(boolean.class)
                         .defaultsTo(false);
 
         ArgumentAcceptingOptionSpec<Boolean> fullDaoNodeOpt =
                 parser.accepts(FULL_DAO_NODE, "If set to true the node requests the blockchain data via RPC requests " +
-                        "from Bitcoin Core and provide the validated BSQ txs to the network. It requires that the " +
+                        "from Radiocoin Core and provide the validated BSQ txs to the network. It requires that the " +
                         "other RPC properties are set as well.")
                         .withRequiredArg()
                         .ofType(Boolean.class)
@@ -606,14 +609,14 @@ public class Config {
         ArgumentAcceptingOptionSpec<String> genesisTxIdOpt =
                 parser.accepts(GENESIS_TX_ID, "Genesis transaction ID when not using the hard coded one")
                         .withRequiredArg()
-                        .defaultsTo("");
+                        .defaultsTo("83a994b9b978bc13670b300ea0116f099ed8db143a347c173cd4f095a6365369");
 
         ArgumentAcceptingOptionSpec<Integer> genesisBlockHeightOpt =
                 parser.accepts(GENESIS_BLOCK_HEIGHT,
                         "Genesis transaction block height when not using the hard coded one")
                         .withRequiredArg()
                         .ofType(int.class)
-                        .defaultsTo(-1);
+                        .defaultsTo(198054);
 
         ArgumentAcceptingOptionSpec<Long> genesisTotalSupplyOpt =
                 parser.accepts(GENESIS_TOTAL_SUPPLY, "Genesis total supply when not using the hard coded one")
@@ -622,10 +625,10 @@ public class Config {
                         .defaultsTo(-1L);
 
         ArgumentAcceptingOptionSpec<Boolean> daoActivatedOpt =
-                parser.accepts(DAO_ACTIVATED, "If set to true dao is activated.")
+                parser.accepts(DAO_ACTIVATED, "Developer flag. If true it enables dao phase 2 features.")
                         .withRequiredArg()
                         .ofType(boolean.class)
-                        .defaultsTo(true);
+                        .defaultsTo(false);
 
         ArgumentAcceptingOptionSpec<Boolean> dumpDelayedPayoutTxsOpt =
                 parser.accepts(DUMP_DELAYED_PAYOUT_TXS, "Dump delayed payout transactions to file")
@@ -638,7 +641,7 @@ public class Config {
                         "payout transactions")
                         .withRequiredArg()
                         .ofType(boolean.class)
-                        .defaultsTo(false);
+                        .defaultsTo(true);
 
         ArgumentAcceptingOptionSpec<String> apiPasswordOpt =
                 parser.accepts(API_PASSWORD, "gRPC API password")
@@ -656,7 +659,7 @@ public class Config {
                         "Prevents periodic shutdown at seed nodes")
                         .withRequiredArg()
                         .ofType(boolean.class)
-                        .defaultsTo(false);
+                        .defaultsTo(true);
 
         ArgumentAcceptingOptionSpec<Boolean> republishMailboxEntriesOpt =
                 parser.accepts(REPUBLISH_MAILBOX_ENTRIES,
@@ -682,7 +685,7 @@ public class Config {
             // Option parsing is strict at the command line, but we relax it now for any
             // subsequent config file processing. This is for compatibility with pre-1.2.6
             // versions that allowed unrecognized options in the bisq.properties config
-            // file and because it follows suit with Bitcoin Core's config file behavior.
+            // file and because it follows suit with Radiocoin Core's config file behavior.
             parser.allowsUnrecognizedOptions();
 
             // Parse config file specified at the command line only if it was specified as
@@ -850,7 +853,7 @@ public class Config {
 
     private static String randomAppName() {
         try {
-            File file = Files.createTempFile("Bisq", "Temp").toFile();
+            File file = Files.createTempFile("RadioX", "Temp").toFile();
             //noinspection ResultOfMethodCallIgnored
             file.delete();
             return file.toPath().getFileName().toString();
@@ -861,7 +864,7 @@ public class Config {
 
     private static File tempUserDataDir() {
         try {
-            return Files.createTempDirectory("BisqTempUserData").toFile();
+            return Files.createTempDirectory("RadioXTempUserData").toFile();
         } catch (IOException ex) {
             throw new UncheckedIOException(ex);
         }
@@ -922,7 +925,7 @@ public class Config {
 
     /**
      * Static accessor that returns either the default base currency network value of
-     * {@link BaseCurrencyNetwork#BTC_MAINNET} or the value assigned via the
+     * {@link BaseCurrencyNetwork#RADC_MAINNET} or the value assigned via the
      * {@value BASE_CURRENCY_NETWORK} option. The non-static
      * {@link #baseCurrencyNetwork} property should be favored whenever possible and
      * this static accessor should be used only in code locations where it is infeasible
@@ -945,3 +948,18 @@ public class Config {
         return BASE_CURRENCY_NETWORK_VALUE.getParameters();
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -118,11 +118,11 @@ public abstract class MutableOfferViewModel<M extends MutableOfferDataModel> ext
     public final StringProperty amount = new SimpleStringProperty();
     public final StringProperty minAmount = new SimpleStringProperty();
     protected final StringProperty buyerSecurityDeposit = new SimpleStringProperty();
-    final StringProperty buyerSecurityDepositInBTC = new SimpleStringProperty();
+    final StringProperty buyerSecurityDepositInRADC = new SimpleStringProperty();
     final StringProperty buyerSecurityDepositLabel = new SimpleStringProperty();
 
-    // Price in the viewModel is always dependent on fiat/altcoin: Fiat/BTC, for altcoins we use inverted price.
-    // The domain (dataModel) uses always the same price model (otherCurrencyBTC)
+    // Price in the viewModel is always dependent on fiat/altcoin: Fiat/RADC, for altcoins we use inverted price.
+    // The domain (dataModel) uses always the same price model (otherCurrencyRADC)
     // If we would change the price representation in the domain we would not be backward compatible
     public final StringProperty price = new SimpleStringProperty();
     public final StringProperty triggerPrice = new SimpleStringProperty("");
@@ -204,7 +204,7 @@ public abstract class MutableOfferViewModel<M extends MutableOfferDataModel> ext
                                  AccountAgeWitnessService accountAgeWitnessService,
                                  Navigation navigation,
                                  Preferences preferences,
-                                 @Named(FormattingUtils.BTC_FORMATTER_KEY) CoinFormatter btcFormatter,
+                                 @Named(FormattingUtils.RADC_FORMATTER_KEY) CoinFormatter btcFormatter,
                                  BsqFormatter bsqFormatter,
                                  OfferUtil offerUtil) {
         super(dataModel);
@@ -442,10 +442,10 @@ public abstract class MutableOfferViewModel<M extends MutableOfferDataModel> ext
         amountAsCoinListener = (ov, oldValue, newValue) -> {
             if (newValue != null) {
                 amount.set(btcFormatter.formatCoin(newValue));
-                buyerSecurityDepositInBTC.set(btcFormatter.formatCoinWithCode(dataModel.getBuyerSecurityDepositAsCoin()));
+                buyerSecurityDepositInRADC.set(btcFormatter.formatCoinWithCode(dataModel.getBuyerSecurityDepositAsCoin()));
             } else {
                 amount.set("");
-                buyerSecurityDepositInBTC.set("");
+                buyerSecurityDepositInRADC.set("");
             }
 
             applyMakerFee();
@@ -481,12 +481,12 @@ public abstract class MutableOfferViewModel<M extends MutableOfferDataModel> ext
             if (newValue != null) {
                 buyerSecurityDeposit.set(FormattingUtils.formatToPercent((double) newValue));
                 if (dataModel.getAmount().get() != null) {
-                    buyerSecurityDepositInBTC.set(btcFormatter.formatCoinWithCode(dataModel.getBuyerSecurityDepositAsCoin()));
+                    buyerSecurityDepositInRADC.set(btcFormatter.formatCoinWithCode(dataModel.getBuyerSecurityDepositAsCoin()));
                 }
                 updateBuyerSecurityDeposit();
             } else {
                 buyerSecurityDeposit.set("");
-                buyerSecurityDepositInBTC.set("");
+                buyerSecurityDepositInRADC.set("");
             }
         };
 
@@ -501,7 +501,7 @@ public abstract class MutableOfferViewModel<M extends MutableOfferDataModel> ext
     private void applyMakerFee() {
         tradeFeeCurrencyCode.set(dataModel.isCurrencyForMakerFeeBtc() ? Res.getBaseCurrencyCode() : "BSQ");
         tradeFeeDescription.set(DevEnv.isDaoActivated() ? Res.get("createOffer.tradeFee.descriptionBSQEnabled") :
-                Res.get("createOffer.tradeFee.descriptionBTCOnly"));
+                Res.get("createOffer.tradeFee.descriptionRADCOnly"));
 
         Coin makerFeeAsCoin = dataModel.getMakerFee();
         if (makerFeeAsCoin == null) {
@@ -812,6 +812,7 @@ public abstract class MutableOfferViewModel<M extends MutableOfferDataModel> ext
     }
 
     void onFixPriceToggleChange(boolean fixedPriceSelected) {
+        inputIsMarketBasedPrice = !fixedPriceSelected;
         updateButtonDisableState();
         if (!fixedPriceSelected) {
             onTriggerPriceTextFieldChanged();
@@ -998,9 +999,9 @@ public abstract class MutableOfferViewModel<M extends MutableOfferDataModel> ext
                 dataModel.isBuyOffer() ? Res.get("createOffer.setDepositAsBuyer") : Res.get("createOffer.setDeposit");
     }
 
-    public String getSecurityDepositPopOverLabel(String depositInBTC) {
-        return dataModel.isBuyOffer() ? Res.get("createOffer.securityDepositInfoAsBuyer", depositInBTC) :
-                Res.get("createOffer.securityDepositInfo", depositInBTC);
+    public String getSecurityDepositPopOverLabel(String depositInRADC) {
+        return dataModel.isBuyOffer() ? Res.get("createOffer.securityDepositInfoAsBuyer", depositInRADC) :
+                Res.get("createOffer.securityDepositInfo", depositInRADC);
     }
 
     public String getSecurityDepositInfo() {
@@ -1028,7 +1029,7 @@ public abstract class MutableOfferViewModel<M extends MutableOfferDataModel> ext
                     FeeService.getMinMakerFee(dataModel.isCurrencyForMakerFeeBtc()));
         } else {
             // For BSQ we use the fiat equivalent only. Calculating the % value would require to
-            // calculate the BTC value of the BSQ fee and use that...
+            // calculate the RADC value of the BSQ fee and use that...
             return OfferViewModelUtil.getTradeFeeWithFiatEquivalent(offerUtil,
                     dataModel.getMakerFeeInBsq(),
                     false,

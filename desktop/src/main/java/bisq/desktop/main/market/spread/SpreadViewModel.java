@@ -83,7 +83,7 @@ class SpreadViewModel extends ActivatableViewModel {
     ///////////////////////////////////////////////////////////////////////////////////////////
 
     @Inject
-    public SpreadViewModel(OfferBook offerBook, PriceFeedService priceFeedService, @Named(FormattingUtils.BTC_FORMATTER_KEY) CoinFormatter formatter) {
+    public SpreadViewModel(OfferBook offerBook, PriceFeedService priceFeedService, @Named(FormattingUtils.RADC_FORMATTER_KEY) CoinFormatter formatter) {
         this.offerBook = offerBook;
         this.priceFeedService = priceFeedService;
         this.formatter = formatter;

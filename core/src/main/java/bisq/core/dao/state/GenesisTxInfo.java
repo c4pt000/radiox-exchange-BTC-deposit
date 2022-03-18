@@ -49,23 +49,23 @@ public class GenesisTxInfo {
 
     private static final String TESTNET_GENESIS_TX_ID = "f35b62930b16a680ba6bc8ba8fecc4f1db65c5635b5a4b4b0445544649acf4f6";
     private static final int TESTNET_GENESIS_BLOCK_HEIGHT = 1564395; // 2019-06-21
-    private static final Coin TESTNET_GENESIS_TOTAL_SUPPLY = Coin.parseCoin("2.5"); // 2.5M BSQ / 2.50000000 BTC
+    private static final Coin TESTNET_GENESIS_TOTAL_SUPPLY = Coin.parseCoin("2.5"); // 2.5M BSQ / 2.50000000 RADC
 
     private static final String DAO_TESTNET_GENESIS_TX_ID = "cb316a186b9e88d1b8e1ce8dc79cc6a2080cc7bbc6df94f2be325d8253417af1";
     private static final int DAO_TESTNET_GENESIS_BLOCK_HEIGHT = 104; // 2019-02-19
-    private static final Coin DAO_TESTNET_GENESIS_TOTAL_SUPPLY = Coin.parseCoin("2.5"); // 2.5M BSQ / 2.50000000 BTC
+    private static final Coin DAO_TESTNET_GENESIS_TOTAL_SUPPLY = Coin.parseCoin("2.5"); // 2.5M BSQ / 2.50000000 RADC
 
     private static final String DAO_BETANET_GENESIS_TX_ID = "0bd66d8ff26476b55dfaf2a5db0c659a5d8635566488244df25606db63a08bd9";
     private static final int DAO_BETANET_GENESIS_BLOCK_HEIGHT = 567405; // 2019-03-16
-    private static final Coin DAO_BETANET_GENESIS_TOTAL_SUPPLY = Coin.parseCoin("0.49998644"); // 499 986.44 BSQ / 0.49998644 BTC
+    private static final Coin DAO_BETANET_GENESIS_TOTAL_SUPPLY = Coin.parseCoin("0.49998644"); // 499 986.44 BSQ / 0.49998644 RADC
 
     private static final String DAO_REGTEST_GENESIS_TX_ID = "d594ad0c5de53e261b5784e5eb2acec8b807c45b74450401f488d36b8acf2e14";
     private static final int DAO_REGTEST_GENESIS_BLOCK_HEIGHT = 104; // 2019-03-26
-    private static final Coin DAO_REGTEST_GENESIS_TOTAL_SUPPLY = Coin.parseCoin("2.5"); // 2.5M BSQ / 2.50000000 BTC
+    private static final Coin DAO_REGTEST_GENESIS_TOTAL_SUPPLY = Coin.parseCoin("2.5"); // 2.5M BSQ / 2.50000000 RADC
 
     private static final String REGTEST_GENESIS_TX_ID = "30af0050040befd8af25068cc697e418e09c2d8ebd8d411d2240591b9ec203cf";
     private static final int REGTEST_GENESIS_BLOCK_HEIGHT = 111;
-    private static final Coin REGTEST_GENESIS_TOTAL_SUPPLY = Coin.parseCoin("2.5"); // 2.5M BSQ / 2.50000000 BTC
+    private static final Coin REGTEST_GENESIS_TOTAL_SUPPLY = Coin.parseCoin("2.5"); // 2.5M BSQ / 2.50000000 RADC
 
 
     ///////////////////////////////////////////////////////////////////////////////////////////
@@ -89,7 +89,7 @@ public class GenesisTxInfo {
     // block 376078 has 2843 recursions and caused once a StackOverflowError, a second run worked. Took 1,2 sec.
 
 
-    // BTC MAIN NET
+    // RADC MAIN NET
     // new: --genesisBlockHeight=524717 --genesisTxId=81855816eca165f17f0668898faa8724a105196e90ffc4993f4cac980176674e
     //  private static final String DEFAULT_GENESIS_TX_ID = "e5c8313c4144d219b5f6b2dacf1d36f2d43a9039bb2fcd1bd57f8352a9c9809a";
     // private static final int DEFAULT_GENESIS_BLOCK_HEIGHT = 477865; // 2017-07-28

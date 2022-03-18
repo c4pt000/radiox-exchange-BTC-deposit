@@ -34,10 +34,10 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class FeeReceiverSelector {
-    public static final String BTC_FEE_RECEIVER_ADDRESS = "38bZBj5peYS3Husdz7AH3gEUiUbYRD951t";
+    public static final String RADC_FEE_RECEIVER_ADDRESS = "38bZBj5peYS3Husdz7AH3gEUiUbYRD951t";
 
     public static String getMostRecentAddress() {
-        return Config.baseCurrencyNetwork().isMainnet() ? BTC_FEE_RECEIVER_ADDRESS :
+        return Config.baseCurrencyNetwork().isMainnet() ? RADC_FEE_RECEIVER_ADDRESS :
                 Config.baseCurrencyNetwork().isTestnet() ? "2N4mVTpUZAnhm9phnxB7VrHB4aBhnWrcUrV" :
                         "2MzBNTJDjjXgViKBGnatDU3yWkJ8pJkEg9w";
     }

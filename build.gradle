@@ -218,6 +218,8 @@ configure(project(':proto')) {
 
 configure(project(':assets')) {
     dependencies {
+        implementation 'com.github.c4pt000:libdohj:6c72cbe'
+
         implementation("com.github.bisq-network:bitcoinj:$bitcoinjVersion") {
             exclude(module: 'bcprov-jdk15on')
             exclude(module: 'guava')
@@ -249,6 +251,9 @@ configure(project(':common')) {
         compileOnly "org.projectlombok:lombok:$lombokVersion"
         implementation "ch.qos.logback:logback-classic:$logbackVersion"
         implementation "ch.qos.logback:logback-core:$logbackVersion"
+
+        implementation 'com.github.c4pt000:libdohj:6c72cbe'
+
         implementation("com.github.bisq-network:bitcoinj:$bitcoinjVersion") {
             exclude(module: 'bcprov-jdk15on')
             exclude(module: 'guava')
@@ -304,6 +309,9 @@ configure(project(':p2p')) {
         implementation("com.github.bisq-network.netlayer:tor.native:$netlayerVersion") {
             exclude(module: 'slf4j-api')
         }
+
+        implementation 'com.github.c4pt000:libdohj:6c72cbe'
+
         implementation("com.github.bisq-network:bitcoinj:$bitcoinjVersion") {
             exclude(module: 'bcprov-jdk15on')
             exclude(module: 'guava')
@@ -381,6 +389,9 @@ configure(project(':core')) {
         implementation("com.github.bisq-network.netlayer:tor.native:$netlayerVersion") {
             exclude(module: 'slf4j-api')
         }
+
+        implementation 'com.github.c4pt000:libdohj:6c72cbe'
+
         implementation("com.github.bisq-network:bitcoinj:$bitcoinjVersion") {
             exclude(module: 'bcprov-jdk15on')
             exclude(module: 'guava')
@@ -461,7 +472,7 @@ configure(project(':desktop')) {
         modules = ['javafx.controls', 'javafx.fxml']
     }
 
-    version = '1.7.5-SNAPSHOT'
+    version = '1.8.4-SNAPSHOT'
 
     jar.manifest.attributes(
         "Implementation-Title": project.name,
@@ -501,6 +512,11 @@ configure(project(':desktop')) {
         implementation "org.fxmisc.easybind:easybind:$easybindVersion"
         implementation "org.jetbrains:annotations:$jetbrainsAnnotationsVersion"
         implementation "org.slf4j:slf4j-api:$slf4jVersion"
+
+
+
+        implementation 'com.github.c4pt000:libdohj:6c72cbe'
+
         implementation("com.github.bisq-network:bitcoinj:$bitcoinjVersion") {
             exclude(module: 'bcprov-jdk15on')
             exclude(module: 'guava')
@@ -574,6 +590,8 @@ configure(project(':monitor')) {
 configure(project(':pricenode')) {
     apply plugin: "org.springframework.boot"
 
+    apply plugin: 'io.spring.dependency-management'
+
     mainClassName = 'bisq.price.Main'
 
     version = file("src/main/resources/version.txt").text.trim()
@@ -581,6 +599,8 @@ configure(project(':pricenode')) {
     jar.manifest.attributes(
         "Implementation-Title": project.name,
         "Implementation-Version": version)
+
+    ext['log4j2.version'] = '2.17.0'
 
     dependencies {
         implementation project(":common")
@@ -718,6 +738,9 @@ configure(project(':daemon')) {
         implementation "org.apache.commons:commons-lang3:$langVersion"
         implementation "org.jetbrains:annotations:$jetbrainsAnnotationsVersion"
         implementation "org.slf4j:slf4j-api:$slf4jVersion"
+
+        implementation 'com.github.c4pt000:libdohj:6c72cbe'
+
         implementation("com.github.bisq-network:bitcoinj:$bitcoinjVersion") {
             exclude(module: 'bcprov-jdk15on')
             exclude(module: 'guava')
@@ -852,6 +875,10 @@ configure(project(':apitest')) {
         implementation "net.sf.jopt-simple:jopt-simple:$joptVersion"
         implementation "org.apache.commons:commons-lang3:$langVersion"
         implementation "org.slf4j:slf4j-api:$slf4jVersion"
+
+
+        implementation 'com.github.c4pt000:libdohj:6c72cbe'
+
         implementation("com.github.bisq-network:bitcoinj:$bitcoinjVersion") {
             exclude(module: 'bcprov-jdk15on')
             exclude(module: 'guava')

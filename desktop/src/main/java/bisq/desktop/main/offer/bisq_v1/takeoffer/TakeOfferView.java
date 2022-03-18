@@ -181,7 +181,7 @@ public class TakeOfferView extends ActivatableViewAndModel<AnchorPane, TakeOffer
     @Inject
     private TakeOfferView(TakeOfferViewModel model,
                           Navigation navigation,
-                          @Named(FormattingUtils.BTC_FORMATTER_KEY) CoinFormatter formatter,
+                          @Named(FormattingUtils.RADC_FORMATTER_KEY) CoinFormatter formatter,
                           BsqFormatter bsqFormatter,
                           OfferDetailsWindow offerDetailsWindow,
                           Transitions transitions) {
@@ -528,7 +528,7 @@ public class TakeOfferView extends ActivatableViewAndModel<AnchorPane, TakeOffer
             String key = "securityDepositInfo";
             new Popup().backgroundInfo(Res.get("popup.info.securityDepositInfo"))
                     .actionButtonText(Res.get("shared.faq"))
-                    .onAction(() -> GUIUtil.openWebPage("https://bisq.wiki/Frequently_asked_questions#Why_does_Bisq_require_a_security_deposit_in_BTC.3F"))
+                    .onAction(() -> GUIUtil.openWebPage("https://bisq.wiki/Frequently_asked_questions#Why_does_Bisq_require_a_security_deposit_in_RADC.3F"))
                     .useIUnderstandButton()
                     .dontShowAgainId(key)
                     .show();
@@ -957,7 +957,7 @@ public class TakeOfferView extends ActivatableViewAndModel<AnchorPane, TakeOffer
 
             if (missingBsq != null) {
                 new Popup().warning(missingBsq)
-                        .actionButtonText(Res.get("feeOptionWindow.useBTC"))
+                        .actionButtonText(Res.get("feeOptionWindow.useRADC"))
                         .onAction(() -> {
                             tradeFeeInBtcToggle.setSelected(true);
                             onShowPayFundsScreen();
@@ -1213,7 +1213,7 @@ public class TakeOfferView extends ActivatableViewAndModel<AnchorPane, TakeOffer
         vBox.getChildren().addAll(tradeFeeInBtcLabel, tradeFeeInBsqLabel);
 
         tradeFeeInBtcToggle = new AutoTooltipSlideToggleButton();
-        tradeFeeInBtcToggle.setText("BTC");
+        tradeFeeInBtcToggle.setText("RADC");
         tradeFeeInBtcToggle.setPadding(new Insets(-8, 5, -10, 5));
 
         tradeFeeInBsqToggle = new AutoTooltipSlideToggleButton();
@@ -1261,7 +1261,7 @@ public class TakeOfferView extends ActivatableViewAndModel<AnchorPane, TakeOffer
     }
 
     private void maybeShowTakeOfferFromUnsignedAccountWarning(Offer offer) {
-        // warn if you are selling BTC to unsigned account (#5343)
+        // warn if you are selling RADC to unsigned account (#5343)
         if (model.isSellingToAnUnsignedAccount(offer) && !takeOfferFromUnsignedAccountWarningDisplayed) {
             takeOfferFromUnsignedAccountWarningDisplayed = true;
             UserThread.runAfter(GUIUtil::showTakeOfferFromUnsignedAccountWarning, 500, TimeUnit.MILLISECONDS);

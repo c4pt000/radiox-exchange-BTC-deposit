@@ -1,17 +1,23 @@
 package bisq.desktop.util;
 
+import bisq.core.account.witness.AccountAgeWitness;
+import bisq.core.account.witness.AccountAgeWitnessService;
 import bisq.core.locale.CurrencyUtil;
 import bisq.core.locale.GlobalSettings;
 import bisq.core.locale.Res;
 import bisq.core.monetary.Price;
 import bisq.core.monetary.Volume;
 import bisq.core.offer.Offer;
+import bisq.core.payment.payload.PaymentAccountPayload;
+import bisq.core.payment.payload.PaymentMethod;
 import bisq.core.util.FormattingUtils;
 import bisq.core.offer.OfferDirection;
 import bisq.core.payment.PaymentAccount;
 import bisq.core.util.ParsingUtils;
 import bisq.core.util.VolumeUtil;
 import bisq.core.util.coin.CoinFormatter;
+
+import bisq.common.crypto.PubKeyRing;
 
 import org.bitcoinj.core.Coin;
 
@@ -74,6 +80,30 @@ public class DisplayUtils {
         }
     }
 
+    public static String getAccountWitnessDescription(AccountAgeWitnessService accountAgeWitnessService,
+                                               PaymentMethod paymentMethod,
+                                               PaymentAccountPayload paymentAccountPayload,
+                                               PubKeyRing pubKeyRing) {
+        String description = Res.get("peerInfoIcon.tooltip.unknownAge");
+        Optional<AccountAgeWitness> aaw = accountAgeWitnessService.findWitness(paymentAccountPayload, pubKeyRing);
+        if (aaw.isPresent()) {
+            long accountAge = accountAgeWitnessService.getAccountAge(aaw.get(), new Date());
+            long signAge = -1L;
+            if (PaymentMethod.hasChargebackRisk(paymentMethod)) {
+                signAge = accountAgeWitnessService.getWitnessSignAge(aaw.get(), new Date());
+            }
+            if (signAge > -1) {
+                description = Res.get("peerInfo.age.chargeBackRisk") + ": " + formatAccountAge(accountAge);
+            } else if (accountAge > -1) {
+                description = Res.get("peerInfoIcon.tooltip.age", formatAccountAge(accountAge));
+                if (PaymentMethod.hasChargebackRisk(paymentMethod)) {
+                    description += ", " + Res.get("offerbook.timeSinceSigning.notSigned");
+                }
+            }
+        }
+        return description;
+    }
+
     public static String formatAccountAge(long durationMillis) {
         durationMillis = Math.max(0, durationMillis);
         String day = Res.get("time.day").toLowerCase();
@@ -97,17 +127,11 @@ public class DisplayUtils {
             return (direction == OfferDirection.SELL) ? Res.get("shared.buyCurrency", currencyCode) : Res.get("shared.sellCurrency", currencyCode);
     }
 
-    public static String getDirectionBothSides(OfferDirection direction, String currencyCode) {
-        if (CurrencyUtil.isFiatCurrency(currencyCode)) {
-            currencyCode = Res.getBaseCurrencyCode();
-            return direction == OfferDirection.BUY ?
-                    Res.get("formatter.makerTaker", currencyCode, Res.get("shared.buyer"), currencyCode, Res.get("shared.seller")) :
-                    Res.get("formatter.makerTaker", currencyCode, Res.get("shared.seller"), currencyCode, Res.get("shared.buyer"));
-        } else {
-            return direction == OfferDirection.SELL ?
-                    Res.get("formatter.makerTaker", currencyCode, Res.get("shared.buyer"), currencyCode, Res.get("shared.seller")) :
-                    Res.get("formatter.makerTaker", currencyCode, Res.get("shared.seller"), currencyCode, Res.get("shared.buyer"));
-        }
+    public static String getDirectionBothSides(OfferDirection direction) {
+        String currencyCode = Res.getBaseCurrencyCode();
+        return direction == OfferDirection.BUY ?
+                Res.get("formatter.makerTaker", currencyCode, Res.get("shared.buyer"), currencyCode, Res.get("shared.seller")) :
+                Res.get("formatter.makerTaker", currencyCode, Res.get("shared.seller"), currencyCode, Res.get("shared.buyer"));
     }
 
     public static String getDirectionForBuyer(boolean isMyOffer, String currencyCode) {

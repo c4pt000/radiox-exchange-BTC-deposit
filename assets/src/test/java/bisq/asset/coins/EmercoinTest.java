@@ -36,7 +36,7 @@ public class EmercoinTest extends AbstractAssetTest {
 
     @Test
     public void testInvalidAddresses() {
-        assertInvalidAddress("19rem1SSWTphjsFLmcNEAvnfHaBFuDMMae");  // Valid BTC
+        assertInvalidAddress("19rem1SSWTphjsFLmcNEAvnfHaBFuDMMae");  // Valid RADC
         assertInvalidAddress("EedXjU95QcVHLEFAs5EKNT9UWqAWXTyuhE");  // Invalid EMC address
         assertInvalidAddress("DDWUYQ3GfMDj8hkx8cbnAMYkTzzAunAQxg");  // Valid DOGE
 

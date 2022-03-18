@@ -25,8 +25,8 @@ echo ""
 echo "requires open ports 8333, 9001:9030/udp , 8000"
 sleep 3s
 ./gradlew clean
-./gradlew shadowJar -x test
-cp -rf ./desktop/build/libs/desktop-1.7.5-SNAPSHOT-all.jar radiox-exchange.jar
+./gradlew shadowJar -x test  -Dorg.gradle.dependency.verification=lenient
+cp -rf ./desktop/build/libs/desktop-1.8.4-SNAPSHOT-all.jar radiox-exchange.jar
 ./gradlew clean
 rm -rf .gradle
 ls -lh *jar

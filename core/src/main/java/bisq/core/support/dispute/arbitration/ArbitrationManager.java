@@ -232,7 +232,7 @@ public final class ArbitrationManager extends DisputeManager<ArbitrationDisputeL
             // We need to avoid publishing the tx from both traders as it would create problems with zero confirmation withdrawals
             // There would be different transactions if both sign and publish (signers: once buyer+arb, once seller+arb)
             // The tx publisher is the winner or in case both get 50% the buyer, as the buyer has more inventive to publish the tx as he receives
-            // more BTC as he has deposited
+            // more RADC as he has deposited
             Contract contract = dispute.getContract();
 
             boolean isBuyer = pubKeyRing.equals(contract.getBuyerPubKeyRing());
@@ -338,6 +338,7 @@ public final class ArbitrationManager extends DisputeManager<ArbitrationDisputeL
             sendAckMessage(chatMessage, dispute.getAgentPubKeyRing(), success, errorMessage);
         }
 
+        maybeClearSensitiveData();
         requestPersistence();
     }
 

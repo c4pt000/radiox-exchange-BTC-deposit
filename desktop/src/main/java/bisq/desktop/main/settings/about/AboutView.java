@@ -72,7 +72,7 @@ public class AboutView extends ActivatableView<GridPane, Void> {
         hyperlinkWithIcon = addHyperlinkWithIcon(root, ++gridRow, Res.get("setting.about.contribute"), "https://bisq.network/contribute");
         GridPane.setColumnSpan(hyperlinkWithIcon, 2);
 
-        boolean isBtc = Res.getBaseCurrencyCode().equals("BTC");
+        boolean isBtc = Res.getBaseCurrencyCode().equals("RADC");
         addTitledGroupBg(root, ++gridRow, isBtc ? 3 : 2, Res.get("setting.about.providers"), Layout.GROUP_DISTANCE);
 
         label = addLabel(root, gridRow, Res.get(isBtc ? "setting.about.apisWithFee" : "setting.about.apis"), Layout.TWICE_FIRST_ROW_AND_GROUP_DISTANCE);

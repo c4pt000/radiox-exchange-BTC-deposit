@@ -18,19 +18,27 @@
 package bisq.common.config;
 
 import org.bitcoinj.core.NetworkParameters;
-import org.bitcoinj.params.MainNetParams;
-import org.bitcoinj.params.RegTestParams;
-import org.bitcoinj.params.TestNet3Params;
+
+
+
+//import org.bitcoinj.params.MainNetParams;
+//import org.bitcoinj.params.RegTestParams;
+//import org.bitcoinj.params.TestNet3Params;
+
+
+import org.libdohj.params.DogecoinMainNetParams;
+import org.libdohj.params.DogecoinRegTestParams;
+import org.libdohj.params.DogecoinTestNet3Params;
 
 import lombok.Getter;
 
 public enum BaseCurrencyNetwork {
-    BTC_MAINNET(MainNetParams.get(), "BTC", "MAINNET", "Bitcoin"),
-    BTC_TESTNET(TestNet3Params.get(), "BTC", "TESTNET", "Bitcoin"),
-    BTC_REGTEST(RegTestParams.get(), "BTC", "REGTEST", "Bitcoin"),
-    BTC_DAO_TESTNET(RegTestParams.get(), "BTC", "REGTEST", "Bitcoin"), // server side regtest until v0.9.5
-    BTC_DAO_BETANET(MainNetParams.get(), "BTC", "MAINNET", "Bitcoin"), // mainnet test genesis
-    BTC_DAO_REGTEST(RegTestParams.get(), "BTC", "REGTEST", "Bitcoin"); // server side regtest after v0.9.5, had breaking code changes so we started over again
+    RADC_MAINNET(DogecoinMainNetParams.get(), "RADC", "MAINNET", "Radiocoin"),
+    RADC_TESTNET(DogecoinTestNet3Params.get(), "RADC", "TESTNET", "Radiocoin"),
+    RADC_REGTEST(DogecoinRegTestParams.get(), "RADC", "REGTEST", "Radiocoin"),
+    RADC_DAO_TESTNET(DogecoinRegTestParams.get(), "RADC", "REGTEST", "Radiocoin"), // server side regtest until v0.9.5
+    RADC_DAO_BETANET(DogecoinMainNetParams.get(), "RADC", "MAINNET", "Radiocoin"), // mainnet test genesis
+    RADC_DAO_REGTEST(DogecoinRegTestParams.get(), "RADC", "REGTEST", "Radiocoin"); // server side regtest after v0.9.5, had breaking code changes so we started over again
 
     @Getter
     private final NetworkParameters parameters;
@@ -49,27 +57,27 @@ public enum BaseCurrencyNetwork {
     }
 
     public boolean isMainnet() {
-        return "BTC_MAINNET".equals(name());
+        return "RADC_MAINNET".equals(name());
     }
 
     public boolean isTestnet() {
-        return "BTC_TESTNET".equals(name());
+        return "RADC_TESTNET".equals(name());
     }
 
     public boolean isDaoTestNet() {
-        return "BTC_DAO_TESTNET".equals(name());
+        return "RADC_DAO_TESTNET".equals(name());
     }
 
     public boolean isDaoRegTest() {
-        return "BTC_DAO_REGTEST".equals(name());
+        return "RADC_DAO_REGTEST".equals(name());
     }
 
     public boolean isDaoBetaNet() {
-        return "BTC_DAO_BETANET".equals(name());
+        return "RADC_DAO_BETANET".equals(name());
     }
 
     public boolean isRegtest() {
-        return "BTC_REGTEST".equals(name());
+        return "RADC_REGTEST".equals(name());
     }
 
     public long getDefaultMinFeePerVbyte() {

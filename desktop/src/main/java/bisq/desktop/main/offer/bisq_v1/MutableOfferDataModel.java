@@ -53,7 +53,6 @@ import bisq.core.util.coin.CoinUtil;
 
 import bisq.network.p2p.P2PService;
 
-import bisq.common.app.DevEnv;
 import bisq.common.util.MathUtils;
 import bisq.common.util.Tuple2;
 import bisq.common.util.Utilities;
@@ -82,8 +81,6 @@ import javafx.collections.SetChangeListener;
 
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -161,7 +158,7 @@ public abstract class MutableOfferDataModel extends OfferDataModel implements Bs
                                  PriceFeedService priceFeedService,
                                  AccountAgeWitnessService accountAgeWitnessService,
                                  FeeService feeService,
-                                 @Named(FormattingUtils.BTC_FORMATTER_KEY) CoinFormatter btcFormatter,
+                                 @Named(FormattingUtils.RADC_FORMATTER_KEY) CoinFormatter btcFormatter,
                                  TradeStatisticsManager tradeStatisticsManager,
                                  Navigation navigation) {
         super(btcWalletService, offerUtil);
@@ -329,10 +326,6 @@ public abstract class MutableOfferDataModel extends OfferDataModel implements Bs
 
     void onPaymentAccountSelected(PaymentAccount paymentAccount) {
         if (paymentAccount != null && !this.paymentAccount.equals(paymentAccount)) {
-            volume.set(null);
-            minVolume.set(null);
-            price.set(null);
-            marketPriceMargin = 0;
             preferences.setSelectedPaymentAccountForCreateOffer(paymentAccount);
             this.paymentAccount = paymentAccount;
 
@@ -627,19 +620,11 @@ public abstract class MutableOfferDataModel extends OfferDataModel implements Bs
     }
 
     private void fillPaymentAccounts() {
-        paymentAccounts.setAll(new HashSet<>(getUserPaymentAccounts()));
+        paymentAccounts.setAll(getUserPaymentAccounts());
         paymentAccounts.sort(comparing(PaymentAccount::getAccountName));
     }
 
-    private Set<PaymentAccount> getUserPaymentAccounts() {
-        return Objects.requireNonNull(user.getPaymentAccounts()).stream()
-                .filter(this::isNotBsqSwapOrDaoActivated)
-                .collect(Collectors.toSet());
-    }
-
-    private boolean isNotBsqSwapOrDaoActivated(PaymentAccount paymentAccount) {
-        return !paymentAccount.getPaymentMethod().isBsqSwap() || DevEnv.isDaoActivated();
-    }
+    protected abstract Set<PaymentAccount> getUserPaymentAccounts();
 
     protected void setAmount(Coin amount) {
         this.amount.set(amount);
@@ -730,13 +715,13 @@ public abstract class MutableOfferDataModel extends OfferDataModel implements Bs
     }
 
     protected Coin getBoundedBuyerSecurityDepositAsCoin(Coin value) {
-        // We need to ensure that for small amount values we don't get a too low BTC amount. We limit it with using the
+        // We need to ensure that for small amount values we don't get a too low RADC amount. We limit it with using the
         // MinBuyerSecurityDepositAsCoin from Restrictions.
         return Coin.valueOf(Math.max(Restrictions.getMinBuyerSecurityDepositAsCoin().value, value.value));
     }
 
     private Coin getBoundedSellerSecurityDepositAsCoin(Coin value) {
-        // We need to ensure that for small amount values we don't get a too low BTC amount. We limit it with using the
+        // We need to ensure that for small amount values we don't get a too low RADC amount. We limit it with using the
         // MinSellerSecurityDepositAsCoin from Restrictions.
         return Coin.valueOf(Math.max(Restrictions.getMinSellerSecurityDepositAsCoin().value, value.value));
     }
@@ -782,8 +767,8 @@ public abstract class MutableOfferDataModel extends OfferDataModel implements Bs
     }
 
     boolean isAttemptToBuyBsq() {
-        // When you buy an asset you actually sell BTC.
-        // This is why an offer to buy BSQ is actually an offer to sell BTC for BSQ.
+        // When you buy an asset you actually sell RADC.
+        // This is why an offer to buy BSQ is actually an offer to sell RADC for BSQ.
         return !isBuyOffer() && getTradeCurrency().getCode().equals("BSQ");
     }
 

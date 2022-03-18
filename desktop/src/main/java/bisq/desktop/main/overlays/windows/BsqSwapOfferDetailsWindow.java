@@ -76,7 +76,7 @@ public class BsqSwapOfferDetailsWindow extends Overlay<BsqSwapOfferDetailsWindow
     ///////////////////////////////////////////////////////////////////////////////////////////
 
     @Inject
-    public BsqSwapOfferDetailsWindow(@Named(FormattingUtils.BTC_FORMATTER_KEY) CoinFormatter formatter,
+    public BsqSwapOfferDetailsWindow(@Named(FormattingUtils.RADC_FORMATTER_KEY) CoinFormatter formatter,
                                      User user,
                                      KeyRing keyRing) {
         this.formatter = formatter;

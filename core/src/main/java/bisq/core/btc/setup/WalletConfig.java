@@ -273,7 +273,7 @@ public class WalletConfig extends AbstractIdleService {
         try {
             File chainFile = new File(directory, filePrefix + ".spvchain");
             boolean chainFileExists = chainFile.exists();
-            String btcPrefix = "_BTC";
+            String btcPrefix = "_RADC";
             vBtcWalletFile = new File(directory, filePrefix + btcPrefix + ".wallet");
             boolean shouldReplayWallet = (vBtcWalletFile.exists() && !chainFileExists) || restoreFromSeed != null;
             vBtcWallet = createOrLoadWallet(shouldReplayWallet, vBtcWalletFile, false);
@@ -304,10 +304,10 @@ public class WalletConfig extends AbstractIdleService {
                     } else {
                         time = vBtcWallet.getEarliestKeyCreationTime();
                     }
-                    if (time > 0)
-                        CheckpointManager.checkpoint(params, checkpoints, vStore, time);
-                    else
-                        log.warn("Creating a new uncheckpointed block store due to a wallet with a creation time of zero: this will result in a very slow chain sync");
+                  //  if (time > 0)
+                    //    CheckpointManager.checkpoint(params, checkpoints, vStore, time);
+                //    else
+                  //      log.warn("Creating a new uncheckpointed block store due to a wallet with a creation time of zero: this will result in a very slow chain sync");
                 } else if (chainFileExists) {
                     log.info("Clearing the chain file in preparation for restore.");
                     vStore.clear();
@@ -325,7 +325,7 @@ public class WalletConfig extends AbstractIdleService {
             if (peerAddresses != null) {
                 for (PeerAddress addr : peerAddresses) vPeerGroup.addAddress(addr);
                 int maxConnections = Math.min(numConnectionsForBtc, peerAddresses.length);
-                log.info("We try to connect to {} btc nodes", maxConnections);
+                log.info("We try to connect to {} radc nodes", maxConnections);
                 vPeerGroup.setMaxConnections(maxConnections);
                 vPeerGroup.setAddPeersFromAddressMessage(false);
                 peerAddresses = null;
@@ -551,11 +551,11 @@ public class WalletConfig extends AbstractIdleService {
     public void maybeAddSegwitKeychain(Wallet wallet, KeyParameter aesKey, boolean isBsqWallet) {
         var nonSegwitAccountPath = isBsqWallet
                 ? BisqKeyChainGroupStructure.BIP44_BSQ_NON_SEGWIT_ACCOUNT_PATH
-                : BisqKeyChainGroupStructure.BIP44_BTC_NON_SEGWIT_ACCOUNT_PATH;
+                : BisqKeyChainGroupStructure.BIP44_RADC_NON_SEGWIT_ACCOUNT_PATH;
         var preSegwitBackupFilename = isBsqWallet
                 ? WalletsSetup.PRE_SEGWIT_BSQ_WALLET_BACKUP
-                : WalletsSetup.PRE_SEGWIT_BTC_WALLET_BACKUP;
-        var walletFilename = isBsqWallet ? "bisq_BSQ.wallet" : "bisq_BTC.wallet";
+                : WalletsSetup.PRE_SEGWIT_RADC_WALLET_BACKUP;
+        var walletFilename = isBsqWallet ? "radiox_BSQ.wallet" : "radiox_RADC.wallet";
 
         if (nonSegwitAccountPath.equals(wallet.getActiveKeyChain().getAccountPath())) {
             if (wallet.isEncrypted() && aesKey == null) {

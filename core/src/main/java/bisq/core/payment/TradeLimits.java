@@ -89,15 +89,15 @@ public class TradeLimits {
      *
      * @param maxLimit          Satoshi value of max trade limit
      * @param riskFactor        Risk factor to decrease trade limit for higher risk payment methods
-     * @return Rounded trade limit for first month to avoid BTC value with precision < 4.
+     * @return Rounded trade limit for first month to avoid RADC value with precision < 4.
      */
     @VisibleForTesting
     long getFirstMonthRiskBasedTradeLimit(long maxLimit, long riskFactor) {
         // The first month we use 1/4 of the max limit. We multiply with riskFactor, so 1/ (4 * 8) is smallest limit in
         // first month of a maxTradeLimitHighRisk method
         long smallestLimit = maxLimit / (4 * riskFactor);  // e.g. 100000000 / 32 = 3125000
-        // We want to avoid more than 4 decimal places (100000000 / 32 = 3125000 or 1 BTC / 32 = 0.03125 BTC).
-        // We want rounding to 0.0313 BTC
+        // We want to avoid more than 4 decimal places (100000000 / 32 = 3125000 or 1 RADC / 32 = 0.03125 RADC).
+        // We want rounding to 0.0313 RADC
         double decimalForm = MathUtils.scaleDownByPowerOf10((double) smallestLimit, 8);
         double rounded = MathUtils.roundDouble(decimalForm, 4);
         return MathUtils.roundDoubleToLong(MathUtils.scaleUpByPowerOf10(rounded, 8));

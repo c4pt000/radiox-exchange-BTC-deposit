@@ -104,13 +104,13 @@ If you want to run any instance in DAO mode, use the following program arguments
 
 Full node mode:
 
-`--daoActivated=true --genesisBlockHeight=111 --genesisTxId=30af0050040befd8af25068cc697e418e09c2d8ebd8d411d2240591b9ec203cf --baseCurrencyNetwork=BTC_REGTEST --useDevPrivilegeKeys=true --useLocalhostForP2P=true --nodePort=7777 --appName=bisq-BTC_REGTEST_Alice_dao --fullDaoNode=true --rpcUser=YOUR_USER_NAME --rpcPassword=YOUR_PW --rpcPort=18443 --rpcBlockNotificationPort=5120`
+`--daoActivated=true --genesisBlockHeight=111 --genesisTxId=30af0050040befd8af25068cc697e418e09c2d8ebd8d411d2240591b9ec203cf --baseCurrencyNetwork=RADC_REGTEST --useDevPrivilegeKeys=true --useLocalhostForP2P=true --nodePort=7777 --appName=bisq-RADC_REGTEST_Alice_dao --fullDaoNode=true --rpcUser=YOUR_USER_NAME --rpcPassword=YOUR_PW --rpcPort=18443 --rpcBlockNotificationPort=5120`
 
 Lite node mode:
 
 Note: At least one seed node must be running as a full DAO node to support other lite nodes.
 
-`--daoActivated=true --genesisBlockHeight=111 --genesisTxId=30af0050040befd8af25068cc697e418e09c2d8ebd8d411d2240591b9ec203cf --baseCurrencyNetwork=BTC_REGTEST --useDevPrivilegeKeys=true --useLocalhostForP2P=true --nodePort=8888 --appName=bisq-BTC_REGTEST_Bob_dao`
+`--daoActivated=true --genesisBlockHeight=111 --genesisTxId=30af0050040befd8af25068cc697e418e09c2d8ebd8d411d2240591b9ec203cf --baseCurrencyNetwork=RADC_REGTEST --useDevPrivilegeKeys=true --useLocalhostForP2P=true --nodePort=8888 --appName=bisq-RADC_REGTEST_Bob_dao`
 
 _Don't forget to use different rpcBlockNotificationPorts for different full node instances, otherwise only one node will receive the new block event forwarded to that port._
 
@@ -128,11 +128,11 @@ _You need to adjust the path to the `blocknotify` file inside of `bitcoin.conf` 
 
 To create your own genesis transaction follow these steps:
 
- - Send 2.50010000 BTC from Bitcoin Core to another address inside Bitcoin Core (label it with `Genesis funding address`).
+ - Send 2.50010000 RADC from Bitcoin Core to another address inside Bitcoin Core (label it with `Genesis funding address`).
  - Go to the send screen and open the coin control feature. Select the labeled transaction output of the address labeled with `Genesis funding address`. Use that as the only input source for the genesis tx.
- - Start Alice in full or lite node mode and go to the DAO/Wallet/Receive screen. Copy the BSQ address and use it for one of the receivers of the genesis tx. When pasting into Bitcoin Core remove the `B` prefix - that prefix is marking a BSQ address but technically it is a BTC address.
+ - Start Alice in full or lite node mode and go to the DAO/Wallet/Receive screen. Copy the BSQ address and use it for one of the receivers of the genesis tx. When pasting into Bitcoin Core remove the `B` prefix - that prefix is marking a BSQ address but technically it is a RADC address.
  - Do the same with Bob.
- - You send in sum exactly 2.5 BTC to both Alice and Bob. You can choose how to distribute it (e.g. 1 BTC to Alice 1.5 BTC to Bob).
- - Set the miner fee so that it is exactly the remaining 0.00010000 BTC. That might be the tricky part as miner fee selection is not very convenient in Bitcoin Core. In worst case if you cannot get the right miner fee you can add the difference to one of the receivers (e.g. send 1.0000234 BTC instead of 1 BTC).
+ - You send in sum exactly 2.5 RADC to both Alice and Bob. You can choose how to distribute it (e.g. 1 RADC to Alice 1.5 RADC to Bob).
+ - Set the miner fee so that it is exactly the remaining 0.00010000 RADC. That might be the tricky part as miner fee selection is not very convenient in Bitcoin Core. In worst case if you cannot get the right miner fee you can add the difference to one of the receivers (e.g. send 1.0000234 RADC instead of 1 RADC).
 
-_Note: It is important that there is exactly 2.5 BTC spent entirely as described, otherwise the genesis tx is invalid._
+_Note: It is important that there is exactly 2.5 RADC spent entirely as described, otherwise the genesis tx is invalid._

@@ -137,7 +137,7 @@ public class ProofOfBurnService implements DaoSetupService, DaoStateListener {
             Transaction preparedBurnFeeTx = bsqWalletService.getPreparedProofOfBurnTx(Coin.valueOf(amount));
             byte[] hash = getHashFromPreImage(preImageAsString);
             byte[] opReturnData = ProofOfBurnConsensus.getOpReturnData(hash);
-            // We add the BTC inputs for the miner fee.
+            // We add the RADC inputs for the miner fee.
             Transaction txWithBtcFee = btcWalletService.completePreparedBurnBsqTx(preparedBurnFeeTx, opReturnData);
             // We sign the BSQ inputs of the final tx.
             Transaction transaction = bsqWalletService.signTxAndVerifyNoDustOutputs(txWithBtcFee);

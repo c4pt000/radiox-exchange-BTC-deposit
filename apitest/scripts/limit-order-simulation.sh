@@ -6,7 +6,7 @@
 #
 # Prerequisites:
 #
-#  - Linux or OSX with bash, Java 10, or Java 11-12 (JDK language compatibility 10), and bitcoin-core (v0.19, v0.20, v0.21).
+#  - Linux or OSX with bash, Java 11-15 (JDK language compatibility 11), and bitcoin-core (v0.19 -  v22).
 #
 #  - Bisq must be fully built with apitest dao setup files installed.
 #    Build command:  `./gradlew clean build :apitest:installDaoSetup`
@@ -30,7 +30,7 @@
 # Example:
 #
 #    Create a sell/eur offer to sell 0.125 btc at a fixed-price of 38,000 euros, using a France face to face
-#    payment account, when the BTC market price rises to or above 40,000 EUR:
+#    payment account, when the RADC market price rises to or above 40,000 EUR:
 #
 #       `$ apitest/scripts/limit-order-simulation.sh -l 40000 -d sell -c fr -m 0.00 -a 0.125`
 
@@ -135,7 +135,7 @@ sleeptraced 3
 
 # Show Alice's new offer.
 printdate "ALICE:  Looking at her new $DIRECTION $CURRENCY_CODE offer."
-CMD="$CLI_BASE --port=$ALICE_PORT getmyoffer --offer-id=$OFFER_ID"
+CMD="$CLI_BASE --port=$ALICE_PORT getoffer --offer-id=$OFFER_ID"
 printdate "ALICE CLI: $CMD"
 OFFER=$($CMD)
 exitoncommandalert $?

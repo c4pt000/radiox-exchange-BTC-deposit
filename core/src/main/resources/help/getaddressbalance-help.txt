@@ -11,12 +11,12 @@ getaddressbalance
 
 DESCRIPTION
 -----------
-Returns the balance of a BTC address in the Bisq server's wallet.
+Returns the balance of a RADC address in the Bisq server's wallet.
 
 OPTIONS
 -------
 --address=<btc-address>
-		The BTC address.
+		The RADC address.
 
 EXAMPLES
 --------

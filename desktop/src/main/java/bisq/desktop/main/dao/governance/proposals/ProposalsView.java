@@ -173,7 +173,7 @@ public class ProposalsView extends ActivatableView<GridPane, Void> implements Bs
                           MyBlindVoteListService myBlindVoteListService,
                           Preferences preferences,
                           BsqFormatter bsqFormatter,
-                          @Named(FormattingUtils.BTC_FORMATTER_KEY) CoinFormatter btcFormatter,
+                          @Named(FormattingUtils.RADC_FORMATTER_KEY) CoinFormatter btcFormatter,
                           SelectProposalWindow selectProposalWindow) {
         this.daoFacade = daoFacade;
         this.bsqWalletService = bsqWalletService;

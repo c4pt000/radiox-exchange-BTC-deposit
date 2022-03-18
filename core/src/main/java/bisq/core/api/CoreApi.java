@@ -26,15 +26,18 @@ import bisq.core.offer.OpenOffer;
 import bisq.core.payment.PaymentAccount;
 import bisq.core.payment.payload.PaymentMethod;
 import bisq.core.trade.bisq_v1.TradeResultHandler;
+import bisq.core.trade.model.Tradable;
+import bisq.core.trade.model.TradeModel;
 import bisq.core.trade.model.bisq_v1.Trade;
 import bisq.core.trade.model.bsq_swap.BsqSwapTrade;
-import bisq.core.trade.statistics.TradeStatistics3;
 import bisq.core.trade.statistics.TradeStatisticsManager;
 
 import bisq.common.app.Version;
 import bisq.common.config.Config;
 import bisq.common.handlers.ErrorMessageHandler;
 import bisq.common.handlers.ResultHandler;
+
+import bisq.proto.grpc.GetTradesRequest;
 
 import org.bitcoinj.core.Transaction;
 
@@ -43,8 +46,8 @@ import javax.inject.Singleton;
 
 import com.google.common.util.concurrent.FutureCallback;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -119,6 +122,18 @@ public class CoreApi {
     // Offers
     ///////////////////////////////////////////////////////////////////////////////////////////
 
+    public boolean isFiatOffer(String id, boolean isMyOffer) {
+        return coreOffersService.isFiatOffer(id, isMyOffer);
+    }
+
+    public boolean isAltcoinOffer(String id, boolean isMyOffer) {
+        return coreOffersService.isAltcoinOffer(id, isMyOffer);
+    }
+
+    public boolean isBsqSwapOffer(String id, boolean isMyOffer) {
+        return coreOffersService.isBsqSwapOffer(id, isMyOffer);
+    }
+
     public Offer getBsqSwapOffer(String id) {
         return coreOffersService.getBsqSwapOffer(id);
     }
@@ -127,8 +142,16 @@ public class CoreApi {
         return coreOffersService.getOffer(id);
     }
 
+    public Optional<Offer> findAvailableOffer(String id) {
+        return coreOffersService.findAvailableOffer(id);
+    }
+
     public OpenOffer getMyOffer(String id) {
         return coreOffersService.getMyOffer(id);
+    }
+
+    public Optional<OpenOffer> findMyOpenOffer(String id) {
+        return coreOffersService.findMyOpenOffer(id);
     }
 
     public Offer getMyBsqSwapOffer(String id) {
@@ -169,24 +192,24 @@ public class CoreApi {
 
     public void createAndPlaceOffer(String currencyCode,
                                     String directionAsString,
-                                    String priceAsString,
+                                    String price,
                                     boolean useMarketBasedPrice,
                                     double marketPriceMargin,
                                     long amountAsLong,
                                     long minAmountAsLong,
-                                    double buyerSecurityDeposit,
-                                    long triggerPrice,
+                                    double buyerSecurityDepositPct,
+                                    String triggerPrice,
                                     String paymentAccountId,
                                     String makerFeeCurrencyCode,
                                     Consumer<Offer> resultHandler) {
         coreOffersService.createAndPlaceOffer(currencyCode,
                 directionAsString,
-                priceAsString,
+                useMarketBasedPrice ? "0" : price,
                 useMarketBasedPrice,
                 marketPriceMargin,
                 amountAsLong,
                 minAmountAsLong,
-                buyerSecurityDeposit,
+                buyerSecurityDepositPct,
                 triggerPrice,
                 paymentAccountId,
                 makerFeeCurrencyCode,
@@ -194,14 +217,14 @@ public class CoreApi {
     }
 
     public void editOffer(String offerId,
-                          String priceAsString,
+                          String price,
                           boolean useMarketBasedPrice,
                           double marketPriceMargin,
-                          long triggerPrice,
+                          String triggerPrice,
                           int enable,
                           EditType editType) {
         coreOffersService.editOffer(offerId,
-                priceAsString,
+                price,
                 useMarketBasedPrice,
                 marketPriceMargin,
                 triggerPrice,
@@ -213,8 +236,8 @@ public class CoreApi {
         coreOffersService.cancelOffer(id);
     }
 
-    public boolean isMyOffer(String id) {
-        return coreOffersService.isMyOffer(id);
+    public boolean isMyOffer(Offer offer) {
+        return coreOffersService.isMyOffer(offer);
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////
@@ -264,14 +287,10 @@ public class CoreApi {
     ///////////////////////////////////////////////////////////////////////////////////////////
 
     public void takeBsqSwapOffer(String offerId,
-                                 String paymentAccountId,
-                                 String takerFeeCurrencyCode,
                                  TradeResultHandler<BsqSwapTrade> tradeResultHandler,
                                  ErrorMessageHandler errorMessageHandler) {
         Offer bsqSwapOffer = coreOffersService.getBsqSwapOffer(offerId);
         coreTradesService.takeBsqSwapOffer(bsqSwapOffer,
-                paymentAccountId,
-                takerFeeCurrencyCode,
                 tradeResultHandler,
                 errorMessageHandler);
     }
@@ -297,24 +316,44 @@ public class CoreApi {
         coreTradesService.confirmPaymentReceived(tradeId);
     }
 
-    public void keepFunds(String tradeId) {
-        coreTradesService.keepFunds(tradeId);
+    public void closeTrade(String tradeId) {
+        coreTradesService.closeTrade(tradeId);
     }
 
     public void withdrawFunds(String tradeId, String address, String memo) {
         coreTradesService.withdrawFunds(tradeId, address, memo);
     }
 
-    public BsqSwapTrade getBsqSwapTrade(String tradeId) {
-        return coreTradesService.getBsqSwapTrade(tradeId);
+    public TradeModel getTradeModel(String tradeId) {
+        return coreTradesService.getTradeModel(tradeId);
     }
 
-    public Trade getTrade(String tradeId) {
-        return coreTradesService.getTrade(tradeId);
+    public List<TradeModel> getOpenTrades() {
+        return coreTradesService.getOpenTrades();
     }
 
-    public String getTradeRole(String tradeId) {
-        return coreTradesService.getTradeRole(tradeId);
+    public List<TradeModel> getTradeHistory(GetTradesRequest.Category category) {
+        return coreTradesService.getTradeHistory(category);
+    }
+
+    public String getTradeRole(TradeModel tradeModel) {
+        return coreTradesService.getTradeRole(tradeModel);
+    }
+
+    public void failTrade(String tradeId) {
+        coreTradesService.failTrade(tradeId);
+    }
+
+    public void unFailTrade(String tradeId) {
+        coreTradesService.unFailTrade(tradeId);
+    }
+
+    public List<OpenOffer> getCanceledOpenOffers() {
+        return coreTradesService.getCanceledOpenOffers();
+    }
+
+    public String getClosedTradeStateAsString(Tradable tradable) {
+        return coreTradesService.getClosedTradeStateAsString(tradable);
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////
@@ -381,6 +420,10 @@ public class CoreApi {
         return walletsService.getTransaction(txId);
     }
 
+    public int getTransactionConfirmations(String txId) {
+        return walletsService.getTransactionConfirmations(txId);
+    }
+
     public void setWalletPassword(String password, String newPassword) {
         walletsService.setWalletPassword(password, newPassword);
     }
@@ -395,10 +438,6 @@ public class CoreApi {
 
     public void removeWalletPassword(String password) {
         walletsService.removeWalletPassword(password);
-    }
-
-    public List<TradeStatistics3> getTradeStatistics() {
-        return new ArrayList<>(tradeStatisticsManager.getObservableTradeStatisticsSet());
     }
 
     public int getNumConfirmationsForMostRecentTransaction(String addressString) {

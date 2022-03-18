@@ -68,7 +68,7 @@ public class FeeRateService {
                 return;
             }
             String currency = feeRate.getCurrency();
-            if ("BTC".equals(currency)) {
+            if ("RADC".equals(currency)) {
                 sumOfAllFeeRates.getAndAdd(feeRate.getPrice());
                 sumOfAllMinFeeRates.getAndAdd(feeRate.getMinimumFee());
                 amountOfFeeRates.getAndAdd(1);
@@ -92,11 +92,11 @@ public class FeeRateService {
         // Prepare response: Add timestamp of now
         // Since this is an average, the timestamp is associated with when the moment in
         // time when the avg was computed
-        metadata.put(Config.BTC_FEES_TS, Instant.now().getEpochSecond());
+        metadata.put(Config.RADC_FEES_TS, Instant.now().getEpochSecond());
 
         // Prepare response: Add the fee average
-        allFeeRates.put(Config.BTC_TX_FEE, averageFeeRate);
-        allFeeRates.put(Config.BTC_MIN_TX_FEE, averageMinFeeRate);
+        allFeeRates.put(Config.RADC_TX_FEE, averageFeeRate);
+        allFeeRates.put(Config.RADC_MIN_TX_FEE, averageMinFeeRate);
 
         // Build response
         return new HashMap<>() {{

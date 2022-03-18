@@ -52,7 +52,7 @@ class BsqTxListItem extends TxConfidenceListItem {
     private final BsqFormatter bsqFormatter;
     private final Date date;
     private final boolean isBurnedBsqTx;
-    private final boolean withdrawalToBTCWallet;
+    private final boolean withdrawalToRADCWallet;
 
     private final String address;
     private final String direction;
@@ -79,10 +79,10 @@ class BsqTxListItem extends TxConfidenceListItem {
 
         Coin valueSentToMe = bsqWalletService.getValueSentToMeForTransaction(transaction);
         Coin valueSentFromMe = bsqWalletService.getValueSentFromMeForTransaction(transaction);
-        Coin valueSentToMyBTCWallet = btcWalletService.getValueSentToMeForTransaction(transaction);
-        Coin valueSentFromMyBTCWallet = btcWalletService.getValueSentFromMeForTransaction(transaction);
+        Coin valueSentToMyRADCWallet = btcWalletService.getValueSentToMeForTransaction(transaction);
+        Coin valueSentFromMyRADCWallet = btcWalletService.getValueSentFromMeForTransaction(transaction);
 
-        withdrawalToBTCWallet = valueSentToMyBTCWallet.getValue() > valueSentFromMyBTCWallet.getValue();
+        withdrawalToRADCWallet = valueSentToMyRADCWallet.getValue() > valueSentFromMyRADCWallet.getValue();
 
         amount = valueSentToMe.subtract(valueSentFromMe);
         if (amount.isPositive()) {
@@ -115,7 +115,7 @@ class BsqTxListItem extends TxConfidenceListItem {
             }
         }
 
-        // In the case we sent to ourselves (either to BSQ or BTC wallet) we show the first as the other is
+        // In the case we sent to ourselves (either to BSQ or RADC wallet) we show the first as the other is
         // usually the change output.
         String receivedWithAddress = Res.get("shared.na");
         for (TransactionOutput output : transaction.getOutputs()) {
@@ -145,7 +145,7 @@ class BsqTxListItem extends TxConfidenceListItem {
         this.daoFacade = null;
         this.isBurnedBsqTx = false;
         this.date = null;
-        this.withdrawalToBTCWallet = false;
+        this.withdrawalToRADCWallet = false;
         this.address = null;
         this.direction = null;
         this.amount = null;
@@ -159,8 +159,8 @@ class BsqTxListItem extends TxConfidenceListItem {
                 .orElse(confirmations == 0 ? TxType.UNVERIFIED : TxType.UNDEFINED_TX_TYPE);
     }
 
-    boolean isWithdrawalToBTCWallet() {
-        return withdrawalToBTCWallet;
+    boolean isWithdrawalToRADCWallet() {
+        return withdrawalToRADCWallet;
     }
 
     String getDateAsString() {

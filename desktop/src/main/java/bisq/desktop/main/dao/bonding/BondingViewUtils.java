@@ -118,7 +118,7 @@ public class BondingViewUtils {
                                     bsqFormatter.formatCoinWithCode(lockupAmount),
                                     lockupTime,
                                     duration,
-                                    bsqFormatter.formatBTCWithCode(miningFee),
+                                    bsqFormatter.formatRADCWithCode(miningFee),
                                     CoinUtil.getFeePerVbyte(miningFee, txVsize),
                                     txVsize / 1000d
                             ))
@@ -176,7 +176,7 @@ public class BondingViewUtils {
                                     bsqFormatter.formatCoinWithCode(unlockAmount),
                                     lockTime,
                                     duration,
-                                    bsqFormatter.formatBTCWithCode(miningFee),
+                                    bsqFormatter.formatRADCWithCode(miningFee),
                                     CoinUtil.getFeePerVbyte(miningFee, txVsize),
                                     txVsize / 1000d
                             ))

@@ -148,7 +148,7 @@ class TakeOfferViewModel extends ActivatableWithDataModel<TakeOfferDataModel> im
                               P2PService p2PService,
                               AccountAgeWitnessService accountAgeWitnessService,
                               Navigation navigation,
-                              @Named(FormattingUtils.BTC_FORMATTER_KEY) CoinFormatter btcFormatter,
+                              @Named(FormattingUtils.RADC_FORMATTER_KEY) CoinFormatter btcFormatter,
                               BsqFormatter bsqFormatter) {
         super(dataModel);
         this.dataModel = dataModel;
@@ -280,7 +280,7 @@ class TakeOfferViewModel extends ActivatableWithDataModel<TakeOfferDataModel> im
 
     private void applyTakerFee() {
         tradeFeeDescription.set(DevEnv.isDaoActivated() ? Res.get("createOffer.tradeFee.descriptionBSQEnabled") :
-                Res.get("createOffer.tradeFee.descriptionBTCOnly"));
+                Res.get("createOffer.tradeFee.descriptionRADCOnly"));
         Coin takerFeeAsCoin = dataModel.getTakerFee();
         if (takerFeeAsCoin == null) {
             return;
@@ -715,7 +715,7 @@ class TakeOfferViewModel extends ActivatableWithDataModel<TakeOfferDataModel> im
                     FeeService.getMinMakerFee(dataModel.isCurrencyForTakerFeeBtc()));
         } else {
             // For BSQ we use the fiat equivalent only. Calculating the % value would require to
-            // calculate the BTC value of the BSQ fee and use that...
+            // calculate the RADC value of the BSQ fee and use that...
             return OfferViewModelUtil.getTradeFeeWithFiatEquivalent(offerUtil,
                     dataModel.getTakerFeeInBsq(),
                     false,

@@ -378,8 +378,8 @@ public class BsqSwapTakeOfferView extends BsqSwapOfferView<BsqSwapTakeOfferViewM
             if (newValue == null) {
                 return;
             }
-            new Popup().error(Res.get("takeOffer.error.message", model.errorMessage.get()) + "\n\n" +
-                            Res.get("popup.error.tryRestart"))
+            new Popup().warning(Res.get("takeOffer.error.message", model.errorMessage.get()) +
+                            Res.get("notification.bsqSwap.errorHelp"))
                     .onClose(() -> {
                         model.resetErrorMessage();
                         model.dataModel.removeOffer();
@@ -504,7 +504,7 @@ public class BsqSwapTakeOfferView extends BsqSwapOfferView<BsqSwapTakeOfferViewM
         priceValueCurrencyBox = priceValueCurrencyBoxTuple.first;
         priceTextField = priceValueCurrencyBoxTuple.second;
         priceCurrencyLabel = priceValueCurrencyBoxTuple.third;
-        priceCurrencyLabel.setText("BTC");
+        priceCurrencyLabel.setText("RADC");
         Tuple2<Label, VBox> priceInputBoxTuple = getTradeInputBox(priceValueCurrencyBox,
                 Res.get("takeOffer.amountPriceBox.priceDescription"));
         priceDescriptionLabel = priceInputBoxTuple.first;
@@ -592,7 +592,7 @@ public class BsqSwapTakeOfferView extends BsqSwapOfferView<BsqSwapTakeOfferViewM
         if (!isMissingFundsPopupOpen) {
             isMissingFundsPopupOpen = true;
             missingFundsPopupDisplayed = true;
-            String wallet = model.dataModel.isBuyer() ? "BSQ" : "BTC";
+            String wallet = model.dataModel.isBuyer() ? "BSQ" : "RADC";
             String warning = Res.get("createOffer.bsqSwap.missingFunds.taker",
                     wallet, model.getMissingFunds(model.dataModel.getMissingFunds().get()));
             new Popup().warning(warning)

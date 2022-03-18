@@ -48,7 +48,7 @@ public class QRCodeWindow extends Overlay<QRCodeWindow> {
         this.bitcoinURI = bitcoinURI;
         final byte[] imageBytes = QRCode
                 .from(bitcoinURI)
-                .withSize(250, 250)
+                .withSize(300, 300)
                 .to(ImageType.PNG)
                 .stream()
                 .toByteArray();
@@ -72,7 +72,7 @@ public class QRCodeWindow extends Overlay<QRCodeWindow> {
         GridPane.setHalignment(qrCodeImageView, HPos.CENTER);
         gridPane.getChildren().add(qrCodeImageView);
 
-        String request = bitcoinURI.replace("%20", " ").replace("?", "\n?").replace("&", "\n&");
+        String request = bitcoinURI.replace("%20", "").replace("?", "").replace("&", "");
         Label infoLabel = new AutoTooltipLabel(Res.get("qRCodeWindow.request", request));
         infoLabel.setMouseTransparent(true);
         infoLabel.setWrapText(true);

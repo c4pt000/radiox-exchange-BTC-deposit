@@ -418,7 +418,7 @@ public class NetworkSettingsView extends ActivatableView<GridPane, Void> {
                         && btcNodesInputTextField.validate()
                         && currentBitcoinNodesOption != BtcNodes.BitcoinNodesOption.CUSTOM) {
                     preferences.setBitcoinNodesOptionOrdinal(selectedBitcoinNodesOption.ordinal());
-                    configFileEditor.clearOption(Config.NUM_CONNECTIONS_FOR_BTC);
+                    configFileEditor.clearOption(Config.NUM_CONNECTIONS_FOR_RADC);
                     if (calledFromUser) {
                         if (isPreventPublicBtcNetwork()) {
                             new Popup().warning(Res.get("settings.net.warn.useCustomNodes.B2XWarning"))
@@ -434,8 +434,8 @@ public class NetworkSettingsView extends ActivatableView<GridPane, Void> {
                 btcNodesLabel.setDisable(true);
                 if (currentBitcoinNodesOption != BtcNodes.BitcoinNodesOption.PUBLIC) {
                     preferences.setBitcoinNodesOptionOrdinal(selectedBitcoinNodesOption.ordinal());
-                    configFileEditor.setOption(Config.NUM_CONNECTIONS_FOR_BTC,
-                            String.valueOf(Config.DEFAULT_NUM_CONNECTIONS_FOR_BTC_PUBLIC));
+                    configFileEditor.setOption(Config.NUM_CONNECTIONS_FOR_RADC,
+                            String.valueOf(Config.DEFAULT_NUM_CONNECTIONS_FOR_RADC_PUBLIC));
                     if (calledFromUser) {
                         new Popup()
                                 .warning(Res.get("settings.net.warn.usePublicNodes"))
@@ -443,7 +443,7 @@ public class NetworkSettingsView extends ActivatableView<GridPane, Void> {
                                 .onAction(() -> UserThread.runAfter(() -> {
                                     selectedBitcoinNodesOption = BtcNodes.BitcoinNodesOption.PROVIDED;
                                     preferences.setBitcoinNodesOptionOrdinal(selectedBitcoinNodesOption.ordinal());
-                                    configFileEditor.clearOption(Config.NUM_CONNECTIONS_FOR_BTC);
+                                    configFileEditor.clearOption(Config.NUM_CONNECTIONS_FOR_RADC);
                                     selectBitcoinPeersToggle();
                                     onBitcoinPeersToggleSelected(false);
                                 }, 300, TimeUnit.MILLISECONDS))
@@ -460,7 +460,7 @@ public class NetworkSettingsView extends ActivatableView<GridPane, Void> {
                     btcNodesLabel.setDisable(true);
                     if (currentBitcoinNodesOption != BtcNodes.BitcoinNodesOption.PROVIDED) {
                         preferences.setBitcoinNodesOptionOrdinal(selectedBitcoinNodesOption.ordinal());
-                        configFileEditor.clearOption(Config.NUM_CONNECTIONS_FOR_BTC);
+                        configFileEditor.clearOption(Config.NUM_CONNECTIONS_FOR_RADC);
                         if (calledFromUser) {
                             showShutDownPopup();
                         }
@@ -468,8 +468,8 @@ public class NetworkSettingsView extends ActivatableView<GridPane, Void> {
                 } else {
                     selectedBitcoinNodesOption = BtcNodes.BitcoinNodesOption.PUBLIC;
                     preferences.setBitcoinNodesOptionOrdinal(selectedBitcoinNodesOption.ordinal());
-                    configFileEditor.setOption(Config.NUM_CONNECTIONS_FOR_BTC,
-                            String.valueOf(Config.DEFAULT_NUM_CONNECTIONS_FOR_BTC_PUBLIC));
+                    configFileEditor.setOption(Config.NUM_CONNECTIONS_FOR_RADC,
+                            String.valueOf(Config.DEFAULT_NUM_CONNECTIONS_FOR_RADC_PUBLIC));
                     selectBitcoinPeersToggle();
                     onBitcoinPeersToggleSelected(false);
                 }

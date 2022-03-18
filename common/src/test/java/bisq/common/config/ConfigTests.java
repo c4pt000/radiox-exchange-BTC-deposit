@@ -190,7 +190,7 @@ public class ConfigTests {
 
     @Test
     public void whenBannedBtcNodesOptionIsSet_thenBannedBtcNodesPropertyReturnsItsValue() {
-        Config config = configWithOpts(opt(BANNED_BTC_NODES, "foo.onion:8333,bar.onion:8333"));
+        Config config = configWithOpts(opt(BANNED_RADC_NODES, "foo.onion:8333,bar.onion:8333"));
         assertThat(config.bannedBtcNodes, contains("foo.onion:8333", "bar.onion:8333"));
     }
 

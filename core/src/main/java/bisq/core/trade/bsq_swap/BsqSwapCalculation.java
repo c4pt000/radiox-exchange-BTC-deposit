@@ -40,12 +40,12 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * The fees can be paid either by adding them to the inputs or by reducing them from the outputs. As we want to avoid
  * extra inputs only needed for the fees (tx fee in case of buyer and trade fee in case of seller) we let
- * the buyer add the trade fee to the BSQ input and reduce the tx fee from the BTC output. For the seller its the
+ * the buyer add the trade fee to the BSQ input and reduce the tx fee from the RADC output. For the seller its the
  * other way round.
  *
  *
  * The example numbers are:
- * BTC trade amount 100000000 sat (1 BTC)
+ * RADC trade amount 100000000 sat (1 RADC)
  * BSQ trade amount: 5000000 sat (50000.00 BSQ)
  * Buyer trade fee: 50 sat (0.5 BSQ)
  * Seller trade fee: 150 sat (1.5 BSQ)
@@ -53,11 +53,11 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * Seller tx fee:  1850 sat (total tx fee would be 2000 but we subtract the 150 sat trade fee)
  *
  * Input buyer: BSQ trade amount + buyer trade fee                                              5000000 + 50
- * Input seller: BTC trade amount + seller tx fee                                               100000000 + 1850
+ * Input seller: RADC trade amount + seller tx fee                                               100000000 + 1850
  * Output seller: BSQ trade amount - sellers trade fee                                          5000000 - 150
  * Output buyer:  BSQ change                                                                    0
- * Output buyer:  BTC trade amount - buyers tx fee                                              100000000 - 1950
- * Output seller:  BTC change                                                                   0
+ * Output buyer:  RADC trade amount - buyers tx fee                                              100000000 - 1950
+ * Output seller:  RADC change                                                                   0
  * Tx fee: Buyer tx fee + seller tx fee + buyer trade fee + seller trade fee                    1950 + 1850 + 50 + 150
  */
 @Slf4j
@@ -235,7 +235,7 @@ public class BsqSwapCalculation {
         return txFeePerVbyte * vBytes - tradeFee;
     }
 
-    // Convert BTC trade amount to BSQ amount
+    // Convert RADC trade amount to BSQ amount
     public static Coin getBsqTradeAmount(Volume volume) {
         // We treat BSQ as altcoin with smallest unit exponent 8 but we use 2 instead.
         // To avoid a larger refactoring of the monetary domain we just hack in the conversion here

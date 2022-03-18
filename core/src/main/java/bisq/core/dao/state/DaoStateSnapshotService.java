@@ -17,6 +17,8 @@
 
 package bisq.core.dao.state;
 
+import bisq.core.btc.setup.WalletsSetup;
+import bisq.core.btc.wallet.BsqWalletService;
 import bisq.core.dao.DaoSetupService;
 import bisq.core.dao.governance.param.Param;
 import bisq.core.dao.monitoring.DaoStateMonitoringService;
@@ -27,6 +29,7 @@ import bisq.core.dao.state.storage.DaoStateStorageService;
 import bisq.core.trade.DelayedPayoutAddressProvider;
 import bisq.core.user.Preferences;
 
+import bisq.common.UserThread;
 import bisq.common.config.Config;
 import bisq.common.util.GcUtil;
 
@@ -46,8 +49,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.Nullable;
 
-import static com.google.common.base.Preconditions.checkArgument;
-
 /**
  * Manages periodical snapshots of the DaoState.
  * At startup we apply a snapshot if available.
@@ -63,6 +64,8 @@ public class DaoStateSnapshotService implements DaoSetupService, DaoStateListene
     private final GenesisTxInfo genesisTxInfo;
     private final DaoStateStorageService daoStateStorageService;
     private final DaoStateMonitoringService daoStateMonitoringService;
+    private final WalletsSetup walletsSetup;
+    private final BsqWalletService bsqWalletService;
     private final Preferences preferences;
     private final Config config;
     private final File storageDir;
@@ -75,6 +78,7 @@ public class DaoStateSnapshotService implements DaoSetupService, DaoStateListene
     @Setter
     @Nullable
     private Runnable daoRequiresRestartHandler;
+    private int daoRequiresRestartHandlerAttempts = 0;
     private boolean readyForPersisting = true;
     private boolean isParseBlockChainComplete;
 
@@ -88,6 +92,8 @@ public class DaoStateSnapshotService implements DaoSetupService, DaoStateListene
                                    GenesisTxInfo genesisTxInfo,
                                    DaoStateStorageService daoStateStorageService,
                                    DaoStateMonitoringService daoStateMonitoringService,
+                                   WalletsSetup walletsSetup,
+                                   BsqWalletService bsqWalletService,
                                    Preferences preferences,
                                    Config config,
                                    @Named(Config.STORAGE_DIR) File storageDir) {
@@ -95,6 +101,8 @@ public class DaoStateSnapshotService implements DaoSetupService, DaoStateListene
         this.genesisTxInfo = genesisTxInfo;
         this.daoStateStorageService = daoStateStorageService;
         this.daoStateMonitoringService = daoStateMonitoringService;
+        this.walletsSetup = walletsSetup;
+        this.bsqWalletService = bsqWalletService;
         this.preferences = preferences;
         this.config = config;
         this.storageDir = storageDir;
@@ -114,6 +122,9 @@ public class DaoStateSnapshotService implements DaoSetupService, DaoStateListene
     public void start() {
     }
 
+    public void shutDown() {
+        daoStateStorageService.shutDown();
+    }
 
     ///////////////////////////////////////////////////////////////////////////////////////////
     // DaoStateListener
@@ -121,12 +132,14 @@ public class DaoStateSnapshotService implements DaoSetupService, DaoStateListene
 
     @Override
     public void onParseBlockCompleteAfterBatchProcessing(Block block) {
-        if (config.baseCurrencyNetwork.isMainnet()) {
-            // In case the DAO state is invalid we might get an outdated RECIPIENT_BTC_ADDRESS. In that case we trigger
+        if (config.baseCurrencyNetwork.isMainnet() &&
+                walletsSetup.isDownloadComplete() &&
+                daoStateService.getChainHeight() == bsqWalletService.getBestChainHeight()) {
+            // In case the DAO state is invalid we might get an outdated RECIPIENT_RADC_ADDRESS. In that case we trigger
             // a dao resync from resources.
-            String address = daoStateService.getParamValue(Param.RECIPIENT_BTC_ADDRESS, daoStateService.getChainHeight());
+            String address = daoStateService.getParamValue(Param.RECIPIENT_RADC_ADDRESS, daoStateService.getChainHeight());
             if (DelayedPayoutAddressProvider.isOutdatedAddress(address)) {
-                log.warn("The RECIPIENT_BTC_ADDRESS is not as expected. The DAO state is probably out of " +
+                log.warn("The RECIPIENT_RADC_ADDRESS is not as expected. The DAO state is probably out of " +
                         "sync and a resync should fix that issue.");
                 resyncDaoStateFromResources();
             }
@@ -268,8 +281,11 @@ public class DaoStateSnapshotService implements DaoSetupService, DaoStateListene
             int chainHeightOfPersisted = persistedBsqState.getChainHeight();
             if (!persistedBsqState.getBlocks().isEmpty()) {
                 int heightOfLastBlock = persistedBsqState.getLastBlock().getHeight();
-                checkArgument(heightOfLastBlock == chainHeightOfPersisted,
-                        "chainHeightOfPersisted must be same as heightOfLastBlock");
+                if (heightOfLastBlock != chainHeightOfPersisted) {
+                    log.warn("chainHeightOfPersisted must be same as heightOfLastBlock");
+                    resyncDaoStateFromResources();
+                    return;
+                }
                 if (isValidHeight(heightOfLastBlock)) {
                     if (chainHeightOfLastApplySnapshot != chainHeightOfPersisted) {
                         chainHeightOfLastApplySnapshot = chainHeightOfPersisted;
@@ -311,10 +327,18 @@ public class DaoStateSnapshotService implements DaoSetupService, DaoStateListene
 
     private void resyncDaoStateFromResources() {
         log.info("resyncDaoStateFromResources called");
+        if (daoRequiresRestartHandler == null && ++daoRequiresRestartHandlerAttempts <= 3) {
+            log.warn("daoRequiresRestartHandler has not been initialized yet, will try again in 10 seconds");
+            UserThread.runAfter(this::resyncDaoStateFromResources, 10);  // a delay for the app to init
+            return;
+        }
         try {
             daoStateStorageService.resyncDaoStateFromResources(storageDir);
-
-            if (daoRequiresRestartHandler != null) {
+            // the restart handler informs the user of the need to restart bisq (in desktop mode)
+            if (daoRequiresRestartHandler == null) {
+                log.error("daoRequiresRestartHandler COULD NOT be called as it has not been initialized yet");
+            } else {
+                log.info("calling daoRequiresRestartHandler...");
                 daoRequiresRestartHandler.run();
             }
         } catch (IOException e) {

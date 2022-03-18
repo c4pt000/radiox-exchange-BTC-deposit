@@ -53,7 +53,7 @@ public class ValidateOffer extends Task<PlaceOfferModel> {
 
             // We remove those checks to be more flexible with future changes.
             /*checkArgument(offer.getMakerFee().value >= FeeService.getMinMakerFee(offer.isCurrencyForMakerFeeBtc()).value,
-                "createOfferFee must not be less than FeeService.MIN_CREATE_OFFER_FEE_IN_BTC. " +
+                "createOfferFee must not be less than FeeService.MIN_CREATE_OFFER_FEE_IN_RADC. " +
                     "MakerFee=" + offer.getMakerFee().toFriendlyString());*/
             /*checkArgument(offer.getBuyerSecurityDeposit().value >= ProposalConsensus.getMinBuyerSecurityDeposit().value,
                 "buyerSecurityDeposit must not be less than ProposalConsensus.MIN_BUYER_SECURITY_DEPOSIT. " +

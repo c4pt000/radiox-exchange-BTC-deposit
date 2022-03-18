@@ -28,13 +28,9 @@ import javax.annotation.Nullable;
 
 import static bisq.cli.table.builder.TableBuilderConstants.*;
 import static bisq.cli.table.builder.TableType.OFFER_TBL;
-import static bisq.cli.table.column.AltcoinColumn.DISPLAY_MODE.ALTCOIN_OFFER_VOLUME;
-import static bisq.cli.table.column.AltcoinColumn.DISPLAY_MODE.ALTCOIN_TRIGGER_PRICE;
 import static bisq.cli.table.column.Column.JUSTIFICATION.LEFT;
 import static bisq.cli.table.column.Column.JUSTIFICATION.NONE;
 import static bisq.cli.table.column.Column.JUSTIFICATION.RIGHT;
-import static bisq.cli.table.column.FiatColumn.DISPLAY_MODE.TRIGGER_PRICE;
-import static bisq.cli.table.column.FiatColumn.DISPLAY_MODE.VOLUME;
 import static bisq.cli.table.column.ZippedStringColumns.DUPLICATION_MODE.EXCLUDE_DUPLICATES;
 import static java.lang.String.format;
 import static protobuf.OfferDirection.BUY;
@@ -43,9 +39,7 @@ import static protobuf.OfferDirection.SELL;
 
 
 import bisq.cli.table.Table;
-import bisq.cli.table.column.AltcoinColumn;
 import bisq.cli.table.column.Column;
-import bisq.cli.table.column.FiatColumn;
 import bisq.cli.table.column.Iso8601DateTimeColumn;
 import bisq.cli.table.column.SatoshiColumn;
 import bisq.cli.table.column.StringColumn;
@@ -79,17 +73,16 @@ class OfferTableBuilder extends AbstractTableBuilder {
     @SuppressWarnings("ConstantConditions")
     public Table buildFiatOfferTable(List<OfferInfo> offers) {
         @Nullable
-        Column<String> colEnabled = enabledColumn.get(); // Not boolean: YES, NO, or PENDING
-        Column<Long> colFiatPrice = new FiatColumn(format(COL_HEADER_DETAILED_PRICE, fiatTradeCurrency.get()));
-        Column<Long> colFiatVolume = new FiatColumn(format("Temp Volume (%s)", fiatTradeCurrency.get()), NONE, VOLUME);
-        Column<Long> colMinFiatVolume = new FiatColumn(format("Temp Min Volume (%s)", fiatTradeCurrency.get()), NONE, VOLUME);
+        Column<String> colEnabled = enabledColumn.get(); // Not boolean: "YES", "NO", or "PENDING"
+        Column<String> colFiatPrice = new StringColumn(format(COL_HEADER_DETAILED_PRICE, fiatTradeCurrency.get()), RIGHT);
+        Column<String> colVolume = new StringColumn(format("Temp Volume (%s)", fiatTradeCurrency.get()), NONE);
+        Column<String> colMinVolume = new StringColumn(format("Temp Min Volume (%s)", fiatTradeCurrency.get()), NONE);
         @Nullable
-        Column<Long> colTriggerPrice = fiatTriggerPriceColumn.get();
+        Column<String> colTriggerPrice = fiatTriggerPriceColumn.get();
 
         // Populate columns with offer info.
 
-        //noinspection SimplifyStreamApiCallChains
-        offers.stream().forEachOrdered(o -> {
+        offers.forEach(o -> {
             if (colEnabled != null)
                 colEnabled.addRow(toEnabled.apply(o));
 
@@ -97,11 +90,11 @@ class OfferTableBuilder extends AbstractTableBuilder {
             colFiatPrice.addRow(o.getPrice());
             colMinAmount.addRow(o.getMinAmount());
             colAmount.addRow(o.getAmount());
-            colMinFiatVolume.addRow(o.getMinVolume());
-            colFiatVolume.addRow(o.getVolume());
+            colVolume.addRow(o.getVolume());
+            colMinVolume.addRow(o.getMinVolume());
 
             if (colTriggerPrice != null)
-                colTriggerPrice.addRow(o.getTriggerPrice());
+                colTriggerPrice.addRow(toBlankOrNonZeroValue.apply(o.getTriggerPrice()));
 
             colPaymentMethod.addRow(o.getPaymentMethodShortName());
             colCreateDate.addRow(o.getDate());
@@ -113,24 +106,24 @@ class OfferTableBuilder extends AbstractTableBuilder {
                 new ZippedStringColumns(format(COL_HEADER_VOLUME_RANGE, fiatTradeCurrency.get()),
                         RIGHT,
                         " - ",
-                        colMinFiatVolume.asStringColumn(),
-                        colFiatVolume.asStringColumn());
+                        colMinVolume.asStringColumn(),
+                        colVolume.asStringColumn());
 
         // Define and return the table instance with populated columns.
 
         if (isShowingMyOffers.get()) {
             return new Table(colEnabled.asStringColumn(),
                     colDirection,
-                    colFiatPrice.asStringColumn(),
+                    colFiatPrice.justify(),
                     amountRange.asStringColumn(EXCLUDE_DUPLICATES),
                     volumeRange.asStringColumn(EXCLUDE_DUPLICATES),
-                    colTriggerPrice.asStringColumn(),
+                    colTriggerPrice.justify(),
                     colPaymentMethod,
                     colCreateDate.asStringColumn(),
                     colOfferId);
         } else {
             return new Table(colDirection,
-                    colFiatPrice.asStringColumn(),
+                    colFiatPrice.justify(),
                     amountRange.asStringColumn(EXCLUDE_DUPLICATES),
                     volumeRange.asStringColumn(EXCLUDE_DUPLICATES),
                     colPaymentMethod,
@@ -143,20 +136,15 @@ class OfferTableBuilder extends AbstractTableBuilder {
     public Table buildCryptoCurrencyOfferTable(List<OfferInfo> offers) {
         @Nullable
         Column<String> colEnabled = enabledColumn.get(); // Not boolean: YES, NO, or PENDING
-        Column<Long> colBtcPrice = new SatoshiColumn(format(COL_HEADER_DETAILED_PRICE_OF_ALTCOIN, altcoinTradeCurrency.get()));
-        Column<Long> colBtcVolume = new AltcoinColumn(format("Temp Volume (%s)", altcoinTradeCurrency.get()),
-                NONE,
-                ALTCOIN_OFFER_VOLUME);
-        Column<Long> colMinBtcVolume = new AltcoinColumn(format("Temp Min Volume (%s)", altcoinTradeCurrency.get()),
-                NONE,
-                ALTCOIN_OFFER_VOLUME);
+        Column<String> colBtcPrice = new StringColumn(format(COL_HEADER_DETAILED_PRICE_OF_ALTCOIN, altcoinTradeCurrency.get()), RIGHT);
+        Column<String> colVolume = new StringColumn(format("Temp Volume (%s)", altcoinTradeCurrency.get()), NONE);
+        Column<String> colMinVolume = new StringColumn(format("Temp Min Volume (%s)", altcoinTradeCurrency.get()), NONE);
         @Nullable
-        Column<Long> colTriggerPrice = altcoinTriggerPriceColumn.get();
+        Column<String> colTriggerPrice = altcoinTriggerPriceColumn.get();
 
         // Populate columns with offer info.
 
-        //noinspection SimplifyStreamApiCallChains
-        offers.stream().forEachOrdered(o -> {
+        offers.forEach(o -> {
             if (colEnabled != null)
                 colEnabled.addRow(toEnabled.apply(o));
 
@@ -164,11 +152,11 @@ class OfferTableBuilder extends AbstractTableBuilder {
             colBtcPrice.addRow(o.getPrice());
             colAmount.addRow(o.getAmount());
             colMinAmount.addRow(o.getMinAmount());
-            colBtcVolume.addRow(o.getMinVolume());
-            colMinBtcVolume.addRow(o.getVolume());
+            colVolume.addRow(o.getVolume());
+            colMinVolume.addRow(o.getMinVolume());
 
             if (colTriggerPrice != null)
-                colTriggerPrice.addRow(o.getTriggerPrice());
+                colTriggerPrice.addRow(toBlankOrNonZeroValue.apply(o.getTriggerPrice()));
 
             colPaymentMethod.addRow(o.getPaymentMethodShortName());
             colCreateDate.addRow(o.getDate());
@@ -180,8 +168,8 @@ class OfferTableBuilder extends AbstractTableBuilder {
                 new ZippedStringColumns(format(COL_HEADER_VOLUME_RANGE, altcoinTradeCurrency.get()),
                         RIGHT,
                         " - ",
-                        colBtcVolume.asStringColumn(),
-                        colMinBtcVolume.asStringColumn());
+                        colMinVolume.asStringColumn(),
+                        colVolume.asStringColumn());
 
         // Define and return the table instance with populated columns.
 
@@ -189,7 +177,7 @@ class OfferTableBuilder extends AbstractTableBuilder {
             if (isShowingBsqOffers.get()) {
                 return new Table(colEnabled.asStringColumn(),
                         colDirection,
-                        colBtcPrice.asStringColumn(),
+                        colBtcPrice.justify(),
                         amountRange.asStringColumn(EXCLUDE_DUPLICATES),
                         volumeRange.asStringColumn(EXCLUDE_DUPLICATES),
                         colPaymentMethod,
@@ -198,17 +186,17 @@ class OfferTableBuilder extends AbstractTableBuilder {
             } else {
                 return new Table(colEnabled.asStringColumn(),
                         colDirection,
-                        colBtcPrice.asStringColumn(),
+                        colBtcPrice.justify(),
                         amountRange.asStringColumn(EXCLUDE_DUPLICATES),
                         volumeRange.asStringColumn(EXCLUDE_DUPLICATES),
-                        colTriggerPrice.asStringColumn(),
+                        colTriggerPrice.justify(),
                         colPaymentMethod,
                         colCreateDate.asStringColumn(),
                         colOfferId);
             }
         } else {
             return new Table(colDirection,
-                    colBtcPrice.asStringColumn(),
+                    colBtcPrice.justify(),
                     amountRange.asStringColumn(EXCLUDE_DUPLICATES),
                     volumeRange.asStringColumn(EXCLUDE_DUPLICATES),
                     colPaymentMethod,
@@ -217,6 +205,7 @@ class OfferTableBuilder extends AbstractTableBuilder {
         }
     }
 
+    private final Function<String, String> toBlankOrNonZeroValue = (s) -> s.trim().equals("0") ? "" : s;
     private final Supplier<OfferInfo> firstOfferInList = () -> (OfferInfo) protos.get(0);
     private final Supplier<Boolean> isShowingMyOffers = () -> firstOfferInList.get().getIsMyOffer();
     private final Supplier<Boolean> isShowingFiatOffers = () -> isFiatOffer.test(firstOfferInList.get());
@@ -231,14 +220,14 @@ class OfferTableBuilder extends AbstractTableBuilder {
                     ? new StringColumn(COL_HEADER_ENABLED, LEFT)
                     : null;
     @Nullable
-    private final Supplier<FiatColumn> fiatTriggerPriceColumn = () ->
+    private final Supplier<StringColumn> fiatTriggerPriceColumn = () ->
             isShowingMyOffers.get()
-                    ? new FiatColumn(format(COL_HEADER_TRIGGER_PRICE, fiatTradeCurrency.get()), RIGHT, TRIGGER_PRICE)
+                    ? new StringColumn(format(COL_HEADER_TRIGGER_PRICE, fiatTradeCurrency.get()), RIGHT)
                     : null;
     @Nullable
-    private final Supplier<AltcoinColumn> altcoinTriggerPriceColumn = () ->
+    private final Supplier<StringColumn> altcoinTriggerPriceColumn = () ->
             isShowingMyOffers.get() && !isShowingBsqOffers.get()
-                    ? new AltcoinColumn(format(COL_HEADER_TRIGGER_PRICE, altcoinTradeCurrency.get()), RIGHT, ALTCOIN_TRIGGER_PRICE)
+                    ? new StringColumn(format(COL_HEADER_TRIGGER_PRICE, altcoinTradeCurrency.get()), RIGHT)
                     : null;
 
     private final Function<OfferInfo, String> toEnabled = (o) -> {
@@ -255,7 +244,7 @@ class OfferTableBuilder extends AbstractTableBuilder {
         if (isFiatOffer.test(o)) {
             return o.getBaseCurrencyCode();
         } else {
-            // Return "Sell BSQ (Buy BTC)", or "Buy BSQ (Sell BTC)".
+            // Return "Sell BSQ (Buy RADC)", or "Buy BSQ (Sell RADC)".
             String direction = o.getDirection();
             String mirroredDirection = toMirroredDirection.apply(direction);
             Function<String, String> mixedCase = (word) -> word.charAt(0) + word.substring(1).toLowerCase();

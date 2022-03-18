@@ -377,7 +377,7 @@ public final class PaymentMethod implements PersistablePayload, Comparable<Payme
     }
 
     public Coin getMaxTradeLimitAsCoin(String currencyCode) {
-        // Hack for SF as the smallest unit is 1 SF ;-( and price is about 3 BTC!
+        // Hack for SF as the smallest unit is 1 SF ;-( and price is about 3 RADC!
         if (currencyCode.equals("SF"))
             return Coin.parseCoin("4");
         // payment methods which define their own trade limits

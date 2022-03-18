@@ -17,7 +17,6 @@
 
 package bisq.desktop.main.overlays.windows;
 
-import bisq.desktop.components.AutoTooltipCheckBox;
 import bisq.desktop.components.AutoTooltipRadioButton;
 import bisq.desktop.components.BisqTextArea;
 import bisq.desktop.components.InputTextField;
@@ -69,7 +68,6 @@ import javax.inject.Named;
 
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextArea;
@@ -140,7 +138,7 @@ public class DisputeSummaryWindow extends Overlay<DisputeSummaryWindow> {
     ///////////////////////////////////////////////////////////////////////////////////////////
 
     @Inject
-    public DisputeSummaryWindow(@Named(FormattingUtils.BTC_FORMATTER_KEY) CoinFormatter formatter,
+    public DisputeSummaryWindow(@Named(FormattingUtils.RADC_FORMATTER_KEY) CoinFormatter formatter,
                                 MediationManager mediationManager,
                                 RefundManager refundManager,
                                 TradeWalletService tradeWalletService,
@@ -334,13 +332,20 @@ public class DisputeSummaryWindow extends Overlay<DisputeSummaryWindow> {
     }
 
     private void addTradeAmountPayoutControls() {
-        buyerGetsTradeAmountRadioButton = new AutoTooltipRadioButton(Res.get("disputeSummaryWindow.payout.getsTradeAmount", Res.get("shared.buyer")));
-        buyerGetsCompensationRadioButton = new AutoTooltipRadioButton(Res.get("disputeSummaryWindow.payout.getsCompensation", Res.get("shared.buyer")));
-        buyerGetsTradeAmountMinusPenaltyRadioButton = new AutoTooltipRadioButton(Res.get("disputeSummaryWindow.payout.getsPenalty", Res.get("shared.buyer")));
-        sellerGetsTradeAmountRadioButton = new AutoTooltipRadioButton(Res.get("disputeSummaryWindow.payout.getsTradeAmount", Res.get("shared.seller")));
-        sellerGetsCompensationRadioButton = new AutoTooltipRadioButton(Res.get("disputeSummaryWindow.payout.getsCompensation", Res.get("shared.seller")));
-        sellerGetsTradeAmountMinusPenaltyRadioButton = new AutoTooltipRadioButton(Res.get("disputeSummaryWindow.payout.getsPenalty", Res.get("shared.seller")));
-        customRadioButton = new AutoTooltipRadioButton(Res.get("disputeSummaryWindow.payout.custom"));
+        buyerGetsTradeAmountRadioButton = new AutoTooltipRadioButton(
+                DisputeResult.PayoutSuggestion.BUYER_GETS_TRADE_AMOUNT.toString());
+        buyerGetsCompensationRadioButton = new AutoTooltipRadioButton(
+                DisputeResult.PayoutSuggestion.BUYER_GETS_TRADE_AMOUNT_PLUS_COMPENSATION.toString());
+        buyerGetsTradeAmountMinusPenaltyRadioButton = new AutoTooltipRadioButton(
+                DisputeResult.PayoutSuggestion.BUYER_GETS_TRADE_AMOUNT_MINUS_PENALTY.toString());
+        sellerGetsTradeAmountRadioButton = new AutoTooltipRadioButton(
+                DisputeResult.PayoutSuggestion.SELLER_GETS_TRADE_AMOUNT.toString());
+        sellerGetsCompensationRadioButton = new AutoTooltipRadioButton(
+                DisputeResult.PayoutSuggestion.SELLER_GETS_TRADE_AMOUNT_PLUS_COMPENSATION.toString());
+        sellerGetsTradeAmountMinusPenaltyRadioButton = new AutoTooltipRadioButton(
+                DisputeResult.PayoutSuggestion.SELLER_GETS_TRADE_AMOUNT_MINUS_PENALTY.toString());
+        customRadioButton = new AutoTooltipRadioButton(
+                DisputeResult.PayoutSuggestion.CUSTOM_PAYOUT.toString());
 
         VBox radioButtonPane = new VBox();
         radioButtonPane.setSpacing(10);
@@ -877,10 +882,11 @@ public class DisputeSummaryWindow extends Overlay<DisputeSummaryWindow> {
                 agentNodeAddress,
                 dispute.getShortTradeId(),
                 currencyCode,
+                Res.get("disputeSummaryWindow.reason." + reason.name()),
+                disputeResult.getPayoutSuggestionText(),
                 amount,
                 formatter.formatCoinWithCode(disputeResult.getBuyerPayoutAmount()),
                 formatter.formatCoinWithCode(disputeResult.getSellerPayoutAmount()),
-                Res.get("disputeSummaryWindow.reason." + reason.name()),
                 disputeResult.summaryNotesProperty().get()
         );
 
@@ -963,7 +969,7 @@ public class DisputeSummaryWindow extends Overlay<DisputeSummaryWindow> {
 
         Coin penalizedPortionOfTradeAmount = Coin.ZERO;
         try {
-            disputeResult.setPayoutAdjustmentPercent(compensationOrPenalty.getText().replaceAll("[^0-9]", ""));
+            disputeResult.setPayoutAdjustmentPercent(compensationOrPenalty.getText().replaceAll("[^0-9,.]", ""));
             double percentPenalty = ParsingUtils.parsePercentStringToDouble(disputeResult.getPayoutAdjustmentPercent());
             penalizedPortionOfTradeAmount = Coin.valueOf((long) (contract.getTradeAmount().getValue() * percentPenalty));
         } catch (NumberFormatException | NullPointerException e) {

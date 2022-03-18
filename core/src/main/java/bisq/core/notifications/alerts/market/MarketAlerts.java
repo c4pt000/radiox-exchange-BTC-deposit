@@ -207,7 +207,7 @@ public class MarketAlerts {
     public static MobileMessage getTestMsg() {
         String shortId = UUID.randomUUID().toString().substring(0, 8);
         return new MobileMessage(Res.get("account.notifications.marketAlert.message.title"),
-                "A new 'sell BTC/USD' offer with price 6019.2744 (5.36% below market price) and payment method " +
+                "A new 'sell RADC/USD' offer with price 6019.2744 (5.36% below market price) and payment method " +
                         "'Perfect Money' was published to the Bisq offerbook.\n" +
                         "Offer ID: wygiaw.",
                 shortId,

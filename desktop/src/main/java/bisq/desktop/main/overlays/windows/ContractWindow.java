@@ -72,6 +72,7 @@ import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
 
+import static bisq.desktop.util.DisplayUtils.getAccountWitnessDescription;
 import static bisq.desktop.util.FormBuilder.*;
 
 @Slf4j
@@ -93,7 +94,7 @@ public class ContractWindow extends Overlay<ContractWindow> {
                           MediationManager mediationManager,
                           RefundManager refundManager,
                           AccountAgeWitnessService accountAgeWitnessService,
-                          @Named(FormattingUtils.BTC_FORMATTER_KEY) CoinFormatter formatter) {
+                          @Named(FormattingUtils.RADC_FORMATTER_KEY) CoinFormatter formatter) {
         this.arbitrationManager = arbitrationManager;
         this.mediationManager = mediationManager;
         this.refundManager = refundManager;
@@ -157,7 +158,7 @@ public class ContractWindow extends Overlay<ContractWindow> {
                 DisplayUtils.formatDateTime(offer.getDate()) + " / " + DisplayUtils.formatDateTime(dispute.getTradeDate()));
         String currencyCode = offer.getCurrencyCode();
         addConfirmationLabelTextField(gridPane, ++rowIndex, Res.get("shared.offerType"),
-                DisplayUtils.getDirectionBothSides(offer.getDirection(), currencyCode));
+                DisplayUtils.getDirectionBothSides(offer.getDirection()));
         addConfirmationLabelTextField(gridPane, ++rowIndex, Res.get("shared.tradePrice"),
                 FormattingUtils.formatPrice(contract.getTradePrice()));
         addConfirmationLabelTextField(gridPane, ++rowIndex, Res.get("shared.tradeAmount"),
@@ -186,9 +187,8 @@ public class ContractWindow extends Overlay<ContractWindow> {
         addConfirmationLabelTextField(gridPane,
                 ++rowIndex,
                 Res.get("contractWindow.accountAge"),
-                getAccountAge(contract.getBuyerPaymentAccountPayload(),
-                        contract.getBuyerPubKeyRing(),
-                        offer.getCurrencyCode()) + " / " + getAccountAge(contract.getSellerPaymentAccountPayload(), contract.getSellerPubKeyRing(), offer.getCurrencyCode()));
+                getAccountWitnessDescription(accountAgeWitnessService, offer.getPaymentMethod(), contract.getBuyerPaymentAccountPayload(), contract.getBuyerPubKeyRing()) + " / " +
+                        getAccountWitnessDescription(accountAgeWitnessService, offer.getPaymentMethod(), contract.getSellerPaymentAccountPayload(), contract.getSellerPubKeyRing()));
 
         DisputeManager<? extends DisputeList<Dispute>> disputeManager = getDisputeManager(dispute);
         String nrOfDisputesAsBuyer = disputeManager != null ? disputeManager.getNrOfDisputes(true, contract) : "";
@@ -211,20 +211,20 @@ public class ContractWindow extends Overlay<ContractWindow> {
                         : "NA");
 
         String title = "";
-        String agentKeyBaseUserName = "";
+        String agentMatrixUserName = "";
         if (dispute.getSupportType() != null) {
             switch (dispute.getSupportType()) {
                 case ARBITRATION:
                     title = Res.get("shared.selectedArbitrator");
                     break;
                 case MEDIATION:
-                    agentKeyBaseUserName = DisputeAgentLookupMap.getKeyBaseUserName(contract.getMediatorNodeAddress().getFullAddress());
+                    agentMatrixUserName = DisputeAgentLookupMap.getMatrixUserName(contract.getMediatorNodeAddress().getFullAddress());
                     title = Res.get("shared.selectedMediator");
                     break;
                 case TRADE:
                     break;
                 case REFUND:
-                    agentKeyBaseUserName = DisputeAgentLookupMap.getKeyBaseUserName(contract.getRefundAgentNodeAddress().getFullAddress());
+                    agentMatrixUserName = DisputeAgentLookupMap.getMatrixUserName(contract.getRefundAgentNodeAddress().getFullAddress());
                     title = Res.get("shared.selectedRefundAgent");
                     break;
             }
@@ -233,7 +233,7 @@ public class ContractWindow extends Overlay<ContractWindow> {
         if (disputeManager != null) {
             NodeAddress agentNodeAddress = disputeManager.getAgentNodeAddress(dispute);
             if (agentNodeAddress != null) {
-                String value = agentKeyBaseUserName + " (" + agentNodeAddress.getFullAddress() + ")";
+                String value = agentMatrixUserName + " (" + agentNodeAddress.getFullAddress() + ")";
                 addConfirmationLabelTextField(gridPane, ++rowIndex, title, value);
             }
         }
@@ -348,15 +348,5 @@ public class ContractWindow extends Overlay<ContractWindow> {
             }
         }
         return null;
-    }
-
-    private String getAccountAge(PaymentAccountPayload paymentAccountPayload,
-                                 PubKeyRing pubKeyRing,
-                                 String currencyCode) {
-        long age = accountAgeWitnessService.getAccountAge(paymentAccountPayload, pubKeyRing);
-        return CurrencyUtil.isFiatCurrency(currencyCode) ?
-                age > -1 ? Res.get("peerInfoIcon.tooltip.age", DisplayUtils.formatAccountAge(age)) :
-                        Res.get("peerInfoIcon.tooltip.unknownAge") :
-                "";
     }
 }

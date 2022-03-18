@@ -86,7 +86,7 @@ public class MarketView extends ActivatableView<TabPane, Void> {
     public MarketView(CachingViewLoader viewLoader,
                       TradeStatistics3StorageService tradeStatistics3StorageService,
                       OfferBook offerBook,
-                      @Named(FormattingUtils.BTC_FORMATTER_KEY) CoinFormatter formatter,
+                      @Named(FormattingUtils.RADC_FORMATTER_KEY) CoinFormatter formatter,
                       Navigation navigation) {
         this.viewLoader = viewLoader;
         this.tradeStatistics3StorageService = tradeStatistics3StorageService;
@@ -219,7 +219,7 @@ public class MarketView extends ActivatableView<TabPane, Void> {
                             .append("Type: ").append(offer.getDirection().name()).append("\n")
                             .append("Market: ").append(CurrencyUtil.getCurrencyPair(offer.getCurrencyCode())).append("\n")
                             .append("Price: ").append(FormattingUtils.formatPrice(offer.getPrice())).append("\n")
-                            .append("Amount: ").append(DisplayUtils.formatAmount(offer, formatter)).append(" BTC\n")
+                            .append("Amount: ").append(DisplayUtils.formatAmount(offer, formatter)).append(" RADC\n")
                             .append("Payment method: ").append(Res.get(offer.getPaymentMethod().getId())).append("\n")
                             .append("ReferralID: ").append(offer.getExtraDataMap().get(OfferPayload.REFERRAL_ID));
                     return sb.toString();

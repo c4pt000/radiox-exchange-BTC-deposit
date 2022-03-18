@@ -166,7 +166,7 @@ public abstract class MutableOfferView<M extends MutableOfferViewModel<?>> exten
             isMinBuyerSecurityDepositListener, triggerPriceFocusedListener;
     private ChangeListener<Coin> missingCoinListener;
     private ChangeListener<String> tradeCurrencyCodeListener, errorMessageListener,
-            marketPriceMarginListener, volumeListener, buyerSecurityDepositInBTCListener;
+            marketPriceMarginListener, volumeListener, buyerSecurityDepositInRADCListener;
     private ChangeListener<Number> marketPriceAvailableListener;
     private EventHandler<ActionEvent> currencyComboBoxSelectionHandler, paymentAccountsComboBoxSelectionHandler;
     private OfferView.CloseHandler closeHandler;
@@ -464,7 +464,7 @@ public abstract class MutableOfferView<M extends MutableOfferViewModel<?>> exten
             String key = "securityDepositInfo";
             new Popup().backgroundInfo(Res.get("popup.info.securityDepositInfo"))
                     .actionButtonText(Res.get("shared.faq"))
-                    .onAction(() -> GUIUtil.openWebPage("https://bisq.wiki/Frequently_asked_questions#Why_does_Bisq_require_a_security_deposit_in_BTC.3F"))
+                    .onAction(() -> GUIUtil.openWebPage("https://bisq.wiki/Frequently_asked_questions#Why_does_Bisq_require_a_security_deposit_in_RADC.3F"))
                     .useIUnderstandButton()
                     .dontShowAgainId(key)
                     .show();
@@ -558,16 +558,18 @@ public abstract class MutableOfferView<M extends MutableOfferViewModel<?>> exten
             currencySelection.setVisible(paymentAccount.hasMultipleCurrencies());
             currencySelection.setManaged(paymentAccount.hasMultipleCurrencies());
             currencyTextFieldBox.setVisible(!paymentAccount.hasMultipleCurrencies());
+
+            model.onPaymentAccountSelected(paymentAccount);
+            model.onCurrencySelected(model.getTradeCurrency());
+
             if (paymentAccount.hasMultipleCurrencies()) {
                 final List<TradeCurrency> tradeCurrencies = paymentAccount.getTradeCurrencies();
                 currencyComboBox.setItems(FXCollections.observableArrayList(tradeCurrencies));
-                model.onPaymentAccountSelected(paymentAccount);
+                currencyComboBox.getSelectionModel().select(model.getTradeCurrency());
             } else {
                 TradeCurrency singleTradeCurrency = paymentAccount.getSingleTradeCurrency();
                 if (singleTradeCurrency != null)
                     currencyTextField.setText(singleTradeCurrency.getNameAndCode());
-                model.onPaymentAccountSelected(paymentAccount);
-                model.onCurrencySelected(model.getDataModel().getTradeCurrency());
             }
         } else {
             currencySelection.setVisible(false);
@@ -813,10 +815,10 @@ public abstract class MutableOfferView<M extends MutableOfferViewModel<?>> exten
             }
         };
 
-        buyerSecurityDepositInBTCListener = (observable, oldValue, newValue) -> {
+        buyerSecurityDepositInRADCListener = (observable, oldValue, newValue) -> {
             if (!newValue.equals("")) {
-                Label depositInBTCInfo = OfferViewUtil.createPopOverLabel(model.getSecurityDepositPopOverLabel(newValue));
-                buyerSecurityDepositInfoInputTextField.setContentForInfoPopOver(depositInBTCInfo);
+                Label depositInRADCInfo = OfferViewUtil.createPopOverLabel(model.getSecurityDepositPopOverLabel(newValue));
+                buyerSecurityDepositInfoInputTextField.setContentForInfoPopOver(depositInRADCInfo);
             } else {
                 buyerSecurityDepositInfoInputTextField.setContentForInfoPopOver(null);
             }
@@ -908,7 +910,7 @@ public abstract class MutableOfferView<M extends MutableOfferViewModel<?>> exten
 
         isMinBuyerSecurityDepositListener = ((observable, oldValue, newValue) -> {
             if (newValue) {
-                // show BTC
+                // show RADC
                 buyerSecurityDepositPercentageLabel.setText(Res.getBaseCurrencyCode());
                 buyerSecurityDepositInputTextField.setDisable(true);
             } else {
@@ -946,7 +948,7 @@ public abstract class MutableOfferView<M extends MutableOfferViewModel<?>> exten
         model.volume.addListener(volumeListener);
         model.getDataModel().missingCoin.addListener(missingCoinListener);
         model.isTradeFeeVisible.addListener(tradeFeeVisibleListener);
-        model.buyerSecurityDepositInBTC.addListener(buyerSecurityDepositInBTCListener);
+        model.buyerSecurityDepositInRADC.addListener(buyerSecurityDepositInRADCListener);
         model.isMinBuyerSecurityDeposit.addListener(isMinBuyerSecurityDepositListener);
 
         tradeFeeInBtcToggle.selectedProperty().addListener(tradeFeeInBtcToggleListener);
@@ -982,7 +984,7 @@ public abstract class MutableOfferView<M extends MutableOfferViewModel<?>> exten
         model.volume.removeListener(volumeListener);
         model.getDataModel().missingCoin.removeListener(missingCoinListener);
         model.isTradeFeeVisible.removeListener(tradeFeeVisibleListener);
-        model.buyerSecurityDepositInBTC.removeListener(buyerSecurityDepositInBTCListener);
+        model.buyerSecurityDepositInRADC.removeListener(buyerSecurityDepositInRADCListener);
         tradeFeeInBtcToggle.selectedProperty().removeListener(tradeFeeInBtcToggleListener);
         tradeFeeInBsqToggle.selectedProperty().removeListener(tradeFeeInBsqToggleListener);
         model.isMinBuyerSecurityDeposit.removeListener(isMinBuyerSecurityDepositListener);
@@ -1160,7 +1162,7 @@ public abstract class MutableOfferView<M extends MutableOfferViewModel<?>> exten
 
             if (missingBsq != null) {
                 new Popup().warning(missingBsq)
-                        .actionButtonText(Res.get("feeOptionWindow.useBTC"))
+                        .actionButtonText(Res.get("feeOptionWindow.useRADC"))
                         .onAction(() -> {
                             tradeFeeInBtcToggle.setSelected(true);
                             onShowPayFundsScreen();
@@ -1180,7 +1182,7 @@ public abstract class MutableOfferView<M extends MutableOfferViewModel<?>> exten
         buyerSecurityDepositInfoInputTextField = tuple.second;
         buyerSecurityDepositInputTextField = buyerSecurityDepositInfoInputTextField.getInputTextField();
         buyerSecurityDepositPercentageLabel = tuple.third;
-        // getEditableValueBox delivers BTC, so we overwrite it with %
+        // getEditableValueBox delivers RADC, so we overwrite it with %
         buyerSecurityDepositPercentageLabel.setText("%");
 
         Tuple2<Label, VBox> tradeInputBoxTuple = getTradeInputBox(tuple.first, model.getSecurityDepositLabel());
@@ -1500,7 +1502,7 @@ public abstract class MutableOfferView<M extends MutableOfferViewModel<?>> exten
         vBox.getChildren().addAll(tradeFeeInBtcLabel, tradeFeeInBsqLabel);
 
         tradeFeeInBtcToggle = new AutoTooltipSlideToggleButton();
-        tradeFeeInBtcToggle.setText("BTC");
+        tradeFeeInBtcToggle.setText("RADC");
         tradeFeeInBtcToggle.setVisible(false);
         tradeFeeInBtcToggle.setPadding(new Insets(-8, 5, -10, 5));
 

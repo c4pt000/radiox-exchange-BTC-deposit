@@ -52,7 +52,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class SeedNodeMain extends ExecutableForAppWithP2p {
     private static final long CHECK_CONNECTION_LOSS_SEC = 30;
-    private static final String VERSION = "1.7.5";
+    private static final String VERSION = "1.8.4";
     private SeedNode seedNode;
     private Timer checkConnectionLossTime;
 
@@ -200,9 +200,9 @@ public class SeedNodeMain extends ExecutableForAppWithP2p {
     }
 
     private void setupConnectionLossCheck() {
-        // For dev testing (usually on BTC_REGTEST) we don't want to get the seed shut
+        // For dev testing (usually on RADC_REGTEST) we don't want to get the seed shut
         // down as it is normal that the seed is the only actively running node.
-        if (Config.baseCurrencyNetwork() == BaseCurrencyNetwork.BTC_REGTEST) {
+        if (Config.baseCurrencyNetwork() == BaseCurrencyNetwork.RADC_REGTEST) {
             return;
         }
 

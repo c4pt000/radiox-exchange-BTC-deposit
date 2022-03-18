@@ -71,7 +71,7 @@ public class CoreModule extends AppModule {
         bind(File.class).annotatedWith(named(STORAGE_DIR)).toInstance(config.storageDir);
 
         CoinFormatter btcFormatter = new ImmutableCoinFormatter(config.networkParameters.getMonetaryFormat());
-        bind(CoinFormatter.class).annotatedWith(named(FormattingUtils.BTC_FORMATTER_KEY)).toInstance(btcFormatter);
+        bind(CoinFormatter.class).annotatedWith(named(FormattingUtils.RADC_FORMATTER_KEY)).toInstance(btcFormatter);
 
         bind(File.class).annotatedWith(named(KEY_STORAGE_DIR)).toInstance(config.keyStorageDir);
 

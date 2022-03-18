@@ -37,8 +37,9 @@ import bisq.common.app.DevEnv;
 import bisq.common.app.Version;
 import bisq.common.config.Config;
 import bisq.common.config.ConfigFileEditor;
-import bisq.common.crypto.HashCashService;
 import bisq.common.crypto.KeyRing;
+import bisq.common.crypto.ProofOfWork;
+import bisq.common.crypto.ProofOfWorkService;
 
 import org.bitcoinj.core.ECKey;
 import org.bitcoinj.core.Sha256Hash;
@@ -65,7 +66,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
 import java.lang.reflect.Method;
@@ -85,13 +85,7 @@ import static org.bitcoinj.core.Utils.HEX;
 public class FilterManager {
     private static final String BANNED_PRICE_RELAY_NODES = "bannedPriceRelayNodes";
     private static final String BANNED_SEED_NODES = "bannedSeedNodes";
-    private static final String BANNED_BTC_NODES = "bannedBtcNodes";
-
-    private final BiFunction<byte[], byte[], Boolean> challengeValidation = Arrays::equals;
-    // We only require a new pow if difficulty has increased
-    private final BiFunction<Integer, Integer, Boolean> difficultyValidation =
-            (value, controlValue) -> value - controlValue >= 0;
-
+    private static final String BANNED_RADC_NODES = "bannedBtcNodes";
 
     ///////////////////////////////////////////////////////////////////////////////////////////
     // Listener
@@ -144,7 +138,7 @@ public class FilterManager {
                         "029340c3e7d4bb0f9e651b5f590b434fecb6175aeaa57145c7804ff05d210e534f",
                         "034dc7530bf66ffd9580aa98031ea9a18ac2d269f7c56c0e71eca06105b9ed69f9");
 
-        networkFilter.setBannedNodeFunction(this::isNodeAddressBannedFromNetwork);
+        networkFilter.setBannedNodePredicate(this::isNodeAddressBannedFromNetwork);
     }
 
 
@@ -249,14 +243,13 @@ public class FilterManager {
                     // filterWarningHandler.accept(Res.get("popup.warning.nodeBanned", Res.get("popup.warning.priceRelay")));
                 }
 
-            //    if (requireUpdateToNewVersionForTrading()) {
-//                    filterWarningHandler.accept(Res.get("popup.warning.mandatoryUpdate.trading"));
-               //     filterWarningHandler.accept(Res.get(""));
-              //  }
+                if (requireUpdateToNewVersionForTrading()) {
+                    filterWarningHandler.accept(Res.get("popup.warning.mandatoryUpdate.trading"));
+                }
 
-              //  if (requireUpdateToNewVersionForDAO()) {
-              //      filterWarningHandler.accept(Res.get("popup.warning.mandatoryUpdate.dao"));
-               // }
+                if (requireUpdateToNewVersionForDAO()) {
+                    filterWarningHandler.accept(Res.get("popup.warning.mandatoryUpdate.dao"));
+                }
                 if (filter.isDisableDao()) {
                     filterWarningHandler.accept(Res.get("popup.warning.disable.dao"));
                 }
@@ -439,23 +432,20 @@ public class FilterManager {
     }
 
     public boolean requireUpdateToNewVersionForTrading() {
-  
-     if (getFilter() == null) {
+        if (getFilter() == null) {
             return false;
         }
 
         boolean requireUpdateToNewVersion = false;
         String getDisableTradeBelowVersion = getFilter().getDisableTradeBelowVersion();
         if (getDisableTradeBelowVersion != null && !getDisableTradeBelowVersion.isEmpty()) {
-           // requireUpdateToNewVersion = Version.isNewVersion(getDisableTradeBelowVersion);
+            requireUpdateToNewVersion = Version.isNewVersion(getDisableTradeBelowVersion);
         }
 
         return requireUpdateToNewVersion;
-
     }
 
     public boolean requireUpdateToNewVersionForDAO() {
-
         if (getFilter() == null) {
             return false;
         }
@@ -463,11 +453,10 @@ public class FilterManager {
         boolean requireUpdateToNewVersion = false;
         String disableDaoBelowVersion = getFilter().getDisableDaoBelowVersion();
         if (disableDaoBelowVersion != null && !disableDaoBelowVersion.isEmpty()) {
-//            requireUpdateToNewVersion = Version.isNewVersion(disableDaoBelowVersion);
+            requireUpdateToNewVersion = Version.isNewVersion(disableDaoBelowVersion);
         }
 
         return requireUpdateToNewVersion;
-
     }
 
     public boolean arePeersPaymentAccountDataBanned(PaymentAccountPayload paymentAccountPayload) {
@@ -501,13 +490,16 @@ public class FilterManager {
         if (filter == null) {
             return true;
         }
-        checkArgument(offer.getBsqSwapOfferPayload().isPresent(),
-                "Offer payload must be BsqSwapOfferPayload");
-        return HashCashService.verify(offer.getBsqSwapOfferPayload().get().getProofOfWork(),
-                HashCashService.getBytes(offer.getId() + offer.getOwnerNodeAddress().toString()),
-                filter.getPowDifficulty(),
-                challengeValidation,
-                difficultyValidation);
+        checkArgument(offer.getBsqSwapOfferPayload().isPresent(), "Offer payload must be BsqSwapOfferPayload");
+        ProofOfWork pow = offer.getBsqSwapOfferPayload().get().getProofOfWork();
+        var service = ProofOfWorkService.forVersion(pow.getVersion());
+        return service.isPresent() && getEnabledPowVersions().contains(pow.getVersion()) &&
+                service.get().verify(pow, offer.getId(), offer.getOwnerNodeAddress().toString(), filter.getPowDifficulty());
+    }
+
+    public List<Integer> getEnabledPowVersions() {
+        Filter filter = getFilter();
+        return filter != null && !filter.getEnabledPowVersions().isEmpty() ? filter.getEnabledPowVersions() : List.of(0);
     }
 
 
@@ -560,7 +552,7 @@ public class FilterManager {
         // nodes at the next startup and don't update the list in the P2P network domain.
         // We persist it to the property file which is read before any other initialisation.
         saveBannedNodes(BANNED_SEED_NODES, newFilter.getSeedNodes());
-        saveBannedNodes(BANNED_BTC_NODES, newFilter.getBtcNodes());
+        saveBannedNodes(BANNED_RADC_NODES, newFilter.getBtcNodes());
 
         // Banned price relay nodes we can apply at runtime
         List<String> priceRelayNodes = newFilter.getPriceRelayNodes();
@@ -604,7 +596,7 @@ public class FilterManager {
 
     // Clears options files from banned nodes
     private void clearBannedNodes() {
-        saveBannedNodes(BANNED_BTC_NODES, null);
+        saveBannedNodes(BANNED_RADC_NODES, null);
         saveBannedNodes(BANNED_SEED_NODES, null);
         saveBannedNodes(BANNED_PRICE_RELAY_NODES, null);
 

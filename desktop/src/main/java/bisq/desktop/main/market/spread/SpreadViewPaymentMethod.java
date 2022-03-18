@@ -39,7 +39,7 @@ public class SpreadViewPaymentMethod extends SpreadView {
     ///////////////////////////////////////////////////////////////////////////////////////////
 
     @Inject
-    public SpreadViewPaymentMethod(SpreadViewModel model, @Named(FormattingUtils.BTC_FORMATTER_KEY) CoinFormatter formatter) {
+    public SpreadViewPaymentMethod(SpreadViewModel model, @Named(FormattingUtils.RADC_FORMATTER_KEY) CoinFormatter formatter) {
         super(model, formatter);
         model.setIncludePaymentMethod(true);
     }

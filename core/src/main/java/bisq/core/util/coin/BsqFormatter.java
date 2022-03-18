@@ -136,23 +136,23 @@ public class BsqFormatter implements CoinFormatter {
         return FormattingUtils.formatCoinWithCode(satoshi, monetaryFormat);
     }
 
-    public String formatBTCSatoshis(long satoshi) {
+    public String formatRADCSatoshis(long satoshi) {
         return FormattingUtils.formatCoin(satoshi, btcCoinFormat);
     }
 
-    public String formatBTCWithCode(long satoshi) {
+    public String formatRADCWithCode(long satoshi) {
         return FormattingUtils.formatCoinWithCode(satoshi, btcCoinFormat);
     }
 
-    public String formatBTCWithCode(Coin coin) {
+    public String formatRADCWithCode(Coin coin) {
         return FormattingUtils.formatCoinWithCode(coin, btcCoinFormat);
     }
 
-    private String formatBTC(Coin coin) {
+    private String formatRADC(Coin coin) {
         return FormattingUtils.formatCoin(coin.value, btcCoinFormat);
     }
 
-    public Coin parseToBTC(String input) {
+    public Coin parseToRADC(String input) {
         return ParsingUtils.parseToCoin(input, btcCoinFormat);
     }
 
@@ -163,8 +163,8 @@ public class BsqFormatter implements CoinFormatter {
                 return Res.get("shared.na");
             case BSQ:
                 return formatCoinWithCode(ParsingUtils.parseToCoin(value, this));
-            case BTC:
-                return formatBTCWithCode(parseToBTC(value));
+            case RADC:
+                return formatRADCWithCode(parseToRADC(value));
             case PERCENT:
                 return FormattingUtils.formatToPercentWithSymbol(ParsingUtils.parsePercentStringToDouble(value));
             case BLOCK:
@@ -181,8 +181,8 @@ public class BsqFormatter implements CoinFormatter {
         switch (param.getParamType()) {
             case BSQ:
                 return ParsingUtils.parseToCoin(inputValue, this);
-            case BTC:
-                return parseToBTC(inputValue);
+            case RADC:
+                return parseToRADC(inputValue);
             default:
                 throw new IllegalArgumentException("Unsupported paramType. param: " + param);
         }
@@ -203,8 +203,8 @@ public class BsqFormatter implements CoinFormatter {
                 return Res.get("shared.na");
             case BSQ:
                 return formatCoin(parseParamValueToCoin(param, inputValue));
-            case BTC:
-                return formatBTC(parseParamValueToCoin(param, inputValue));
+            case RADC:
+                return formatRADC(parseParamValueToCoin(param, inputValue));
             case PERCENT:
                 return FormattingUtils.formatToPercent(ParsingUtils.parsePercentStringToDouble(inputValue));
             case BLOCK:

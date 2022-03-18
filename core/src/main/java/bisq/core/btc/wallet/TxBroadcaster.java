@@ -53,7 +53,7 @@ public class TxBroadcaster {
                 // We optimistically assume that the tx broadcast succeeds later and call onSuccess on the callback handler.
                 // This behaviour carries less potential problems than if we would trigger a failure (e.g. which would cause
                 // a failed create offer attempt or failed take offer attempt).
-                // We have no guarantee how long it will take to get the information that sufficiently many BTC nodes have
+                // We have no guarantee how long it will take to get the information that sufficiently many RADC nodes have
                 // reported back to BitcoinJ that the tx is in their mempool.
                 // In normal situations that's very fast but in some cases it can take minutes (mostly related to Tor
                 // connection issues). So if we just go on in the application logic and treat it as successful and the

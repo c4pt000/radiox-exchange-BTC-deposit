@@ -20,18 +20,13 @@ package bisq.cli;
 import bisq.proto.grpc.AddressBalanceInfo;
 import bisq.proto.grpc.BalancesInfo;
 import bisq.proto.grpc.BsqBalanceInfo;
-import bisq.proto.grpc.BsqSwapOfferInfo;
-import bisq.proto.grpc.BsqSwapTradeInfo;
 import bisq.proto.grpc.BtcBalanceInfo;
-import bisq.proto.grpc.CreateBsqSwapOfferRequest;
 import bisq.proto.grpc.GetMethodHelpRequest;
+import bisq.proto.grpc.GetTradesRequest;
 import bisq.proto.grpc.GetVersionRequest;
 import bisq.proto.grpc.OfferInfo;
 import bisq.proto.grpc.RegisterDisputeAgentRequest;
 import bisq.proto.grpc.StopRequest;
-import bisq.proto.grpc.TakeBsqSwapOfferReply;
-import bisq.proto.grpc.TakeBsqSwapOfferRequest;
-import bisq.proto.grpc.TakeOfferReply;
 import bisq.proto.grpc.TradeInfo;
 import bisq.proto.grpc.TxFeeRateInfo;
 import bisq.proto.grpc.TxInfo;
@@ -44,6 +39,7 @@ import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 
 import static bisq.proto.grpc.EditOfferRequest.EditType;
+import static bisq.proto.grpc.GetOfferCategoryReply.OfferCategory;
 
 
 
@@ -142,19 +138,22 @@ public final class GrpcClient {
         return walletsServiceRequest.getTransaction(txId);
     }
 
-    public BsqSwapOfferInfo createBsqSwapOffer(String direction,
-                                               long amount,
-                                               long minAmount,
-                                               String fixedPrice,
-                                               String paymentAcctId) {
-        var request = CreateBsqSwapOfferRequest.newBuilder()
-                .setDirection(direction)
-                .setAmount(amount)
-                .setMinAmount(minAmount)
-                .setPrice(fixedPrice)
-                .setPaymentAccountId(paymentAcctId)
-                .build();
-        return grpcStubs.offersService.createBsqSwapOffer(request).getBsqSwapOffer();
+    public OfferCategory getAvailableOfferCategory(String offerId) {
+        return offersServiceRequest.getAvailableOfferCategory(offerId);
+    }
+
+    public OfferCategory getMyOfferCategory(String offerId) {
+        return offersServiceRequest.getMyOfferCategory(offerId);
+    }
+
+    public OfferInfo createBsqSwapOffer(String direction,
+                                        long amount,
+                                        long minAmount,
+                                        String fixedPrice) {
+        return offersServiceRequest.createBsqSwapOffer(direction,
+                amount,
+                minAmount,
+                fixedPrice);
     }
 
     public OfferInfo createFixedPricedOffer(String direction,
@@ -162,7 +161,7 @@ public final class GrpcClient {
                                             long amount,
                                             long minAmount,
                                             String fixedPrice,
-                                            double securityDeposit,
+                                            double securityDepositPct,
                                             String paymentAcctId,
                                             String makerFeeCurrencyCode) {
         return offersServiceRequest.createOffer(direction,
@@ -172,29 +171,29 @@ public final class GrpcClient {
                 false,
                 fixedPrice,
                 0.00,
-                securityDeposit,
+                securityDepositPct,
                 paymentAcctId,
                 makerFeeCurrencyCode,
-                0 /* no trigger price */);
+                "0" /* no trigger price */);
     }
 
     public OfferInfo createMarketBasedPricedOffer(String direction,
                                                   String currencyCode,
                                                   long amount,
                                                   long minAmount,
-                                                  double marketPriceMargin,
-                                                  double securityDeposit,
+                                                  double marketPriceMarginPct,
+                                                  double securityDepositPct,
                                                   String paymentAcctId,
                                                   String makerFeeCurrencyCode,
-                                                  long triggerPrice) {
+                                                  String triggerPrice) {
         return offersServiceRequest.createOffer(direction,
                 currencyCode,
                 amount,
                 minAmount,
                 true,
                 "0",
-                marketPriceMargin,
-                securityDeposit,
+                marketPriceMarginPct,
+                securityDepositPct,
                 paymentAcctId,
                 makerFeeCurrencyCode,
                 triggerPrice);
@@ -206,19 +205,19 @@ public final class GrpcClient {
                                  long minAmount,
                                  boolean useMarketBasedPrice,
                                  String fixedPrice,
-                                 double marketPriceMargin,
-                                 double securityDeposit,
+                                 double marketPriceMarginPct,
+                                 double securityDepositPct,
                                  String paymentAcctId,
                                  String makerFeeCurrencyCode,
-                                 long triggerPrice) {
+                                 String triggerPrice) {
         return offersServiceRequest.createOffer(direction,
                 currencyCode,
                 amount,
                 minAmount,
                 useMarketBasedPrice,
                 fixedPrice,
-                marketPriceMargin,
-                securityDeposit,
+                marketPriceMarginPct,
+                securityDepositPct,
                 paymentAcctId,
                 makerFeeCurrencyCode,
                 triggerPrice);
@@ -236,24 +235,24 @@ public final class GrpcClient {
         offersServiceRequest.editOfferPriceMargin(offerId, marketPriceMargin);
     }
 
-    public void editOfferTriggerPrice(String offerId, long triggerPrice) {
+    public void editOfferTriggerPrice(String offerId, String triggerPrice) {
         offersServiceRequest.editOfferTriggerPrice(offerId, triggerPrice);
     }
 
     public void editOffer(String offerId,
-                          String priceAsString,
+                          String price,
                           boolean useMarketBasedPrice,
-                          double marketPriceMargin,
-                          long triggerPrice,
+                          double marketPriceMarginPct,
+                          String triggerPrice,
                           int enable,
                           EditType editType) {
         // Take care when using this method directly:
         //  useMarketBasedPrice = true if margin based offer, false for fixed priced offer
         //  scaledPriceString fmt = ######.####
         offersServiceRequest.editOffer(offerId,
-                priceAsString,
+                price,
                 useMarketBasedPrice,
-                marketPriceMargin,
+                marketPriceMarginPct,
                 triggerPrice,
                 enable,
                 editType);
@@ -263,7 +262,7 @@ public final class GrpcClient {
         offersServiceRequest.cancelOffer(offerId);
     }
 
-    public BsqSwapOfferInfo getBsqSwapOffer(String offerId) {
+    public OfferInfo getBsqSwapOffer(String offerId) {
         return offersServiceRequest.getBsqSwapOffer(offerId);
     }
 
@@ -271,24 +270,18 @@ public final class GrpcClient {
         return offersServiceRequest.getOffer(offerId);
     }
 
-    public BsqSwapOfferInfo getMyBsqSwapOffer(String offerId) {
-        return offersServiceRequest.getMyBsqSwapOffer(offerId);
-    }
-
+    @Deprecated // Since 5-Dec-2021.
+    // Endpoint to be removed from future version.  Use getOffer service method instead.
     public OfferInfo getMyOffer(String offerId) {
         return offersServiceRequest.getMyOffer(offerId);
     }
 
-    public List<BsqSwapOfferInfo> getBsqSwapOffers(String direction, String currencyCode) {
-        return offersServiceRequest.getBsqSwapOffers(direction, currencyCode);
+    public List<OfferInfo> getBsqSwapOffers(String direction) {
+        return offersServiceRequest.getBsqSwapOffers(direction);
     }
 
     public List<OfferInfo> getOffers(String direction, String currencyCode) {
         return offersServiceRequest.getOffers(direction, currencyCode);
-    }
-
-    public List<OfferInfo> getCryptoCurrencyOffers(String direction, String currencyCode) {
-        return offersServiceRequest.getCryptoCurrencyOffers(direction, currencyCode);
     }
 
     public List<OfferInfo> getOffersSortedByDate(String currencyCode) {
@@ -299,91 +292,44 @@ public final class GrpcClient {
         return offersServiceRequest.getOffersSortedByDate(direction, currencyCode);
     }
 
-    public List<OfferInfo> getBsqOffersSortedByDate() {
-        return offersServiceRequest.getBsqOffersSortedByDate();
-    }
-
-    public List<BsqSwapOfferInfo> getBsqSwapOffersSortedByDate() {
+    public List<OfferInfo> getBsqSwapOffersSortedByDate() {
         return offersServiceRequest.getBsqSwapOffersSortedByDate();
-    }
-
-    public List<BsqSwapOfferInfo> getMyBsqSwapOffers(String direction, String currencyCode) {
-        return offersServiceRequest.getMyBsqSwapOffers(direction, currencyCode);
     }
 
     public List<OfferInfo> getMyOffers(String direction, String currencyCode) {
         return offersServiceRequest.getMyOffers(direction, currencyCode);
     }
 
-    public List<OfferInfo> getMyCryptoCurrencyOffers(String direction, String currencyCode) {
-        return offersServiceRequest.getMyCryptoCurrencyOffers(direction, currencyCode);
+    public List<OfferInfo> getMyOffersSortedByDate(String currencyCode) {
+        return offersServiceRequest.getMyOffersSortedByDate(currencyCode);
     }
 
     public List<OfferInfo> getMyOffersSortedByDate(String direction, String currencyCode) {
         return offersServiceRequest.getMyOffersSortedByDate(direction, currencyCode);
     }
 
-    public List<OfferInfo> getMyOffersSortedByDate(String currencyCode) {
-        return offersServiceRequest.getMyOffersSortedByDate(currencyCode);
-    }
-
-    public List<OfferInfo> getMyCryptoCurrencyOffersSortedByDate(String currencyCode) {
-        return offersServiceRequest.getMyCryptoCurrencyOffersSortedByDate(currencyCode);
-    }
-
-    public List<OfferInfo> getMyBsqOffersSortedByDate() {
-        return offersServiceRequest.getMyBsqOffersSortedByDate();
-    }
-
-    public List<BsqSwapOfferInfo> getMyBsqSwapBsqOffersSortedByDate() {
+    public List<OfferInfo> getMyBsqSwapBsqOffersSortedByDate() {
         return offersServiceRequest.getMyBsqSwapOffersSortedByDate();
     }
 
-    public OfferInfo getMostRecentOffer(String direction, String currencyCode) {
-        return offersServiceRequest.getMostRecentOffer(direction, currencyCode);
-    }
-
-    public List<BsqSwapOfferInfo> sortBsqSwapOffersByDate(List<BsqSwapOfferInfo> offerInfoList) {
-        return offersServiceRequest.sortBsqSwapOffersByDate(offerInfoList);
-    }
-
-    public List<OfferInfo> sortOffersByDate(List<OfferInfo> offerInfoList) {
-        return offersServiceRequest.sortOffersByDate(offerInfoList);
-    }
-
-    public TakeBsqSwapOfferReply getTakeBsqSwapOfferReply(String offerId,
-                                                          String paymentAccountId,
-                                                          String takerFeeCurrencyCode) {
-        var request = TakeBsqSwapOfferRequest.newBuilder()
-                .setOfferId(offerId)
-                .setPaymentAccountId(paymentAccountId)
-                .setTakerFeeCurrencyCode(takerFeeCurrencyCode)
-                .build();
-        return grpcStubs.tradesService.takeBsqSwapOffer(request);
-    }
-
-    public TakeOfferReply getTakeOfferReply(String offerId, String paymentAccountId, String takerFeeCurrencyCode) {
-        return tradesServiceRequest.getTakeOfferReply(offerId, paymentAccountId, takerFeeCurrencyCode);
-    }
-
-    public BsqSwapTradeInfo takeBsqSwapOffer(String offerId, String paymentAccountId, String takerFeeCurrencyCode) {
-        var reply = getTakeBsqSwapOfferReply(offerId, paymentAccountId, takerFeeCurrencyCode);
-        if (reply.hasBsqSwapTrade())
-            return reply.getBsqSwapTrade();
-        else
-            throw new IllegalStateException(reply.getFailureReason().getDescription());
+    public TradeInfo takeBsqSwapOffer(String offerId) {
+        return tradesServiceRequest.takeBsqSwapOffer(offerId);
     }
 
     public TradeInfo takeOffer(String offerId, String paymentAccountId, String takerFeeCurrencyCode) {
         return tradesServiceRequest.takeOffer(offerId, paymentAccountId, takerFeeCurrencyCode);
     }
 
-    public BsqSwapTradeInfo getBsqSwapTrade(String tradeId) {
-        return tradesServiceRequest.getBsqSwapTrade(tradeId);
-    }
-
     public TradeInfo getTrade(String tradeId) {
         return tradesServiceRequest.getTrade(tradeId);
+    }
+
+    public List<TradeInfo> getOpenTrades() {
+        return tradesServiceRequest.getOpenTrades();
+    }
+
+    public List<TradeInfo> getTradeHistory(GetTradesRequest.Category category) {
+        return tradesServiceRequest.getTradeHistory(category);
     }
 
     public void confirmPaymentStarted(String tradeId) {
@@ -394,12 +340,20 @@ public final class GrpcClient {
         tradesServiceRequest.confirmPaymentReceived(tradeId);
     }
 
-    public void keepFunds(String tradeId) {
-        tradesServiceRequest.keepFunds(tradeId);
+    public void closeTrade(String tradeId) {
+        tradesServiceRequest.closeTrade(tradeId);
     }
 
     public void withdrawFunds(String tradeId, String address, String memo) {
         tradesServiceRequest.withdrawFunds(tradeId, address, memo);
+    }
+
+    public void failTrade(String tradeId) {
+        tradesServiceRequest.failTrade(tradeId);
+    }
+
+    public void unFailTrade(String tradeId) {
+        tradesServiceRequest.unFailTrade(tradeId);
     }
 
     public List<PaymentMethod> getPaymentMethods() {

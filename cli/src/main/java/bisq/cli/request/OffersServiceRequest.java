@@ -17,26 +17,26 @@
 
 package bisq.cli.request;
 
-import bisq.proto.grpc.BsqSwapOfferInfo;
 import bisq.proto.grpc.CancelOfferRequest;
+import bisq.proto.grpc.CreateBsqSwapOfferRequest;
 import bisq.proto.grpc.CreateOfferRequest;
 import bisq.proto.grpc.EditOfferRequest;
+import bisq.proto.grpc.GetBsqSwapOffersRequest;
 import bisq.proto.grpc.GetMyOfferRequest;
 import bisq.proto.grpc.GetMyOffersRequest;
+import bisq.proto.grpc.GetOfferCategoryRequest;
 import bisq.proto.grpc.GetOfferRequest;
 import bisq.proto.grpc.GetOffersRequest;
 import bisq.proto.grpc.OfferInfo;
 
-import java.math.BigDecimal;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 
 import static bisq.proto.grpc.EditOfferRequest.EditType.ACTIVATION_STATE_ONLY;
 import static bisq.proto.grpc.EditOfferRequest.EditType.FIXED_PRICE_ONLY;
 import static bisq.proto.grpc.EditOfferRequest.EditType.MKT_PRICE_MARGIN_ONLY;
 import static bisq.proto.grpc.EditOfferRequest.EditType.TRIGGER_PRICE_ONLY;
+import static bisq.proto.grpc.GetOfferCategoryReply.OfferCategory;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
 import static protobuf.OfferDirection.BUY;
@@ -48,16 +48,31 @@ import bisq.cli.GrpcStubs;
 
 public class OffersServiceRequest {
 
-    private final Function<Long, String> scaledPriceStringRequestFormat = (price) -> {
-        BigDecimal factor = new BigDecimal(10).pow(4);
-        //noinspection BigDecimalMethodWithoutRoundingCalled
-        return new BigDecimal(price).divide(factor).toPlainString();
-    };
-
     private final GrpcStubs grpcStubs;
 
     public OffersServiceRequest(GrpcStubs grpcStubs) {
         this.grpcStubs = grpcStubs;
+    }
+
+    public OfferCategory getAvailableOfferCategory(String offerId) {
+        return getOfferCategory(offerId, false);
+    }
+
+    public OfferCategory getMyOfferCategory(String offerId) {
+        return getOfferCategory(offerId, true);
+    }
+
+    public OfferInfo createBsqSwapOffer(String direction,
+                                        long amount,
+                                        long minAmount,
+                                        String fixedPrice) {
+        var request = CreateBsqSwapOfferRequest.newBuilder()
+                .setDirection(direction)
+                .setAmount(amount)
+                .setMinAmount(minAmount)
+                .setPrice(fixedPrice)
+                .build();
+        return grpcStubs.offersService.createBsqSwapOffer(request).getBsqSwapOffer();
     }
 
     @SuppressWarnings("unused")
@@ -66,7 +81,7 @@ public class OffersServiceRequest {
                                             long amount,
                                             long minAmount,
                                             String fixedPrice,
-                                            double securityDeposit,
+                                            double securityDepositPct,
                                             String paymentAcctId,
                                             String makerFeeCurrencyCode) {
         return createOffer(direction,
@@ -76,33 +91,10 @@ public class OffersServiceRequest {
                 false,
                 fixedPrice,
                 0.00,
-                securityDeposit,
+                securityDepositPct,
                 paymentAcctId,
                 makerFeeCurrencyCode,
-                0 /* no trigger price */);
-    }
-
-    @SuppressWarnings("unused")
-    public OfferInfo createMarketBasedPricedOffer(String direction,
-                                                  String currencyCode,
-                                                  long amount,
-                                                  long minAmount,
-                                                  double marketPriceMargin,
-                                                  double securityDeposit,
-                                                  String paymentAcctId,
-                                                  String makerFeeCurrencyCode,
-                                                  long triggerPrice) {
-        return createOffer(direction,
-                currencyCode,
-                amount,
-                minAmount,
-                true,
-                "0",
-                marketPriceMargin,
-                securityDeposit,
-                paymentAcctId,
-                makerFeeCurrencyCode,
-                triggerPrice);
+                "0" /* no trigger price */);
     }
 
     public OfferInfo createOffer(String direction,
@@ -111,11 +103,11 @@ public class OffersServiceRequest {
                                  long minAmount,
                                  boolean useMarketBasedPrice,
                                  String fixedPrice,
-                                 double marketPriceMargin,
-                                 double securityDeposit,
+                                 double marketPriceMarginPct,
+                                 double securityDepositPct,
                                  String paymentAcctId,
                                  String makerFeeCurrencyCode,
-                                 long triggerPrice) {
+                                 String triggerPrice) {
         var request = CreateOfferRequest.newBuilder()
                 .setDirection(direction)
                 .setCurrencyCode(currencyCode)
@@ -123,8 +115,8 @@ public class OffersServiceRequest {
                 .setMinAmount(minAmount)
                 .setUseMarketBasedPrice(useMarketBasedPrice)
                 .setPrice(fixedPrice)
-                .setMarketPriceMargin(marketPriceMargin)
-                .setBuyerSecurityDeposit(securityDeposit)
+                .setMarketPriceMarginPct(marketPriceMarginPct)
+                .setBuyerSecurityDepositPct(securityDepositPct)
                 .setPaymentAccountId(paymentAcctId)
                 .setMakerFeeCurrencyCode(makerFeeCurrencyCode)
                 .setTriggerPrice(triggerPrice)
@@ -134,13 +126,13 @@ public class OffersServiceRequest {
 
     public void editOfferActivationState(String offerId, int enable) {
         var offer = getMyOffer(offerId);
-        var scaledPriceString = offer.getUseMarketBasedPrice()
+        var offerPrice = offer.getUseMarketBasedPrice()
                 ? "0.00"
-                : scaledPriceStringRequestFormat.apply(offer.getPrice());
+                : offer.getPrice();
         editOffer(offerId,
-                scaledPriceString,
+                offerPrice,
                 offer.getUseMarketBasedPrice(),
-                offer.getMarketPriceMargin(),
+                offer.getMarketPriceMarginPct(),
                 offer.getTriggerPrice(),
                 enable,
                 ACTIVATION_STATE_ONLY);
@@ -151,29 +143,29 @@ public class OffersServiceRequest {
         editOffer(offerId,
                 rawPriceString,
                 false,
-                offer.getMarketPriceMargin(),
+                offer.getMarketPriceMarginPct(),
                 offer.getTriggerPrice(),
                 offer.getIsActivated() ? 1 : 0,
                 FIXED_PRICE_ONLY);
     }
 
-    public void editOfferPriceMargin(String offerId, double marketPriceMargin) {
+    public void editOfferPriceMargin(String offerId, double marketPriceMarginPct) {
         var offer = getMyOffer(offerId);
         editOffer(offerId,
                 "0.00",
                 true,
-                marketPriceMargin,
+                marketPriceMarginPct,
                 offer.getTriggerPrice(),
                 offer.getIsActivated() ? 1 : 0,
                 MKT_PRICE_MARGIN_ONLY);
     }
 
-    public void editOfferTriggerPrice(String offerId, long triggerPrice) {
+    public void editOfferTriggerPrice(String offerId, String triggerPrice) {
         var offer = getMyOffer(offerId);
         editOffer(offerId,
                 "0.00",
                 offer.getUseMarketBasedPrice(),
-                offer.getMarketPriceMargin(),
+                offer.getMarketPriceMarginPct(),
                 triggerPrice,
                 offer.getIsActivated() ? 1 : 0,
                 TRIGGER_PRICE_ONLY);
@@ -182,8 +174,8 @@ public class OffersServiceRequest {
     public void editOffer(String offerId,
                           String scaledPriceString,
                           boolean useMarketBasedPrice,
-                          double marketPriceMargin,
-                          long triggerPrice,
+                          double marketPriceMarginPct,
+                          String triggerPrice,
                           int enable,
                           EditOfferRequest.EditType editType) {
         // Take care when using this method directly:
@@ -193,7 +185,7 @@ public class OffersServiceRequest {
                 .setId(offerId)
                 .setPrice(scaledPriceString)
                 .setUseMarketBasedPrice(useMarketBasedPrice)
-                .setMarketPriceMargin(marketPriceMargin)
+                .setMarketPriceMarginPct(marketPriceMarginPct)
                 .setTriggerPrice(triggerPrice)
                 .setEnable(enable)
                 .setEditType(editType)
@@ -210,7 +202,7 @@ public class OffersServiceRequest {
         grpcStubs.offersService.cancelOffer(request);
     }
 
-    public BsqSwapOfferInfo getBsqSwapOffer(String offerId) {
+    public OfferInfo getBsqSwapOffer(String offerId) {
         var request = GetOfferRequest.newBuilder()
                 .setId(offerId)
                 .build();
@@ -224,14 +216,6 @@ public class OffersServiceRequest {
         return grpcStubs.offersService.getOffer(request).getOffer();
     }
 
-    public BsqSwapOfferInfo getMyBsqSwapOffer(String offerId) {
-        var request = GetMyOfferRequest.newBuilder()
-                .setId(offerId)
-                .build();
-        return grpcStubs.offersService.getMyBsqSwapOffer(request).getBsqSwapOffer();
-
-    }
-
     public OfferInfo getMyOffer(String offerId) {
         var request = GetMyOfferRequest.newBuilder()
                 .setId(offerId)
@@ -239,38 +223,27 @@ public class OffersServiceRequest {
         return grpcStubs.offersService.getMyOffer(request).getOffer();
     }
 
-    public List<BsqSwapOfferInfo> getBsqSwapOffers(String direction, String currencyCode) {
-        var request = GetOffersRequest.newBuilder()
+    public List<OfferInfo> getBsqSwapOffers(String direction) {
+        var request = GetBsqSwapOffersRequest.newBuilder()
                 .setDirection(direction)
-                .setCurrencyCode(currencyCode)
                 .build();
 
         return grpcStubs.offersService.getBsqSwapOffers(request).getBsqSwapOffersList();
     }
 
     public List<OfferInfo> getOffers(String direction, String currencyCode) {
-        if (isSupportedCryptoCurrency(currencyCode)) {
-            return getCryptoCurrencyOffers(direction, currencyCode);
-        } else {
-            var request = GetOffersRequest.newBuilder()
-                    .setDirection(direction)
-                    .setCurrencyCode(currencyCode)
-                    .build();
-            return grpcStubs.offersService.getOffers(request).getOffersList();
-        }
-    }
-
-    public List<OfferInfo> getCryptoCurrencyOffers(String direction, String currencyCode) {
-        return getOffers(direction, "BTC").stream()
-                .filter(o -> o.getBaseCurrencyCode().equalsIgnoreCase(currencyCode))
-                .collect(toList());
+        var request = GetOffersRequest.newBuilder()
+                .setDirection(direction)
+                .setCurrencyCode(currencyCode)
+                .build();
+        return grpcStubs.offersService.getOffers(request).getOffersList();
     }
 
     public List<OfferInfo> getOffersSortedByDate(String currencyCode) {
         ArrayList<OfferInfo> offers = new ArrayList<>();
         offers.addAll(getOffers(BUY.name(), currencyCode));
         offers.addAll(getOffers(SELL.name(), currencyCode));
-        return sortOffersByDate(offers);
+        return offers.isEmpty() ? offers : sortOffersByDate(offers);
     }
 
     public List<OfferInfo> getOffersSortedByDate(String direction, String currencyCode) {
@@ -278,44 +251,33 @@ public class OffersServiceRequest {
         return offers.isEmpty() ? offers : sortOffersByDate(offers);
     }
 
-    public List<BsqSwapOfferInfo> getBsqSwapOffersSortedByDate() {
-        ArrayList<BsqSwapOfferInfo> offers = new ArrayList<>();
-        offers.addAll(getBsqSwapOffers(BUY.name(), "BSQ"));
-        offers.addAll(getBsqSwapOffers(SELL.name(), "BSQ"));
-        return sortBsqSwapOffersByDate(offers);
-    }
-
-    public List<OfferInfo> getBsqOffersSortedByDate() {
+    public List<OfferInfo> getBsqSwapOffersSortedByDate() {
         ArrayList<OfferInfo> offers = new ArrayList<>();
-        offers.addAll(getCryptoCurrencyOffers(BUY.name(), "BSQ"));
-        offers.addAll(getCryptoCurrencyOffers(SELL.name(), "BSQ"));
+        offers.addAll(getBsqSwapOffers(BUY.name()));
+        offers.addAll(getBsqSwapOffers(SELL.name()));
         return sortOffersByDate(offers);
     }
 
-    public List<BsqSwapOfferInfo> getMyBsqSwapOffers(String direction, String currencyCode) {
-        var request = GetMyOffersRequest.newBuilder()
+    public List<OfferInfo> getMyBsqSwapOffers(String direction) {
+        var request = GetBsqSwapOffersRequest.newBuilder()
                 .setDirection(direction)
-                .setCurrencyCode(currencyCode)
                 .build();
         return grpcStubs.offersService.getMyBsqSwapOffers(request).getBsqSwapOffersList();
     }
 
     public List<OfferInfo> getMyOffers(String direction, String currencyCode) {
-        if (isSupportedCryptoCurrency(currencyCode)) {
-            return getMyCryptoCurrencyOffers(direction, currencyCode);
-        } else {
-            var request = GetMyOffersRequest.newBuilder()
-                    .setDirection(direction)
-                    .setCurrencyCode(currencyCode)
-                    .build();
-            return grpcStubs.offersService.getMyOffers(request).getOffersList();
-        }
+        var request = GetMyOffersRequest.newBuilder()
+                .setDirection(direction)
+                .setCurrencyCode(currencyCode)
+                .build();
+        return grpcStubs.offersService.getMyOffers(request).getOffersList();
     }
 
-    public List<OfferInfo> getMyCryptoCurrencyOffers(String direction, String currencyCode) {
-        return getMyOffers(direction, "BTC").stream()
-                .filter(o -> o.getBaseCurrencyCode().equalsIgnoreCase(currencyCode))
-                .collect(toList());
+    public List<OfferInfo> getMyOffersSortedByDate(String currencyCode) {
+        ArrayList<OfferInfo> offers = new ArrayList<>();
+        offers.addAll(getMyOffers(BUY.name(), currencyCode));
+        offers.addAll(getMyOffers(SELL.name(), currencyCode));
+        return offers.isEmpty() ? offers : sortOffersByDate(offers);
     }
 
     public List<OfferInfo> getMyOffersSortedByDate(String direction, String currencyCode) {
@@ -323,44 +285,16 @@ public class OffersServiceRequest {
         return offers.isEmpty() ? offers : sortOffersByDate(offers);
     }
 
-    public List<OfferInfo> getMyOffersSortedByDate(String currencyCode) {
+    public List<OfferInfo> getMyBsqSwapOffersSortedByDate() {
         ArrayList<OfferInfo> offers = new ArrayList<>();
-        offers.addAll(getMyOffers(BUY.name(), currencyCode));
-        offers.addAll(getMyOffers(SELL.name(), currencyCode));
+        offers.addAll(getMyBsqSwapOffers(BUY.name()));
+        offers.addAll(getMyBsqSwapOffers(SELL.name()));
         return sortOffersByDate(offers);
-    }
-
-    public List<OfferInfo> getMyCryptoCurrencyOffersSortedByDate(String currencyCode) {
-        ArrayList<OfferInfo> offers = new ArrayList<>();
-        offers.addAll(getMyCryptoCurrencyOffers(BUY.name(), currencyCode));
-        offers.addAll(getMyCryptoCurrencyOffers(SELL.name(), currencyCode));
-        return sortOffersByDate(offers);
-    }
-
-    public List<OfferInfo> getMyBsqOffersSortedByDate() {
-        ArrayList<OfferInfo> offers = new ArrayList<>();
-        offers.addAll(getMyCryptoCurrencyOffers(BUY.name(), "BSQ"));
-        offers.addAll(getMyCryptoCurrencyOffers(SELL.name(), "BSQ"));
-        return sortOffersByDate(offers);
-    }
-
-    public List<BsqSwapOfferInfo> getMyBsqSwapOffersSortedByDate() {
-        ArrayList<BsqSwapOfferInfo> offers = new ArrayList<>();
-        offers.addAll(getMyBsqSwapOffers(BUY.name(), "BSQ"));
-        offers.addAll(getMyBsqSwapOffers(SELL.name(), "BSQ"));
-        return sortBsqSwapOffersByDate(offers);
     }
 
     public OfferInfo getMostRecentOffer(String direction, String currencyCode) {
         List<OfferInfo> offers = getOffersSortedByDate(direction, currencyCode);
         return offers.isEmpty() ? null : offers.get(offers.size() - 1);
-    }
-
-    public List<BsqSwapOfferInfo> sortBsqSwapOffersByDate(List<BsqSwapOfferInfo> offerInfoList) {
-        return offerInfoList.stream()
-                .sorted(comparing(BsqSwapOfferInfo::getDate))
-                .collect(toList());
-
     }
 
     public List<OfferInfo> sortOffersByDate(List<OfferInfo> offerInfoList) {
@@ -369,14 +303,11 @@ public class OffersServiceRequest {
                 .collect(toList());
     }
 
-    private static boolean isSupportedCryptoCurrency(String currencyCode) {
-        return getSupportedCryptoCurrencies().contains(currencyCode.toUpperCase());
-    }
-
-    private static List<String> getSupportedCryptoCurrencies() {
-        final List<String> result = new ArrayList<>();
-        result.add("BSQ");
-        result.sort(String::compareTo);
-        return result;
+    private OfferCategory getOfferCategory(String offerId, boolean isMyOffer) {
+        var request = GetOfferCategoryRequest.newBuilder()
+                .setId(offerId)
+                .setIsMyOffer(isMyOffer)
+                .build();
+        return grpcStubs.offersService.getOfferCategory(request).getOfferCategory();
     }
 }

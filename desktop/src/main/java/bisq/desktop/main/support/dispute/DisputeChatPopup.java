@@ -21,12 +21,14 @@ import bisq.desktop.components.AutoTooltipButton;
 import bisq.desktop.main.MainView;
 import bisq.desktop.main.shared.ChatView;
 import bisq.desktop.util.CssTheme;
+import bisq.desktop.util.DisplayUtils;
 
 import bisq.core.locale.Res;
 import bisq.core.support.dispute.Dispute;
 import bisq.core.support.dispute.DisputeList;
 import bisq.core.support.dispute.DisputeManager;
 import bisq.core.support.dispute.DisputeSession;
+import bisq.core.support.messages.ChatMessage;
 import bisq.core.user.Preferences;
 import bisq.core.util.coin.CoinFormatter;
 
@@ -39,6 +41,8 @@ import javafx.stage.Window;
 
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.MenuButton;
+import javafx.scene.control.MenuItem;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
@@ -46,22 +50,24 @@ import javafx.scene.layout.StackPane;
 
 import javafx.beans.value.ChangeListener;
 
+import java.util.Date;
+import java.util.List;
+
 import lombok.Getter;
 
 public class DisputeChatPopup {
     public interface ChatCallback {
         void onCloseDisputeFromChatWindow(Dispute dispute);
+        void onSendLogsFromChatWindow(Dispute dispute);
     }
 
     private Stage chatPopupStage;
     protected final DisputeManager<? extends DisputeList<Dispute>> disputeManager;
     protected final CoinFormatter formatter;
     protected final Preferences preferences;
-    private ChatCallback chatCallback;
+    private final ChatCallback chatCallback;
     private double chatPopupStageXPosition = -1;
     private double chatPopupStageYPosition = -1;
-    private ChangeListener<Number> xPositionListener;
-    private ChangeListener<Number> yPositionListener;
     @Getter private Dispute selectedDispute;
 
     DisputeChatPopup(DisputeManager<? extends DisputeList<Dispute>> disputeManager,
@@ -102,12 +108,26 @@ public class DisputeChatPopup {
         AnchorPane.setTopAnchor(chatView, -20d);
         AnchorPane.setBottomAnchor(chatView, 10d);
         pane.getStyleClass().add("dispute-chat-border");
-        Button closeDisputeButton = null;
-        if (!selectedDispute.isClosed() && !disputeManager.isTrader(selectedDispute)) {
-            closeDisputeButton = new AutoTooltipButton(Res.get("support.closeTicket"));
-            closeDisputeButton.setOnAction(e -> chatCallback.onCloseDisputeFromChatWindow(selectedDispute));
+        if (selectedDispute.isClosed()) {
+            chatView.display(concreteDisputeSession, null, pane.widthProperty());
+        } else {
+            if (disputeManager.isAgent(selectedDispute)) {
+                Button closeDisputeButton = new AutoTooltipButton(Res.get("support.closeTicket"));
+                closeDisputeButton.setDefaultButton(true);
+                closeDisputeButton.setOnAction(e -> chatCallback.onCloseDisputeFromChatWindow(selectedDispute));
+                chatView.display(concreteDisputeSession, closeDisputeButton, pane.widthProperty());
+            } else {
+                MenuButton menuButton = new MenuButton(Res.get("support.moreButton"));
+                MenuItem menuItem1 = new MenuItem(Res.get("support.uploadTraderChat"));
+                MenuItem menuItem2 = new MenuItem(Res.get("support.sendLogFiles"));
+                menuItem1.setOnAction(e -> doTextAttachment(chatView));
+                menuItem2.setOnAction(e -> chatCallback.onSendLogsFromChatWindow(selectedDispute));
+                menuButton.getItems().addAll(menuItem1, menuItem2);
+                menuButton.getStyleClass().add("jfx-button");
+                menuButton.setStyle("-fx-padding: 0 10 0 10;");
+                chatView.display(concreteDisputeSession, menuButton, pane.widthProperty());
+            }
         }
-        chatView.display(concreteDisputeSession, closeDisputeButton, pane.widthProperty());
         chatView.activate();
         chatView.scrollToBottom();
         chatPopupStage = new Stage();
@@ -138,9 +158,9 @@ public class DisputeChatPopup {
         chatPopupStage.setOpacity(0);
         chatPopupStage.show();
 
-        xPositionListener = (observable, oldValue, newValue) -> chatPopupStageXPosition = (double) newValue;
+        ChangeListener<Number> xPositionListener = (observable, oldValue, newValue) -> chatPopupStageXPosition = (double) newValue;
         chatPopupStage.xProperty().addListener(xPositionListener);
-        yPositionListener = (observable, oldValue, newValue) -> chatPopupStageYPosition = (double) newValue;
+        ChangeListener<Number> yPositionListener = (observable, oldValue, newValue) -> chatPopupStageYPosition = (double) newValue;
         chatPopupStage.yProperty().addListener(yPositionListener);
 
         if (chatPopupStageXPosition == -1) {
@@ -156,5 +176,24 @@ public class DisputeChatPopup {
         // Delay display to next render frame to avoid that the popup is first quickly displayed in default position
         // and after a short moment in the correct position
         UserThread.execute(() -> chatPopupStage.setOpacity(1));
+    }
+
+    private void doTextAttachment(ChatView chatView) {
+        disputeManager.findTrade(selectedDispute).ifPresent(t -> {
+            List<ChatMessage> chatMessages = t.getChatMessages();
+            if (chatMessages.size() > 0) {
+                StringBuilder stringBuilder = new StringBuilder();
+                chatMessages.forEach(i -> {
+                    boolean isMyMsg = i.isSenderIsTrader();
+                    String metaData = DisplayUtils.formatDateTime(new Date(i.getDate()));
+                    if (!i.isSystemMessage())
+                        metaData = (isMyMsg ? "Sent " : "Received ") + metaData
+                                + (isMyMsg ? "" : " from Trader");
+                    stringBuilder.append(metaData).append("\n").append(i.getMessage()).append("\n\n");
+                });
+                String fileName = selectedDispute.getShortTradeId() + "_" + selectedDispute.getRoleStringForLogFile() + "_TraderChat.txt";
+                chatView.onAttachText(stringBuilder.toString(), fileName);
+            }
+        });
     }
 }

@@ -21,6 +21,7 @@ import bisq.desktop.common.view.ActivatableView;
 import bisq.desktop.common.view.FxmlView;
 import bisq.desktop.main.overlays.popups.Popup;
 import bisq.desktop.main.overlays.windows.ShowWalletDataWindow;
+import bisq.desktop.main.overlays.windows.WalletPasswordWindow;
 import bisq.desktop.util.Layout;
 
 import bisq.core.btc.listeners.BalanceListener;
@@ -59,6 +60,7 @@ public class WalletInfoView extends ActivatableView<GridPane, Void> {
     private final WalletsManager walletsManager;
     private final BtcWalletService btcWalletService;
     private final BsqWalletService bsqWalletService;
+    private final WalletPasswordWindow walletPasswordWindow;
     private final CoinFormatter btcFormatter;
     private final BsqFormatter bsqFormatter;
     private int gridRow = 0;
@@ -76,11 +78,13 @@ public class WalletInfoView extends ActivatableView<GridPane, Void> {
     private WalletInfoView(WalletsManager walletsManager,
                            BtcWalletService btcWalletService,
                            BsqWalletService bsqWalletService,
-                           @Named(FormattingUtils.BTC_FORMATTER_KEY) CoinFormatter btcFormatter,
+                           WalletPasswordWindow walletPasswordWindow,
+                           @Named(FormattingUtils.RADC_FORMATTER_KEY) CoinFormatter btcFormatter,
                            BsqFormatter bsqFormatter) {
         this.walletsManager = walletsManager;
         this.btcWalletService = btcWalletService;
         this.bsqWalletService = bsqWalletService;
+        this.walletPasswordWindow = walletPasswordWindow;
         this.btcFormatter = btcFormatter;
         this.bsqFormatter = bsqFormatter;
     }
@@ -89,19 +93,19 @@ public class WalletInfoView extends ActivatableView<GridPane, Void> {
     public void initialize() {
         addTitledGroupBg(root, gridRow, 3, Res.get("account.menu.walletInfo.balance.headLine"));
         addMultilineLabel(root, gridRow, Res.get("account.menu.walletInfo.balance.info"), Layout.FIRST_ROW_DISTANCE, Double.MAX_VALUE);
-        btcTextField = addTopLabelTextField(root, ++gridRow, "BTC", -Layout.FLOATING_LABEL_DISTANCE).second;
+        btcTextField = addTopLabelTextField(root, ++gridRow, "RADC", -Layout.FLOATING_LABEL_DISTANCE).second;
         bsqTextField = addTopLabelTextField(root, ++gridRow, "BSQ", -Layout.FLOATING_LABEL_DISTANCE).second;
 
         addTitledGroupBg(root, ++gridRow, 4, Res.get("account.menu.walletInfo.xpub.headLine"), Layout.GROUP_DISTANCE);
-        addXpubKeys(btcWalletService, "BTC", gridRow, Layout.FIRST_ROW_AND_GROUP_DISTANCE);
+        addXpubKeys(btcWalletService, "RADC", gridRow, Layout.FIRST_ROW_AND_GROUP_DISTANCE);
         ++gridRow; // update gridRow
         addXpubKeys(bsqWalletService, "BSQ", ++gridRow, -Layout.FLOATING_LABEL_DISTANCE);
         ++gridRow; // update gridRow
 
         addTitledGroupBg(root, ++gridRow, 4, Res.get("account.menu.walletInfo.path.headLine"), Layout.GROUP_DISTANCE);
         addMultilineLabel(root, gridRow, Res.get("account.menu.walletInfo.path.info"), Layout.FIRST_ROW_AND_GROUP_DISTANCE, Double.MAX_VALUE);
-        addTopLabelTextField(root, ++gridRow, Res.get("account.menu.walletInfo.walletSelector", "BTC", "legacy"), "44'/0'/0'", -Layout.FLOATING_LABEL_DISTANCE);
-        addTopLabelTextField(root, ++gridRow, Res.get("account.menu.walletInfo.walletSelector", "BTC", "segwit"), "44'/0'/1'", -Layout.FLOATING_LABEL_DISTANCE);
+        addTopLabelTextField(root, ++gridRow, Res.get("account.menu.walletInfo.walletSelector", "RADC", "legacy"), "44'/0'/0'", -Layout.FLOATING_LABEL_DISTANCE);
+        addTopLabelTextField(root, ++gridRow, Res.get("account.menu.walletInfo.walletSelector", "RADC", "segwit"), "44'/0'/1'", -Layout.FLOATING_LABEL_DISTANCE);
         addTopLabelTextField(root, ++gridRow, Res.get("account.menu.walletInfo.walletSelector", "BSQ", ""), "44'/142'/0'", -Layout.FLOATING_LABEL_DISTANCE);
 
         openDetailsButton = addButtonAfterGroup(root, ++gridRow, Res.get("account.menu.walletInfo.openDetails"));
@@ -130,7 +134,7 @@ public class WalletInfoView extends ActivatableView<GridPane, Void> {
 
         openDetailsButton.setOnAction(e -> {
             if (walletsManager.areWalletsAvailable()) {
-                new ShowWalletDataWindow(walletsManager).width(root.getWidth()).show();
+                new ShowWalletDataWindow(walletsManager, btcWalletService, walletPasswordWindow).width(root.getWidth()).show();
             } else {
                 new Popup().warning(Res.get("popup.warning.walletNotInitialized")).show();
             }

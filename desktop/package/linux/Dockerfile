@@ -8,13 +8,13 @@
 
 # pull base image
 FROM openjdk:8-jdk
-ENV version 1.7.5-SNAPSHOT
+ENV version 1.8.4-SNAPSHOT
 
 RUN apt-get update && apt-get install -y --no-install-recommends openjfx && rm -rf /var/lib/apt/lists/* &&
 apt-get install -y vim fakeroot
 
 
 COPY 64bitBuild.sh /root
-COPY radiox-$version.jar /root
+COPY bisq-$version.jar /root
 # cd to the Dex directory and execute the jar.
 #CMD cd ~/Dex && java -jar Dex.jar

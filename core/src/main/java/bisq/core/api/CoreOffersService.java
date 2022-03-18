@@ -17,6 +17,7 @@
 
 package bisq.core.api;
 
+import bisq.core.api.exception.NotFoundException;
 import bisq.core.monetary.Altcoin;
 import bisq.core.monetary.Price;
 import bisq.core.offer.Offer;
@@ -48,6 +49,8 @@ import java.math.BigDecimal;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -57,14 +60,19 @@ import lombok.extern.slf4j.Slf4j;
 import static bisq.common.util.MathUtils.exactMultiply;
 import static bisq.common.util.MathUtils.roundDoubleToLong;
 import static bisq.common.util.MathUtils.scaleUpByPowerOf10;
+import static bisq.core.locale.CurrencyUtil.apiSupportsCryptoCurrency;
 import static bisq.core.locale.CurrencyUtil.isCryptoCurrency;
+import static bisq.core.locale.CurrencyUtil.isFiatCurrency;
 import static bisq.core.offer.Offer.State;
 import static bisq.core.offer.OfferDirection.BUY;
+import static bisq.core.offer.OfferUtil.getRandomOfferId;
 import static bisq.core.offer.OpenOffer.State.AVAILABLE;
 import static bisq.core.offer.OpenOffer.State.DEACTIVATED;
 import static bisq.core.payment.PaymentAccountUtil.isPaymentAccountValidForOffer;
+import static bisq.core.util.PriceUtil.getMarketPriceAsLong;
 import static bisq.proto.grpc.EditOfferRequest.EditType;
-import static bisq.proto.grpc.EditOfferRequest.EditType.*;
+import static bisq.proto.grpc.EditOfferRequest.EditType.FIXED_PRICE_AND_ACTIVATION_STATE;
+import static bisq.proto.grpc.EditOfferRequest.EditType.FIXED_PRICE_ONLY;
 import static java.lang.String.format;
 import static java.util.Comparator.comparing;
 
@@ -77,6 +85,9 @@ class CoreOffersService {
 
     private final Supplier<Comparator<OpenOffer>> openOfferPriceComparator = () ->
             comparing(openOffer -> openOffer.getOffer().getPrice());
+
+    private final BiFunction<String, Boolean, Offer> toOfferWithId = (id, isMyOffer) ->
+            isMyOffer ? getMyOffer(id).getOffer() : getOffer(id);
 
     private final CoreContext coreContext;
     private final KeyRing keyRing;
@@ -118,78 +129,143 @@ class CoreOffersService {
         this.user = user;
     }
 
-    Offer getBsqSwapOffer(String id) {
-        return offerBookService.getOffers().stream()
-                .filter(o -> o.getId().equals(id))
-                .filter(o -> !o.isMyOffer(keyRing))
-                .filter(o -> offerFilterService.canTakeOffer(o, coreContext.isApiUser()).isValid())
-                .filter(o -> o.isBsqSwapOffer())
-                .findAny().orElseThrow(() ->
-                        new IllegalStateException(format("offer with id '%s' not found", id)));
+    boolean isFiatOffer(String id, boolean isMyOffer) {
+        var offer = toOfferWithId.apply(id, isMyOffer);
+        return OfferUtil.isFiatOffer(offer);
+    }
+
+    boolean isAltcoinOffer(String id, boolean isMyOffer) {
+        var offer = toOfferWithId.apply(id, isMyOffer);
+        return OfferUtil.isAltcoinOffer(offer);
+    }
+
+    boolean isBsqSwapOffer(String id, boolean isMyOffer) {
+        var offer = toOfferWithId.apply(id, isMyOffer);
+        return offer.isBsqSwapOffer();
     }
 
     Offer getOffer(String id) {
+        return findAvailableOffer(id).orElseThrow(() ->
+                new NotFoundException(format("offer with id '%s' not found", id)));
+    }
+
+    Optional<Offer> findAvailableOffer(String id) {
         return offerBookService.getOffers().stream()
                 .filter(o -> o.getId().equals(id))
                 .filter(o -> !o.isMyOffer(keyRing))
                 .filter(o -> offerFilterService.canTakeOffer(o, coreContext.isApiUser()).isValid())
-                .findAny().orElseThrow(() ->
-                        new IllegalStateException(format("offer with id '%s' not found", id)));
+                .findAny();
     }
 
     OpenOffer getMyOffer(String id) {
+        return findMyOpenOffer(id).orElseThrow(() ->
+                new NotFoundException(format("offer with id '%s' not found", id)));
+    }
+
+    Optional<OpenOffer> findMyOpenOffer(String id) {
         return openOfferManager.getObservableList().stream()
                 .filter(o -> o.getId().equals(id))
                 .filter(o -> o.getOffer().isMyOffer(keyRing))
-                .findAny().orElseThrow(() ->
-                        new IllegalStateException(format("offer with id '%s' not found", id)));
+                .findAny();
+    }
+
+    Offer getBsqSwapOffer(String id) {
+        return findAvailableBsqSwapOffer(id).orElseThrow(() ->
+                new NotFoundException(format("offer with id '%s' not found", id)));
+    }
+
+    Optional<Offer> findAvailableBsqSwapOffer(String id) {
+        return offerBookService.getOffers().stream()
+                .filter(o -> o.getId().equals(id))
+                .filter(o -> !o.isMyOffer(keyRing))
+                .filter(o -> offerFilterService.canTakeOffer(o, coreContext.isApiUser()).isValid())
+                .filter(Offer::isBsqSwapOffer)
+                .findAny();
     }
 
     Offer getMyBsqSwapOffer(String id) {
+        return findMyBsqSwapOffer(id).orElseThrow(() ->
+                new NotFoundException(format("offer with id '%s' not found", id)));
+    }
+
+    Optional<Offer> findMyBsqSwapOffer(String id) {
         return offerBookService.getOffers().stream()
                 .filter(o -> o.getId().equals(id))
                 .filter(o -> o.isMyOffer(keyRing))
-                .filter(o -> o.isBsqSwapOffer())
-                .findAny().orElseThrow(() ->
-                        new IllegalStateException(format("offer with id '%s' not found", id)));
+                .filter(Offer::isBsqSwapOffer)
+                .findAny();
     }
 
-
     List<Offer> getBsqSwapOffers(String direction) {
-        var offers = offerBookService.getOffers().stream()
+        return offerBookService.getOffers().stream()
                 .filter(o -> !o.isMyOffer(keyRing))
                 .filter(o -> o.getDirection().name().equalsIgnoreCase(direction))
-                .filter(o -> o.isBsqSwapOffer())
+                .filter(Offer::isBsqSwapOffer)
                 .sorted(priceComparator(direction))
                 .collect(Collectors.toList());
-        return offers;
     }
 
     List<Offer> getOffers(String direction, String currencyCode) {
-        return offerBookService.getOffers().stream()
-                .filter(o -> !o.isMyOffer(keyRing))
-                .filter(o -> offerMatchesDirectionAndCurrency(o, direction, currencyCode))
-                .filter(o -> offerFilterService.canTakeOffer(o, coreContext.isApiUser()).isValid())
-                .sorted(priceComparator(direction))
-                .collect(Collectors.toList());
+        var upperCaseCurrencyCode = currencyCode.toUpperCase();
+        if (isFiatCurrency(upperCaseCurrencyCode)) {
+            return offerBookService.getOffers().stream()
+                    .filter(o -> !o.isMyOffer(keyRing))
+                    .filter(o -> offerMatchesDirectionAndCurrency(o, direction, upperCaseCurrencyCode))
+                    .filter(o -> offerFilterService.canTakeOffer(o, coreContext.isApiUser()).isValid())
+                    .sorted(priceComparator(direction))
+                    .collect(Collectors.toList());
+        } else {
+            // In fiat offers, the baseCurrencyCode=RADC, counterCurrencyCode=FiatCode.
+            // In altcoin offers, baseCurrencyCode=AltcoinCode, counterCurrencyCode=RADC.
+            // This forces an extra filtering step below:  get all RADC offers,
+            // then filter on the currencyCode param (the altcoin code).
+            if (apiSupportsCryptoCurrency(upperCaseCurrencyCode))
+                return offerBookService.getOffers().stream()
+                        .filter(o -> !o.isMyOffer(keyRing))
+                        .filter(o -> offerMatchesDirectionAndCurrency(o, direction, "RADC"))
+                        .filter(o -> o.getBaseCurrencyCode().equalsIgnoreCase(upperCaseCurrencyCode))
+                        .filter(o -> offerFilterService.canTakeOffer(o, coreContext.isApiUser()).isValid())
+                        .sorted(priceComparator(direction))
+                        .collect(Collectors.toList());
+            else
+                throw new IllegalArgumentException(
+                        format("api does not support the '%s' crypto currency", upperCaseCurrencyCode));
+        }
     }
 
     List<OpenOffer> getMyOffers(String direction, String currencyCode) {
-        return openOfferManager.getObservableList().stream()
-                .filter(o -> o.getOffer().isMyOffer(keyRing))
-                .filter(o -> offerMatchesDirectionAndCurrency(o.getOffer(), direction, currencyCode))
-                .sorted(openOfferPriceComparator(direction))
-                .collect(Collectors.toList());
+        var upperCaseCurrencyCode = currencyCode.toUpperCase();
+        if (isFiatCurrency(upperCaseCurrencyCode)) {
+            return openOfferManager.getObservableList().stream()
+                    .filter(o -> o.getOffer().isMyOffer(keyRing))
+                    .filter(o -> offerMatchesDirectionAndCurrency(o.getOffer(), direction, upperCaseCurrencyCode))
+                    .sorted(openOfferPriceComparator(direction))
+                    .collect(Collectors.toList());
+        } else {
+            // In fiat offers, the baseCurrencyCode=RADC, counterCurrencyCode=FiatCode.
+            // In altcoin offers, baseCurrencyCode=AltcoinCode, counterCurrencyCode=RADC.
+            // This forces an extra filtering step below:  get all RADC offers,
+            // then filter on the currencyCode param (the altcoin code).
+            if (apiSupportsCryptoCurrency(upperCaseCurrencyCode))
+                return openOfferManager.getObservableList().stream()
+                        .filter(o -> o.getOffer().isMyOffer(keyRing))
+                        .filter(o -> offerMatchesDirectionAndCurrency(o.getOffer(), direction, "RADC"))
+                        .filter(o -> o.getOffer().getBaseCurrencyCode().equalsIgnoreCase(upperCaseCurrencyCode))
+                        .sorted(openOfferPriceComparator(direction))
+                        .collect(Collectors.toList());
+            else
+                throw new IllegalArgumentException(
+                        format("api does not support the '%s' crypto currency", upperCaseCurrencyCode));
+        }
     }
 
     List<Offer> getMyBsqSwapOffers(String direction) {
-        var offers = offerBookService.getOffers().stream()
+        return offerBookService.getOffers().stream()
                 .filter(o -> o.isMyOffer(keyRing))
                 .filter(o -> o.getDirection().name().equalsIgnoreCase(direction))
                 .filter(Offer::isBsqSwapOffer)
                 .sorted(priceComparator(direction))
                 .collect(Collectors.toList());
-        return offers;
     }
 
     OpenOffer getMyOpenBsqSwapOffer(String id) {
@@ -197,20 +273,18 @@ class CoreOffersService {
                 .filter(open -> open.getOffer().isMyOffer(keyRing))
                 .filter(open -> open.getOffer().isBsqSwapOffer())
                 .orElseThrow(() ->
-                        new IllegalStateException(format("openoffer with id '%s' not found", id)));
+                        new NotFoundException(format("openoffer with id '%s' not found", id)));
     }
 
     OpenOffer getMyOpenOffer(String id) {
         return openOfferManager.getOpenOfferById(id)
                 .filter(open -> open.getOffer().isMyOffer(keyRing))
                 .orElseThrow(() ->
-                        new IllegalStateException(format("offer with id '%s' not found", id)));
+                        new NotFoundException(format("offer with id '%s' not found", id)));
     }
 
-    boolean isMyOffer(String id) {
-        return openOfferManager.getOpenOfferById(id)
-                .filter(open -> open.getOffer().isMyOffer(keyRing))
-                .isPresent();
+    boolean isMyOffer(Offer offer) {
+        return offer.isMyOffer(keyRing);
     }
 
     void createAndPlaceBsqSwapOffer(String directionAsString,
@@ -222,10 +296,10 @@ class CoreOffersService {
         coreWalletsService.verifyEncryptedWalletIsUnlocked();
 
         String currencyCode = "BSQ";
-        String offerId = OfferUtil.getRandomOfferId();
+        String offerId = getRandomOfferId();
         OfferDirection direction = OfferDirection.valueOf(directionAsString.toUpperCase());
         Coin amount = Coin.valueOf(amountAsLong);
-        Coin minAmount = Coin.valueOf(minAmountAsLong);
+        Coin minAmount = minAmountAsLong == 0 ? amount : Coin.valueOf(minAmountAsLong);
         Price price = Price.valueOf(currencyCode, priceStringToLong(priceAsString, currencyCode));
         openBsqSwapOfferService.requestNewOffer(offerId,
                 direction,
@@ -242,8 +316,8 @@ class CoreOffersService {
                              double marketPriceMargin,
                              long amountAsLong,
                              long minAmountAsLong,
-                             double buyerSecurityDeposit,
-                             long triggerPrice,
+                             double buyerSecurityDepositPct,
+                             String triggerPrice,
                              String paymentAccountId,
                              String makerFeeCurrencyCode,
                              Consumer<Offer> resultHandler) {
@@ -256,12 +330,26 @@ class CoreOffersService {
             throw new IllegalArgumentException(format("payment account with id %s not found", paymentAccountId));
 
         String upperCaseCurrencyCode = currencyCode.toUpperCase();
-        String offerId = OfferUtil.getRandomOfferId();
+        String offerId = getRandomOfferId();
         OfferDirection direction = OfferDirection.valueOf(directionAsString.toUpperCase());
         Price price = Price.valueOf(upperCaseCurrencyCode, priceStringToLong(priceAsString, upperCaseCurrencyCode));
         Coin amount = Coin.valueOf(amountAsLong);
-        Coin minAmount = Coin.valueOf(minAmountAsLong);
+        Coin minAmount = minAmountAsLong == 0 ? amount : Coin.valueOf(minAmountAsLong);
         Coin useDefaultTxFee = Coin.ZERO;
+
+        // Almost ready to call createOfferService.createAndGetOffer(), but first:
+        //
+        // For the buyer security deposit parameter, API clients pass a double as a
+        // percent literal, e.g., #.## (%), where "1.00 means 1% of the trade amount".
+        // Desktop (UI) clients convert the percent literal string input before passing
+        // a representation of a pct as a decimal, e.g., 0.##.
+        // See bisq.desktop.main.offer.bisq_v1.MutableOfferDataModel, where
+        // "Pct value of buyer security deposit, e.g., 0.01 means 1% of trade amount."
+        //
+        // The API client's percent literal is transformed now, to make sure the double
+        // passed into createOfferService.createAndGetOffer() is correctly scaled.
+        double scaledBuyerSecurityDepositPct = exactMultiply(buyerSecurityDepositPct, 0.01);
+
         Offer offer = createOfferService.createAndGetOffer(offerId,
                 direction,
                 upperCaseCurrencyCode,
@@ -271,7 +359,7 @@ class CoreOffersService {
                 useDefaultTxFee,
                 useMarketBasedPrice,
                 exactMultiply(marketPriceMargin, 0.01),
-                buyerSecurityDeposit,
+                scaledBuyerSecurityDepositPct,
                 paymentAccount);
 
         verifyPaymentAccountIsValidForNewOffer(offer, paymentAccount);
@@ -280,7 +368,7 @@ class CoreOffersService {
         boolean useSavingsWallet = true;
         //noinspection ConstantConditions
         placeOffer(offer,
-                buyerSecurityDeposit,
+                scaledBuyerSecurityDepositPct,
                 triggerPrice,
                 useSavingsWallet,
                 transaction -> resultHandler.accept(offer));
@@ -288,34 +376,21 @@ class CoreOffersService {
 
     // Edit a placed offer.
     void editOffer(String offerId,
-                   String editedPriceAsString,
+                   String editedPrice,
                    boolean editedUseMarketBasedPrice,
                    double editedMarketPriceMargin,
-                   long editedTriggerPrice,
+                   String editedTriggerPrice,
                    int editedEnable,
                    EditType editType) {
         OpenOffer openOffer = getMyOpenOffer(offerId);
-        new EditOfferValidator(openOffer,
-                editedPriceAsString,
+        var validator = new EditOfferValidator(openOffer,
+                editedPrice,
                 editedUseMarketBasedPrice,
                 editedMarketPriceMargin,
                 editedTriggerPrice,
                 editedEnable,
                 editType).validate();
-        log.info("Validated 'editoffer' params offerId={}"
-                        + "\n\teditedPriceAsString={}"
-                        + "\n\teditedUseMarketBasedPrice={}"
-                        + "\n\teditedMarketPriceMargin={}"
-                        + "\n\teditedTriggerPrice={}"
-                        + "\n\teditedEnable={}"
-                        + "\n\teditType={}",
-                offerId,
-                editedPriceAsString,
-                editedUseMarketBasedPrice,
-                editedMarketPriceMargin,
-                editedTriggerPrice,
-                editedEnable,
-                editType);
+        log.info(validator.toString());
         OpenOffer.State currentOfferState = openOffer.getState();
         // Client sent (sint32) editedEnable, not a bool (with default=false).
         // If editedEnable = -1, do not change current state
@@ -324,8 +399,9 @@ class CoreOffersService {
         OpenOffer.State newOfferState = editedEnable < 0
                 ? currentOfferState
                 : editedEnable > 0 ? AVAILABLE : DEACTIVATED;
-        OfferPayload editedPayload = getMergedOfferPayload(openOffer,
-                editedPriceAsString,
+        OfferPayload editedPayload = getMergedOfferPayload(validator,
+                openOffer,
+                editedPrice,
                 editedMarketPriceMargin,
                 editType);
         Offer editedOffer = new Offer(editedPayload);
@@ -335,8 +411,9 @@ class CoreOffersService {
         openOfferManager.editOpenOfferStart(openOffer,
                 () -> log.info("EditOpenOfferStart: offer {}", openOffer.getId()),
                 log::error);
+        long triggerPriceAsLong = getMarketPriceAsLong(editedTriggerPrice, editedOffer.getCurrencyCode());
         openOfferManager.editOpenOfferPublish(editedOffer,
-                editedTriggerPrice,
+                triggerPriceAsLong,
                 newOfferState,
                 () -> log.info("EditOpenOfferPublish: offer {}", openOffer.getId()),
                 log::error);
@@ -360,14 +437,15 @@ class CoreOffersService {
     }
 
     private void placeOffer(Offer offer,
-                            double buyerSecurityDeposit,
-                            long triggerPrice,
+                            double buyerSecurityDepositPct,
+                            String triggerPrice,
                             boolean useSavingsWallet,
                             Consumer<Transaction> resultHandler) {
+        var triggerPriceAsLong = getMarketPriceAsLong(triggerPrice, offer.getCurrencyCode());
         openOfferManager.placeOffer(offer,
-                buyerSecurityDeposit,
+                buyerSecurityDepositPct,
                 useSavingsWallet,
-                triggerPrice,
+                triggerPriceAsLong,
                 resultHandler::accept,
                 log::error);
 
@@ -375,7 +453,8 @@ class CoreOffersService {
             throw new IllegalStateException(offer.getErrorMessage());
     }
 
-    private OfferPayload getMergedOfferPayload(OpenOffer openOffer,
+    private OfferPayload getMergedOfferPayload(EditOfferValidator editOfferValidator,
+                                               OpenOffer openOffer,
                                                String editedPriceAsString,
                                                double editedMarketPriceMargin,
                                                EditType editType) {
@@ -392,15 +471,16 @@ class CoreOffersService {
         } else {
             editedPrice = offer.getPrice();
         }
-        boolean isUsingMktPriceMargin = editType.equals(MKT_PRICE_MARGIN_ONLY)
-                || editType.equals(MKT_PRICE_MARGIN_AND_ACTIVATION_STATE)
-                || editType.equals(TRIGGER_PRICE_ONLY)
-                || editType.equals(TRIGGER_PRICE_AND_ACTIVATION_STATE)
-                || editType.equals(MKT_PRICE_MARGIN_AND_TRIGGER_PRICE)
-                || editType.equals(MKT_PRICE_MARGIN_AND_TRIGGER_PRICE_AND_ACTIVATION_STATE);
+
+        boolean isUsingMktPriceMargin = editOfferValidator.isEditingUseMktPriceMarginFlag.test(offer, editType);
+        boolean isEditingMktPriceMargin = editOfferValidator.isEditingMktPriceMargin.test(editType);
+        double newMarketPriceMargin = isEditingMktPriceMargin
+                ? exactMultiply(editedMarketPriceMargin, 0.01)
+                : offer.getMarketPriceMargin();
+
         MutableOfferPayloadFields mutableOfferPayloadFields = new MutableOfferPayloadFields(
                 Objects.requireNonNull(editedPrice).getValue(),
-                isUsingMktPriceMargin ? exactMultiply(editedMarketPriceMargin, 0.01) : 0.00,
+                isUsingMktPriceMargin ? newMarketPriceMargin : 0.00,
                 isUsingMktPriceMargin,
                 offer.getBaseCurrencyCode(),
                 offer.getCounterCurrencyCode(),
@@ -427,10 +507,9 @@ class CoreOffersService {
     private boolean offerMatchesDirectionAndCurrency(Offer offer,
                                                      String direction,
                                                      String currencyCode) {
-        var offerOfWantedDirection = offer.getDirection().name().equalsIgnoreCase(direction);
-        var offerInWantedCurrency = offer.getCounterCurrencyCode()
-                .equalsIgnoreCase(currencyCode);
-        return offerOfWantedDirection && offerInWantedCurrency;
+        var isDirectionMatch = offer.getDirection().name().equalsIgnoreCase(direction);
+        var isCurrencyMatch = offer.getCounterCurrencyCode().equalsIgnoreCase(currencyCode);
+        return isDirectionMatch && isCurrencyMatch;
     }
 
     private Comparator<OpenOffer> openOfferPriceComparator(String direction) {

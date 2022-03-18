@@ -157,6 +157,7 @@ public abstract class BsqNode implements DaoSetupService {
 
     public void shutDown() {
         exportJsonFilesService.shutDown();
+        daoStateSnapshotService.shutDown();
     }
 
 
@@ -180,26 +181,6 @@ public abstract class BsqNode implements DaoSetupService {
     protected void onP2PNetworkReady() {
         p2pNetworkReady = true;
         p2PService.removeP2PServiceListener(p2PServiceListener);
-    }
-
-    @SuppressWarnings("WeakerAccess")
-    protected int getStartBlockHeight() {
-        int chainHeight = daoStateService.getChainHeight();
-        int startBlockHeight = chainHeight;
-        if (chainHeight > genesisBlockHeight)
-            startBlockHeight = chainHeight + 1;
-
-        log.info("getStartBlockHeight:\n" +
-                        "   Start block height={}\n" +
-                        "   Genesis txId={}\n" +
-                        "   Genesis block height={}\n" +
-                        "   Block height={}\n",
-                startBlockHeight,
-                genesisTxId,
-                genesisBlockHeight,
-                chainHeight);
-
-        return startBlockHeight;
     }
 
     protected abstract void startParseBlocks();

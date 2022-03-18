@@ -17,351 +17,435 @@
 
 syntax = "proto3";
 package io.bisq.protobuffer;
-
 import "pb.proto";
-
 option java_package = "bisq.proto.grpc";
 option java_multiple_files = true;
 
-///////////////////////////////////////////////////////////////////////////////////////////
-// DisputeAgents
-///////////////////////////////////////////////////////////////////////////////////////////
-
+/*
+* The DisputeAgents service is provided for development only;  it can only be used when running in regtest mode.
+*/
 service DisputeAgents {
+    // Register regtest / dev mode dispute agents.  Does not work when running on mainnet.
     rpc RegisterDisputeAgent (RegisterDisputeAgentRequest) returns (RegisterDisputeAgentReply) {
     }
 }
 
 message RegisterDisputeAgentRequest {
-    string disputeAgentType = 1;
-    string registrationKey = 2;
+    // One of "mediator" or "refundagent".  Development / test arbitrators can only be registered in the UI.
+    string dispute_agent_type = 1;
+    // Private developer (only) registration key.
+    string registration_key = 2;
 }
 
 message RegisterDisputeAgentReply {
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////
-// Help
-///////////////////////////////////////////////////////////////////////////////////////////
-
 service Help {
+    // Returns a CLI command man page.
     rpc GetMethodHelp (GetMethodHelpRequest) returns (GetMethodHelpReply) {
     }
 }
 
 message GetMethodHelpRequest {
-    string methodName = 1;
+    string method_name = 1;  // The CLI command name.
 }
 
 message GetMethodHelpReply {
-    string methodHelp = 1;
+    string method_help = 1;  // The man page for the CLI command.
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////
-// Offers
-///////////////////////////////////////////////////////////////////////////////////////////
-
+/*
+* The Offers service provides rpc methods for creating, editing, listing, and cancelling Bisq offers.
+*/
 service Offers {
+    // Get an offer's category, one of  FIAT, ALTCOIN, or BSQ_SWAP.  This information is needed before an offer
+    // can be taken, and is used by a client to determine what kind of offer to take:  a v1 FIAT or ALTCOIN offer,
+    // or a BSQ swap offer.  V1 and BSQ swap trades are handled differently in the API daemon.
+    rpc GetOfferCategory (GetOfferCategoryRequest) returns (GetOfferCategoryReply) {
+    }
+    // Get the available BSQ swap offer with offer-id.
     rpc GetBsqSwapOffer (GetOfferRequest) returns (GetBsqSwapOfferReply) {
     }
+    // Get the v1 protocol offer with offer-id.
     rpc GetOffer (GetOfferRequest) returns (GetOfferReply) {
     }
+    // Get user's BSQ swap offer with offer-id.
     rpc GetMyBsqSwapOffer (GetMyOfferRequest) returns (GetMyBsqSwapOfferReply) {
     }
+    // Get my open v1 protocol offer with offer-id.  Deprecated since 27-Dec-2021 (v1.8.0).  Use GetOffer.
     rpc GetMyOffer (GetMyOfferRequest) returns (GetMyOfferReply) {
     }
-    rpc GetBsqSwapOffers (GetOffersRequest) returns (GetBsqSwapOffersReply) {
+    // Get all available BSQ swap offers with a BUY (RADC) or SELL (RADC) direction.
+    rpc GetBsqSwapOffers (GetBsqSwapOffersRequest) returns (GetBsqSwapOffersReply) {
     }
+    // Get all available v1 protocol offers with a BUY (RADC) or SELL (RADC) direction.
     rpc GetOffers (GetOffersRequest) returns (GetOffersReply) {
     }
-    rpc GetMyBsqSwapOffers (GetMyOffersRequest) returns (GetMyBsqSwapOffersReply) {
+    // Get all user's BSQ swap offers with a BUY (RADC) or SELL (RADC) direction.
+    rpc GetMyBsqSwapOffers (GetBsqSwapOffersRequest) returns (GetMyBsqSwapOffersReply) {
     }
+    // Get all user's open v1 protocol offers with a BUY (RADC) or SELL (RADC) direction.
     rpc GetMyOffers (GetMyOffersRequest) returns (GetMyOffersReply) {
     }
+    // Create a BSQ swap offer.
     rpc CreateBsqSwapOffer (CreateBsqSwapOfferRequest) returns (CreateBsqSwapOfferReply) {
     }
+    // Create a v1 protocol offer.
     rpc CreateOffer (CreateOfferRequest) returns (CreateOfferReply) {
     }
+    // Edit an open offer.
     rpc EditOffer (EditOfferRequest) returns (EditOfferReply) {
     }
+    // Cancel an open offer;  remove it from the offer book.
     rpc CancelOffer (CancelOfferRequest) returns (CancelOfferReply) {
     }
 }
 
+message GetOfferCategoryRequest {
+    string id = 1;          // The offer's unique identifier.
+    bool is_my_offer = 2;   // Whether the offer was created by the user or not.
+}
+
+message GetOfferCategoryReply {
+    enum OfferCategory {
+        UNKNOWN = 0;        // An invalid offer category probably indicates a software bug.
+        FIAT = 1;           // Indicates offer is to BUY or SELL RADC with a fiat currency.
+        ALTCOIN = 2;        // Indicates offer is to BUY or SELL RADC with an altcoin.
+        BSQ_SWAP = 3;       // Indicates offer is to swap RADC for BSQ.
+    }
+    OfferCategory offer_category = 1;
+}
+
 message GetBsqSwapOfferReply {
-    BsqSwapOfferInfo bsqSwapOffer = 1;
+    OfferInfo bsq_swap_offer = 1; // The returned BSQ swap offer.
 }
 
 message GetOfferRequest {
-    string id = 1;
+    string id = 1;  // The offer's unique identifier.
 }
 
 message GetOfferReply {
-    OfferInfo offer = 1;
+    OfferInfo offer = 1; // The returned v1 protocol offer.
 }
 
 message GetMyBsqSwapOfferReply {
-    BsqSwapOfferInfo bsqSwapOffer = 1;
+    OfferInfo bsq_swap_offer = 1; // The returned BSQ swap offer.
 }
 
+// Deprecated with rpc method GetMyOffer since 27-Dec-2021 (v1.8.0).
 message GetMyOfferRequest {
-    string id = 1;
+    string id = 1;  // The offer's unique identifier.
 }
 
+// Deprecated with rpc method GetMyOffer since 27-Dec-2021 (v1.8.0).
 message GetMyOfferReply {
-    OfferInfo offer = 1;
+    OfferInfo offer = 1; // The returned v1 protocol offer.
 }
 
 message GetOffersRequest {
-    string direction = 1;
-    string currencyCode = 2;
+    string direction = 1;       // The offer's BUY (RADC) or SELL (RADC) direction.
+    string currency_code = 2;   // The offer's fiat or altcoin currency code.
 }
 
 message GetOffersReply {
-    repeated OfferInfo offers = 1;
+    repeated OfferInfo offers = 1;  // The returned list of available offers.
+}
+
+message GetBsqSwapOffersRequest {
+    string direction = 1;   // The BSQ swap offer's BUY (RADC) or SELL (RADC) direction.
 }
 
 message GetBsqSwapOffersReply {
-    repeated BsqSwapOfferInfo bsqSwapOffers = 1;
+    repeated OfferInfo bsq_swap_offers = 1; // The returned list of available BSQ swap offers.
 }
 
 message GetMyOffersRequest {
-    string direction = 1;
-    string currencyCode = 2;
+    string direction = 1;       // The offers' BUY (RADC) or SELL (RADC) direction.
+    string currency_code = 2;   // The offer's fiat or altcoin currency code.
 }
 
 message GetMyOffersReply {
-    repeated OfferInfo offers = 1;
+    repeated OfferInfo offers = 1;  // The returned list of user's open offers.
 }
 
 message GetMyBsqSwapOffersReply {
-    repeated BsqSwapOfferInfo bsqSwapOffers = 1;
+    repeated OfferInfo bsq_swap_offers = 1;    // The returned list of user's open BSQ swap offers.
 }
 
 message CreateBsqSwapOfferRequest {
+    // The new BSQ swap offer's BUY (RADC) or SELL (RADC) direction.
     string direction = 1;
+    // The amount of RADC to be traded as a long representing satoshi units.
     uint64 amount = 2;
-    uint64 minAmount = 3;
+    // The minimum amount of RADC to be traded as a long representing satoshi units.
+    uint64 min_amount = 3;
+    // The fixed price of the offer as a string representing RADC units, e.g., "0.00005" or "0.00005000".
     string price = 4;
-    string paymentAccountId = 5;
 }
 
 message CreateBsqSwapOfferReply {
-    BsqSwapOfferInfo bsqSwapOffer = 1;
+    OfferInfo bsq_swap_offer = 1;     // The newly created BSQ swap offer.
 }
 
 message CreateOfferRequest {
-    string currencyCode = 1;
+    // The new offer's fiat or altcoin currency code.
+    string currency_code = 1;
+    // The new v1 protocol offer's BUY (RADC) or SELL (RADC) direction.
     string direction = 2;
+    // For fiat offers:  a string representing the rounded, fixed fiat price of the offer, e.g., "45000", not "45000".
+    // For altcoin offers:  a string representing the fixed RADC price of the offer, e.g., "0.00005".
     string price = 3;
-    bool useMarketBasedPrice = 4;
-    double marketPriceMargin = 5;
+    // Whether the offer price is fixed, or market price margin based.
+    bool use_market_based_price = 4;
+    // The offer's market price margin as a percentage above or below the current market RADC price, e.g., 2.50 represents 2.5%.
+    double market_price_margin_pct = 5;
+    // The amount of RADC to be traded, in satoshis.
     uint64 amount = 6;
-    uint64 minAmount = 7;
-    double buyerSecurityDeposit = 8;
-    uint64 triggerPrice = 9;
-    string paymentAccountId = 10;
-    string makerFeeCurrencyCode = 11;
+     // The minimum amount of RADC to be traded, in satoshis.
+    uint64 min_amount = 7;
+    // A BUY RADC offer maker's security deposit as a percentage of the RADC amount to be traded, e.g., 15.00 represents 15%.
+    double buyer_security_deposit_pct = 8;
+    // A market price margin based offer's trigger price is the market RADC price at which the offer is automatically disabled.
+    // Disabled offers are never automatically enabled, they must be manually re-enabled.
+    // A zero value indicates trigger price is not set.  Trigger price does not apply to fixed price offers.
+    string trigger_price = 9;
+    // The unique identifier of the payment account used to create the new offer, and send or receive trade payment.
+    string payment_account_id = 10;
+    // The offer maker's trade fee currency:  RADC or BSQ.
+    string maker_fee_currency_code = 11;
 }
 
 message CreateOfferReply {
-    OfferInfo offer = 1;
+    OfferInfo offer = 1;    // The newly created v1 protocol offer.
 }
 
 message EditOfferRequest {
+    // The edited offer's unique identifier.
     string id = 1;
+    // For fiat offers:  a string representing the new rounded, fixed fiat price of the offer, e.g., "45000", not "45000".
+    // For altcoin offers:  a string representing the new fixed RADC price of the offer, e.g., "0.00005".
     string price = 2;
-    bool useMarketBasedPrice = 3;
-    double marketPriceMargin = 4;
-    uint64 triggerPrice = 5;
+    // Whether the offer price is fixed, or market price margin based.
+    bool use_market_based_price = 3;
+    // An offer's new market price margin as a percentage above or below the current market RADC price.
+    double market_price_margin_pct = 4;
+    // A market price margin based offer's trigger price is the market RADC price at which the offer is automatically disabled.
+    // Disabled offers are never automatically enabled, they must be manually re-enabled.
+    // A zero value indicates trigger price is not set.  Trigger price does not apply to fixed price offers.
+    string trigger_price = 5;
+    // Whether the offer's activation state should be changed (disable or enable), or left alone.
     // Send a signed int, not a bool (with default=false).
-    // -1 = do not change activation state
-    //  0 = disable
-    //  1 = enable
+    //      -1 = do not change activation state
+    //      0 = disable
+    //      1 = enable
     sint32 enable = 6;
-    // The EditType constricts what offer details can be modified and simplifies param validation.
+    // The EditType determines and constricts what offer details can be modified by the request, simplifying param
+    // validation.  (The CLI need to infer this detail from 'editoffer' command options, other clients do not.)
     enum EditType {
-         ACTIVATION_STATE_ONLY = 0;
-         FIXED_PRICE_ONLY = 1;
-         FIXED_PRICE_AND_ACTIVATION_STATE = 2;
-         MKT_PRICE_MARGIN_ONLY = 3;
-         MKT_PRICE_MARGIN_AND_ACTIVATION_STATE = 4;
-         TRIGGER_PRICE_ONLY = 5;
-         TRIGGER_PRICE_AND_ACTIVATION_STATE = 6;
-         MKT_PRICE_MARGIN_AND_TRIGGER_PRICE = 7;
-         MKT_PRICE_MARGIN_AND_TRIGGER_PRICE_AND_ACTIVATION_STATE = 8;
+        // Edit only the offer's activation state (enabled or disabled).
+        ACTIVATION_STATE_ONLY = 0;
+        // Edit only the offer's fixed price.
+        FIXED_PRICE_ONLY = 1;
+        // Edit only the offer's fixed price and activation state.
+        FIXED_PRICE_AND_ACTIVATION_STATE = 2;
+        // Edit only the offer's market price margin.
+        MKT_PRICE_MARGIN_ONLY = 3;
+        // Edit only the offer's market price margin and activation state.
+        MKT_PRICE_MARGIN_AND_ACTIVATION_STATE = 4;
+        // Edit only the market price margin based offer's trigger price.
+        TRIGGER_PRICE_ONLY = 5;
+        // Edit only the market price margin based offer's trigger price and activation state.
+        TRIGGER_PRICE_AND_ACTIVATION_STATE = 6;
+        // Edit only the offer's market price margin and trigger price.
+        MKT_PRICE_MARGIN_AND_TRIGGER_PRICE = 7;
+        // Edit only the offer's market price margin, trigger price, and activation state.
+        MKT_PRICE_MARGIN_AND_TRIGGER_PRICE_AND_ACTIVATION_STATE = 8;
     }
-    EditType editType = 7;
+    // Tell the daemon precisely what is being edited.
+    EditType edit_type = 7;
 }
 
 message EditOfferReply {
 }
 
 message CancelOfferRequest {
-    string id = 1;
+    string id = 1; // The canceled offer's unique identifier.
 }
 
 message CancelOfferReply {
 }
 
-message BsqSwapOfferInfo {
-    string id = 1;
-    string direction = 2;
-    uint64 amount = 3;
-    uint64 minAmount = 4;
-    uint64 price = 5;
-    string makerPaymentAccountId = 6;
-    string paymentMethodId = 7;
-    string paymentMethodShortName = 8;
-    string baseCurrencyCode = 9;
-    string counterCurrencyCode = 10;
-    uint64 getMakerFee = 11;
-    uint64 date = 12;
-    string ownerNodeAddress = 13;
-    string pubKeyRing = 14;
-    string versionNr = 15;
-    int32 protocolVersion = 16;
-}
-
+// OfferInfo describes an offer to a client.  It is derived from the heavier
+// Offer object in the daemon, which holds too much state to be sent to clients.
 message OfferInfo {
+    // The offer's unique identifier.
     string id = 1;
+    // The offer's BUY (RADC) or SELL (RADC) direction.
     string direction = 2;
-    uint64 price = 3;
-    bool useMarketBasedPrice = 4;
-    double marketPriceMargin = 5;
+    // For fiat offers:  the fiat price for 1 RADC to 4 decimal places, e.g., 45000 EUR is "45000.0000".
+    // For altcoin offers:  the altcoin price for 1 RADC to 8 decimal places, e.g., 0.00005 RADC is "0.00005000".
+    string price = 3;
+    // Whether the offer price is fixed, or market price margin based.
+    bool use_market_based_price = 4;
+    // The offer's market price margin above or below the current market RADC price, e.g., 5.00 represents 5%.
+    double market_price_margin_pct = 5;
+    // The offer's RADC amount in satoshis.  Ten million satoshis is represented as 10000000.
     uint64 amount = 6;
-    uint64 minAmount = 7;
-    uint64 volume = 8;
-    uint64 minVolume = 9;
-    uint64 buyerSecurityDeposit = 10;
-    uint64 triggerPrice = 11;
-    bool isCurrencyForMakerFeeBtc = 12;
-    string paymentAccountId = 13;
-    string paymentMethodId = 14;
-    string paymentMethodShortName = 15;
-    string baseCurrencyCode = 16;
-    string counterCurrencyCode = 17;
+    // The offer's minimum RADC amount in satoshis.  One million satoshis is represented as 1000000.
+    uint64 min_amount = 7;
+    // The rounded volume of currency to be traded for RADC.
+    // Fiat volume is rounded to whole currency units (no cents).  Altcoin volume is rounded to 2 decimal places.
+    string volume = 8;
+    // The rounded, minimum volume of currency to be traded for RADC.
+    // Fiat volume is rounded to whole currency units (no cents).  Altcoin volume is rounded to 2 decimal places.
+    string min_volume = 9;
+    // A long representing the RADC buyer's security deposit in satoshis.
+    uint64 buyer_security_deposit = 10;
+    // A market price margin based offer's trigger price is the market RADC price at which the offer is automatically disabled.
+    // Disabled offers are never automatically enabled, they must be manually re-enabled.
+    // A zero value indicates trigger price is not set.  Trigger price does not apply to fixed price offers.
+    string trigger_price = 11;
+    // Whether the offer maker paid the trading fee in RADC or not (BSQ).
+    bool is_currency_for_maker_fee_btc = 12;
+    // The unique identifier of the payment account used to create the offer.
+    string payment_account_id = 13;
+    // The unique identifier of the payment method used to create the offer.
+    string payment_method_id = 14;
+    // The short description of the payment method used to create the offer.
+    string payment_method_short_name = 15;
+    // For fiat offers, the baseCurrencyCode is RADC, and the counter_currency_code is the fiat currency code.
+    // For altcoin offers it is the opposite, the baseCurrencyCode is the altcoin code and the counter_currency_code is RADC.
+    string base_currency_code = 16;
+    // For fiat offers, the base_currency_code is RADC, and the counter_currency_code is the fiat currency code.
+    // For altcoin offers it is the opposite, the base_currency_code is the altcoin code and the counter_currency_code is RADC.
+    string counter_currency_code = 17;
+    // The creation date of the offer as a long: the number of milliseconds that have elapsed since January 1, 1970.
     uint64 date = 18;
+    // The internal state of the offer, e.g., AVAILABLE, NOT_AVAILABLE, REMOVED, etc.
     string state = 19;
-    uint64 sellerSecurityDeposit = 20;
-    string offerFeePaymentTxId = 21;
-    uint64 txFee = 22;
-    uint64 makerFee = 23;
-    bool isActivated = 24;
-    bool isMyOffer = 25;
-    bool isMyPendingOffer = 26;
+    // A long representing the RADC seller's security deposit in satoshis.
+    uint64 seller_security_deposit = 20;
+    // The bitcoin transaction id of the offer maker's fee payment.
+    string offer_fee_payment_tx_id = 21;
+    // The bitcoin transaction fee (amount) for the offer maker's fee payment transaction, in satoshis.
+    uint64 tx_fee = 22;
+    // The offer maker's Bisq trade fee amount in satoshis.
+    uint64 maker_fee = 23;
+    // Whether the offer is currently enabled or not.
+    bool is_activated = 24;
+    // Whether the offer was created by the user or not.
+    bool is_my_offer = 25;
+    // Whether the newly created offer was created by the user or not.
+    bool is_my_pending_offer = 26;
+    // Whether the offer is a BSQ swap offer or not (v1 protocol offer).
+    bool is_bsq_swap_offer = 27;
+    // The offer creator's Tor onion address.
+    string owner_node_address = 28;
+    // The offer creator's public key ring as a string.
+    string pub_key_ring = 29;
+    // The Bisq software version used to create the offer.
+    string version_nr = 30;
+    // The bitcoin protocol version used to create the offer.
+    int32 protocol_version = 31;
 }
 
+// An offer's current availability status.
 message AvailabilityResultWithDescription {
-    AvailabilityResult availabilityResult = 1;
+    // An offer's current status as an eum.
+    AvailabilityResult availability_result = 1;
+    // A user friendly description of an offer's current availability status.
     string description = 2;
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////
-// PaymentAccounts
-///////////////////////////////////////////////////////////////////////////////////////////
-
+/*
+* The PaymentAccounts service provides rpc methods for creating fiat and crypto currency payment accounts.
+*/
 service PaymentAccounts {
+    // Create a fiat payment account, providing details in a json form generated by rpc method GetPaymentAccountForm.
     rpc CreatePaymentAccount (CreatePaymentAccountRequest) returns (CreatePaymentAccountReply) {
     }
+    // Get list of all saved fiat payment accounts.
     rpc GetPaymentAccounts (GetPaymentAccountsRequest) returns (GetPaymentAccountsReply) {
     }
+    // Get list of all supported Bisq payment methods.
     rpc GetPaymentMethods (GetPaymentMethodsRequest) returns (GetPaymentMethodsReply) {
     }
+    // Get a json template file for a supported Bisq payment method.  Fill in the form and call rpc method CreatePaymentAccount.
     rpc GetPaymentAccountForm (GetPaymentAccountFormRequest) returns (GetPaymentAccountFormReply) {
     }
+    // Create a crypto currency (altcoin) payment account.
     rpc CreateCryptoCurrencyPaymentAccount (CreateCryptoCurrencyPaymentAccountRequest) returns (CreateCryptoCurrencyPaymentAccountReply) {
     }
+    // Get list of all supported Bisq crypto currency (altcoin) payment methods.
     rpc GetCryptoCurrencyPaymentMethods (GetCryptoCurrencyPaymentMethodsRequest) returns (GetCryptoCurrencyPaymentMethodsReply) {
     }
 }
 
 message CreatePaymentAccountRequest {
-    string paymentAccountForm = 1;
+    string payment_account_form = 1;      // File path of filled json payment account form.
 }
 
 message CreatePaymentAccountReply {
-    PaymentAccount paymentAccount = 1;
+    PaymentAccount payment_account = 1;  // The new payment account.
 }
 
 message GetPaymentAccountsRequest {
 }
 
 message GetPaymentAccountsReply {
-    repeated PaymentAccount paymentAccounts = 1;
+    repeated PaymentAccount payment_accounts = 1;    // All user's saved payment accounts.
 }
 
 message GetPaymentMethodsRequest {
 }
 
 message GetPaymentMethodsReply {
-    repeated PaymentMethod paymentMethods = 1;
+    repeated PaymentMethod payment_methods = 1;  // Ids of all supported Bisq fiat payment methods.
 }
 
 message GetPaymentAccountFormRequest {
-    string paymentMethodId = 1;
+    string payment_method_id = 1;     // Payment method id determining content of the requested payment account form.
 }
 
 message GetPaymentAccountFormReply {
-    string paymentAccountFormJson = 1;
+    // An empty payment account json form to be filled out and passed to rpc method CreatePaymentAccount.
+    string payment_account_form_json = 1;
 }
 
 message CreateCryptoCurrencyPaymentAccountRequest {
-    string accountName = 1;
-    string currencyCode = 2;
-    string address = 3;
-    bool tradeInstant = 4;
+    string account_name = 1;    // The name of the altcoin payment account.  Uniqueness is not enforced.
+    string currency_code = 2;   // The altcoin currency code.
+    string address = 3;         // The altcoin receiving address.
+    bool trade_instant = 4;     // Whether the altcoin payment account is an instant account or not.
 }
 
 message CreateCryptoCurrencyPaymentAccountReply {
-    PaymentAccount paymentAccount = 1;
+    PaymentAccount payment_account = 1;      // The new altcoin payment account.
 }
 
 message GetCryptoCurrencyPaymentMethodsRequest {
 }
 
 message GetCryptoCurrencyPaymentMethodsReply {
-    repeated PaymentMethod paymentMethods = 1;
+    repeated PaymentMethod payment_methods = 1;  // Ids of all supported Bisq altcoin payment methods.
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////
-// Price
-///////////////////////////////////////////////////////////////////////////////////////////
-
 service Price {
+    // Get the current market price for a crypto currency.
     rpc GetMarketPrice (MarketPriceRequest) returns (MarketPriceReply) {
     }
 }
 
 message MarketPriceRequest {
-    string currencyCode = 1;
+    string currency_code = 1;   // The three letter currency code.
 }
 
 message MarketPriceReply {
-    double price = 1;
+    double price = 1;   // The most recently available market price.
 }
-
-///////////////////////////////////////////////////////////////////////////////////////////
-// GetTradeStatistics
-///////////////////////////////////////////////////////////////////////////////////////////
-
-service GetTradeStatistics {
-    rpc GetTradeStatistics (GetTradeStatisticsRequest) returns (GetTradeStatisticsReply) {
-    }
-}
-
-message GetTradeStatisticsRequest {
-}
-
-message GetTradeStatisticsReply {
-    repeated TradeStatistics3 TradeStatistics = 1;
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////
-// Shutdown
-///////////////////////////////////////////////////////////////////////////////////////////
 
 service ShutdownServer {
+    // Shut down a local Bisq daemon.
     rpc Stop (StopRequest) returns (StopReply) {
     }
 }
@@ -372,332 +456,411 @@ message StopRequest {
 message StopReply {
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////
-// Trades
-///////////////////////////////////////////////////////////////////////////////////////////
-
+/*
+* The Trades service provides rpc methods for taking, executing, and listing trades.
+*/
 service Trades {
-    rpc GetBsqSwapTrade (GetTradeRequest) returns (GetBsqSwapTradeReply) {
-    }
+    // Get a currently open trade.
     rpc GetTrade (GetTradeRequest) returns (GetTradeReply) {
     }
-    rpc TakeBsqSwapOffer (TakeBsqSwapOfferRequest) returns (TakeBsqSwapOfferReply) {
+    // Get currently open, or historical trades (closed or failed).
+    rpc GetTrades (GetTradesRequest) returns (GetTradesReply) {
     }
+    // Take an open offer.
     rpc TakeOffer (TakeOfferRequest) returns (TakeOfferReply) {
     }
+    // Send a 'payment started' message to a trading peer (the RADC seller).
     rpc ConfirmPaymentStarted (ConfirmPaymentStartedRequest) returns (ConfirmPaymentStartedReply) {
     }
+    // Send a 'payment received' message to a trading peer (the RADC buyer).
     rpc ConfirmPaymentReceived (ConfirmPaymentReceivedRequest) returns (ConfirmPaymentReceivedReply) {
     }
-    rpc KeepFunds (KeepFundsRequest) returns (KeepFundsReply) {
+    // Close a completed trade;  move it to trade history.
+    rpc CloseTrade (CloseTradeRequest) returns (CloseTradeReply) {
     }
+    // Fail an open trade.
+    rpc FailTrade (FailTradeRequest) returns (FailTradeReply) {
+    }
+    // Unfail a failed trade.
+    rpc UnFailTrade (UnFailTradeRequest) returns (UnFailTradeReply) {
+    }
+    // Withdraw trade proceeds to an external bitcoin wallet address.
     rpc WithdrawFunds (WithdrawFundsRequest) returns (WithdrawFundsReply) {
     }
 }
 
-message TakeBsqSwapOfferRequest {
-    string offerId = 1;
-    string paymentAccountId = 2;
-    string takerFeeCurrencyCode = 3;
-}
-
-message TakeBsqSwapOfferReply {
-    BsqSwapTradeInfo bsqSwapTrade = 1;
-    AvailabilityResultWithDescription failureReason = 2;
-}
-
 message TakeOfferRequest {
-    string offerId = 1;
-    string paymentAccountId = 2;
-    string takerFeeCurrencyCode = 3;
+    string offer_id = 1;                    // The unique identifier of the offer being taken.
+    string payment_account_id = 2;          // The unique identifier of the payment account used to take offer..
+    string taker_fee_currency_code = 3;     // The code of the currency (BSQ or RADC) used to pay the taker's Bisq trade fee.
 }
 
 message TakeOfferReply {
-    TradeInfo trade = 1;
-    AvailabilityResultWithDescription failureReason = 2;
+    TradeInfo trade = 1;                                    // The new trade.
+    AvailabilityResultWithDescription failure_reason = 2;   // The reason the offer could not be taken.
 }
 
 message ConfirmPaymentStartedRequest {
-    string tradeId = 1;
+    string trade_id = 1;    // The unique identifier of the open trade.
 }
 
 message ConfirmPaymentStartedReply {
 }
 
 message ConfirmPaymentReceivedRequest {
-    string tradeId = 1;
+    string trade_id = 1;    // The unique identifier of the open trade.
 }
 
 message ConfirmPaymentReceivedReply {
 }
 
-message GetBsqSwapTradeReply {
-    BsqSwapTradeInfo bsqSwapTrade = 1;
-}
-
 message GetTradeRequest {
-    string tradeId = 1;
+    string trade_id = 1;    // The unique identifier of the trade.
 }
 
 message GetTradeReply {
-    TradeInfo trade = 1;
+    TradeInfo trade = 1;    // The unique identifier of the trade.
 }
 
-message KeepFundsRequest {
-    string tradeId = 1;
+message GetTradesRequest {
+    // Rpc method GetTrades parameter determining what category of trade list is is being requested.
+    enum Category {
+        OPEN = 0;       // Get all currently open trades.
+        CLOSED = 1;     // Get all completed trades.
+        FAILED = 2;     // Get all failed trades.
+    }
+    Category category = 1;
 }
 
-message KeepFundsReply {
+message GetTradesReply {
+    repeated TradeInfo trades = 1;  // All trades for GetTradesRequest.Category.
+}
+
+message CloseTradeRequest {
+    string trade_id = 1;    // The unique identifier of the trade.
+}
+
+message CloseTradeReply {
+}
+
+message FailTradeRequest {
+    string trade_id = 1;    // The unique identifier of the trade.
+}
+
+message FailTradeReply {
+}
+
+message UnFailTradeRequest {
+    string trade_id = 1;    // The unique identifier of the trade.
+}
+
+message UnFailTradeReply {
 }
 
 message WithdrawFundsRequest {
-    string tradeId = 1;
-    string address = 2;
-    string memo = 3;
+    string trade_id = 1;    // The unique identifier of the trade.
+    string address = 2;     // The receiver's bitcoin wallet address.
+    string memo = 3;        // An optional memo saved with the sent btc transaction.
 }
 
 message WithdrawFundsReply {
 }
 
-message BsqSwapTradeInfo {
-    BsqSwapOfferInfo bsqSwapOfferInfo = 1;
-    string tradeId = 2;
-    string tempTradingPeerNodeAddress = 3;
-    string peerNodeAddress = 4;
-    string txId = 5;
-    uint64 bsqTradeAmount = 6;
-    uint64 bsqMaxTradeAmount = 7;
-    uint64 bsqMinTradeAmount = 8;
-    uint64 btcTradeAmount = 9;
-    uint64 btcMaxTradeAmount = 10;
-    uint64 btcMinTradeAmount = 11;
-    uint64 tradePrice = 12;
-    bool isCurrencyForMakerFeeBtc = 13;
-    bool isCurrencyForTakerFeeBtc = 14;
-    uint64 bsqMakerTradeFee = 15;
-    uint64 btcMakerTradeFee = 16;
-    uint64 bsqTakerTradeFee = 17;
-    uint64 btcTakerTradeFee = 18;
-    uint64 txFeePerVbyte = 19;
-    uint64 txFee = 20;
-    string makerBsqAddress = 21;
-    string makerBtcAddress = 22;
-    string takerBsqAddress = 23;
-    string takerBtcAddress = 24;
-    uint64 takeOfferDate = 25;
-    string state = 26;
-    string errorMessage = 27;
-}
-
+// TODO Modify bisq-grpc-api-doc to include core Trade enums in API Reference.
 message TradeInfo {
+    // The original offer.
     OfferInfo offer = 1;
-    string tradeId = 2;
-    string shortId = 3;
+    // The unique identifier of the trade.
+    string trade_id = 2;
+    // An abbreviation of unique identifier of the trade.  It cannot be used as parameter to rpc methods GetTrade,
+    // ConfirmPaymentStarted, CloseTrade, etc., but it may be useful while interacting with support or trading peers.
+    string short_id = 3;
+    // The creation date of the trade as a long: the number of milliseconds that have elapsed since January 1, 1970.
     uint64 date = 4;
+    // A brief description of the user's role in the trade, i.e., an offer maker or taker, a RADC buyer or seller.
     string role = 5;
-    bool isCurrencyForTakerFeeBtc = 6;
-    uint64 txFeeAsLong = 7;
-    uint64 takerFeeAsLong = 8;
-    string takerFeeTxId = 9;
-    string depositTxId = 10;
-    string payoutTxId = 11;
-    uint64 tradeAmountAsLong = 12;
-    uint64 tradePrice = 13;
-    string tradingPeerNodeAddress = 14;
+    // Whether the offer taker's Bisq trade fee was paid in RADC or not (BSQ).
+    bool is_currency_for_taker_fee_btc = 6;
+    // The bitcoin miner transaction fee in satoshis.
+    uint64 tx_fee_as_long = 7;
+    // The offer taker's Bisq trade fee in satoshis.
+    uint64 taker_fee_as_long = 8;
+    // The bitcoin transaction id for offer taker's Bisq trade fee.
+    string taker_fee_tx_id = 9;
+    // The bitcoin transaction id for the offer taker's security deposit.
+    string deposit_tx_id = 10;
+    // The bitcoin transaction id for trade payout.
+    string payout_tx_id = 11;
+    // The trade payout amount in satoshis.
+    uint64 trade_amount_as_long = 12;
+    // For fiat trades:  the fiat price for 1 RADC to 4 decimal places, e.g., 41000.50 EUR is "41000.5000".
+    // For altcoin trades:  the altcoin price for 1 RADC to 8 decimal places, e.g., 0.5 RADC is "0.50000000".
+    string trade_price = 13;
+    // The trading peer's node address.
+    string trading_peer_node_address = 14;
+    // The internal state of the trade. (TODO bisq-grpc-api-doc -> include Trade.State in API Reference.)
     string state = 15;
+    // The internal phase of the trade. (TODO bisq-grpc-api-doc -> include Trade.Phase in API Reference.)
     string phase = 16;
-    string tradePeriodState = 17;
-    bool isDepositPublished = 18;
-    bool isDepositConfirmed = 19;
-    bool isFiatSent = 20;
-    bool isFiatReceived = 21;
-    bool isPayoutPublished = 22;
-    bool isWithdrawn = 23;
-    string contractAsJson = 24;
+    // How much of the trade protocol's time limit has elapsed. (TODO bisq-grpc-api-doc -> include Trade.TradePeriodState in API Reference.)
+    string trade_period_state = 17;
+    // Whether the trade's security deposit bitcoin transaction has been broadcast, or not.
+    bool is_deposit_published = 18;
+    // Whether the trade's security deposit bitcoin transaction has been confirmed at least once, or not.
+    bool is_deposit_confirmed = 19;
+    // Whether the trade's 'start payment' message has been sent by the RADC buyer, or not.
+    bool is_payment_started_message_sent = 20;
+    // Whether the trade's 'payment received' message has been sent by the RADC seller, or not.
+    bool is_payment_received_message_sent = 21;
+    // Whether the trade's payout bitcoin transaction has been confirmed at least once, or not.
+    bool is_payout_published = 22;
+    // Whether the trade's payout has been completed and the trade is now closed, or not.
+    bool is_completed = 23;
+    // The entire trade contract as a json string.
+    string contract_as_json = 24;
+    // The summary of the trade contract.
     ContractInfo contract = 25;
-    uint64 tradeVolume = 26;
+    // The volume of currency traded for RADC.
+    string trade_volume = 26;
+    // The details specific to the BSQ swap trade.  If the trade is not a BSQ swap, this field should be ignored.
+    BsqSwapTradeInfo bsq_swap_trade_info = 28;
+    // Needed by open/closed/failed trade list items.
+    string closing_status = 29;
 }
 
 message ContractInfo {
-    string buyerNodeAddress = 1;
-    string sellerNodeAddress = 2;
-    string mediatorNodeAddress = 3;
-    string refundAgentNodeAddress = 4;
-    bool isBuyerMakerAndSellerTaker = 5;
-    string makerAccountId = 6;
-    string takerAccountId = 7;
-    PaymentAccountPayloadInfo makerPaymentAccountPayload = 8;
-    PaymentAccountPayloadInfo takerPaymentAccountPayload = 9;
-    string makerPayoutAddressString = 10;
-    string takerPayoutAddressString = 11;
-    uint64 lockTime = 12;
+    string buyer_node_address = 1;              // The RADC buyer peer's node address.
+    string seller_node_address = 2;             // The RADC seller peer's node address.
+    string mediator_node_address = 3;           // If the trade was disputed, the Bisq mediator's node address.
+    string refund_agent_node_address = 4;       // If a trade refund was requested, the Bisq refund agent's node address.
+    bool is_buyer_maker_and_seller_taker = 5;   // Whether the RADC buyer created the original offer, or not.
+    string maker_account_id = 6;                // The offer maker's payment account id.
+    string taker_account_id = 7;                // The offer taker's payment account id.
+    PaymentAccountPayloadInfo maker_payment_account_payload = 8;   // A summary of the offer maker's payment account.
+    PaymentAccountPayloadInfo taker_payment_account_payload = 9;   // A summary of the offer taker's payment account.
+    string maker_payout_address_string = 10;    // The offer maker's RADC payout address.
+    string taker_payout_address_string = 11;    // The offer taker's RADC payout address.
+    uint64 lock_time = 12;                      // The earliest time a transaction can be added to the block chain.
+}
+
+/*
+* BSQ Swap protocol specific fields not common to Bisq v1 trade protocol fields.
+*/
+message BsqSwapTradeInfo {
+    string tx_id = 1;                   // The BSQ swap's bitcoin transaction id.
+    uint64 bsq_trade_amount = 2;        // The amount of BSQ swapped in satoshis.
+    uint64 btc_trade_amount = 3;        // The amount of RADC swapped in satoshis.
+    uint64 bsq_maker_trade_fee = 4;     // The swap offer maker's BSQ trade fee.
+    uint64 bsq_taker_trade_fee = 5;     // The swap offer taker's BSQ trade fee.
+    uint64 tx_fee_per_vbyte = 6;        // The swap transaction's bitcoin transaction id.
+    string maker_bsq_address = 7;       // The swap offer maker's BSQ wallet address.
+    string maker_btc_address = 8;       // The swap offer maker's RADC wallet address.
+    string taker_bsq_address = 9;       // The swap offer taker's BSQ wallet address.
+    string taker_btc_address = 10;      // The swap offer taker's RADC wallet address.
+    uint64 num_confirmations = 11;      // The confirmations count for the completed swap's bitcoin transaction.
+    string error_message = 12;          // An explanation for a failure to complete the swap.
+    uint64 payout = 13;                 // The amount of the user's trade payout in satoshis.
+    uint64 swap_peer_payout = 14;       // The amount of the peer's trade payout in satoshis.
 }
 
 message PaymentAccountPayloadInfo {
-    string id = 1;
-    string paymentMethodId = 2;
-    string address = 3;
+    string id = 1;                  // The unique identifier of the payment account.
+    string payment_method_id = 2;   // The unique identifier of the payment method.
+    string address = 3;             // The optional altcoin wallet address associated with the (altcoin) payment account.
+    string payment_details = 4;     // The optional payment details, if available.
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////
-// Transactions
-///////////////////////////////////////////////////////////////////////////////////////////
-
 message TxFeeRateInfo {
-    bool useCustomTxFeeRate = 1;
-    uint64 customTxFeeRate = 2;
-    uint64 feeServiceRate = 3;
-    uint64 lastFeeServiceRequestTs = 4;
-    uint64 minFeeServiceRate = 5;
+    bool use_custom_tx_fee_rate = 1;    // Whether the daemon's custom btc transaction fee rate preference is set, or not.
+    uint64 custom_tx_fee_rate = 2;      // The daemon's custom btc transaction fee rate preference, in sats/byte.
+    uint64 fee_service_rate = 3;        // The Bisq network's most recently available btc transaction fee rate, in sats/byte.
+    // The date of the most recent Bisq network fee rate request as a long: the number of milliseconds that have elapsed since January 1, 1970.
+    uint64 last_fee_service_request_ts = 4;
+    uint64 min_fee_service_rate = 5;    // The Bisq network's minimum btc transaction fee rate, in sats/byte.
 }
 
 message TxInfo {
-    string txId = 1;
-    uint64 inputSum = 2;
-    uint64 outputSum = 3;
-    uint64 fee = 4;
-    int32 size = 5;
-    bool isPending = 6;
-    string memo = 7;
+    string tx_id = 1;       // The bitcoin transaction id.
+    uint64 input_sum = 2;   // The sum of the bitcoin transaction's input values in satoshis.
+    uint64 output_sum = 3;  // The sum of the bitcoin transaction's output values in satoshis.
+    uint64 fee = 4;         // The bitcoin transaction's miner fee in satoshis.
+    int32 size = 5;         // The bitcoin transaction's size in bytes.
+    bool is_pending = 6;    // Whether the bitcoin transaction has been confirmed at least one time, or not.
+    string memo = 7;        // An optional memo associated with the bitcoin transaction.
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////
-// Wallets
-///////////////////////////////////////////////////////////////////////////////////////////
-
+/*
+* The Wallets service provides rpc methods for basic wallet operations such as checking balances,
+* sending RADC or BSQ to external wallets, checking transaction fee rates, setting or unsetting
+* an encryption password on a a wallet, and unlocking / locking an encrypted wallet.
+*/
 service Wallets {
+    // Get the Bisq wallet's current BSQ and RADC balances.
     rpc GetBalances (GetBalancesRequest) returns (GetBalancesReply) {
     }
+    // Get RADC balance for a wallet address.
     rpc GetAddressBalance (GetAddressBalanceRequest) returns (GetAddressBalanceReply) {
     }
+    // Get an unused BSQ wallet address.
     rpc GetUnusedBsqAddress (GetUnusedBsqAddressRequest) returns (GetUnusedBsqAddressReply) {
     }
+    // Send an amount of BSQ to an external address.
     rpc SendBsq (SendBsqRequest) returns (SendBsqReply) {
     }
+    // Send an amount of RADC to an external address.
     rpc SendBtc (SendBtcRequest) returns (SendBtcReply) {
     }
+    // Verify a specific amount of BSQ was received by a BSQ wallet address.
+    // This is a problematic way of verifying BSQ payment has been received for a v1 trade protocol BSQ-RADC trade,
+    // which has been solved by the introduction of BSQ swap trades, which use a different, unused BSQ address for each trade.
     rpc VerifyBsqSentToAddress (VerifyBsqSentToAddressRequest) returns (VerifyBsqSentToAddressReply) {
     }
+    // Get the Bisq network's most recently available bitcoin miner transaction fee rate, or custom fee rate if set.
     rpc GetTxFeeRate (GetTxFeeRateRequest) returns (GetTxFeeRateReply) {
     }
+    // Set the Bisq daemon's custom bitcoin miner transaction fee rate, in sats/byte..
     rpc SetTxFeeRatePreference (SetTxFeeRatePreferenceRequest) returns (SetTxFeeRatePreferenceReply) {
     }
+    // Remove the custom bitcoin miner transaction fee rate;  revert to the Bisq network's bitcoin miner transaction fee rate.
     rpc UnsetTxFeeRatePreference (UnsetTxFeeRatePreferenceRequest) returns (UnsetTxFeeRatePreferenceReply) {
     }
+    // Get a bitcoin transaction summary.
     rpc GetTransaction (GetTransactionRequest) returns (GetTransactionReply) {
     }
+    // Get all bitcoin receiving addresses in the Bisq RADC wallet.
     rpc GetFundingAddresses (GetFundingAddressesRequest) returns (GetFundingAddressesReply) {
     }
+    // Set the Bisq wallet's encryption password.
     rpc SetWalletPassword (SetWalletPasswordRequest) returns (SetWalletPasswordReply) {
     }
+    // Remove the encryption password from the Bisq wallet.
     rpc RemoveWalletPassword (RemoveWalletPasswordRequest) returns (RemoveWalletPasswordReply) {
     }
+    // Lock an encrypted Bisq wallet before the UnlockWallet rpc method's timeout period has expired.
     rpc LockWallet (LockWalletRequest) returns (LockWalletReply) {
     }
+    // Unlock a Bisq encrypted wallet before calling wallet sensitive rpc methods: CreateOffer, TakeOffer, GetBalances,
+    // etc., for a timeout period in seconds.  An unlocked wallet will automatically lock itself after the timeout
+    // period has expired, or a LockWallet request has been made, whichever is first.  An unlocked wallet's timeout
+    // setting can be overridden by subsequent UnlockWallet calls.
     rpc UnlockWallet (UnlockWalletRequest) returns (UnlockWalletReply) {
     }
 }
 
 message GetBalancesRequest {
-    string currencyCode = 1;
+    string currency_code = 1;   // The Bisq wallet currency (BSQ or RADC) for the balances request.
 }
 
 message GetBalancesReply {
-    BalancesInfo balances = 1;
+    BalancesInfo balances = 1;  // The summary of Bisq wallet's BSQ and RADC balances.
 }
 
 message GetAddressBalanceRequest {
-    string address = 1;
+    string address = 1;         // The RADC wallet address being queried.
 }
 
 message GetAddressBalanceReply {
-    AddressBalanceInfo addressBalanceInfo = 1;
+    AddressBalanceInfo address_balance_info = 1;    // The RADC wallet address with its balance summary.
 }
 
 message GetUnusedBsqAddressRequest {
 }
 
 message GetUnusedBsqAddressReply {
-     string address = 1;
+     string address = 1;    // The BSQ wallet's unused address.
 }
 
 message SendBsqRequest {
+    // The external BSQ wallet address.
     string address = 1;
+    // The amount being sent to the external BSQ wallet address, as a string in "#######,##" format.
     string amount = 2;
-    string txFeeRate = 3;
+    // An optional bitcoin miner transaction fee rate, in sats/byte.  If not defined, Bisq will revert
+    // to the custom transaction fee rate preference, if set, else the common Bisq network fee rate.
+    string tx_fee_rate = 3;
 }
 
 message SendBsqReply {
-    TxInfo txInfo = 1;
+    // The summary of a bitcoin transaction.  (BSQ is a colored coin, and transacted on the bitcoin blockchain.)
+    TxInfo tx_info = 1;
 }
 
 message SendBtcRequest {
+    // The external bitcoin address.
     string address = 1;
+    // The amount of RADC to send to the external address, as a string in "##.########" (RADC unit) format.
     string amount = 2;
-    string txFeeRate = 3;
+    // An optional bitcoin miner transaction fee rate, in sats/byte.  If not defined, Bisq will revert
+    // to the custom transaction fee rate preference, if set, else the common Bisq network fee rate.
+    string tx_fee_rate = 3;
+    // An optional memo associated with the bitcoin transaction.
     string memo = 4;
 }
 
 message SendBtcReply {
-    TxInfo txInfo = 1;
+    TxInfo tx_info = 1;     // The summary of a bitcoin transaction.
 }
 
 message VerifyBsqSentToAddressRequest {
-    string address = 1;
-    string amount = 2;
+    string address = 1;     // The internal BSQ wallet address.
+    string amount = 2;      // The amount supposedly sent to the BSQ wallet address, as a string in "#######,##" format.
 }
 
 message VerifyBsqSentToAddressReply {
-    bool isAmountReceived = 1;
+    // Whether a specific BSQ wallet address has received a specific amount of BSQ.  If the same address has received
+    // the same amount of BSQ more than once, a true value does not indicate payment has been made for a v1 protocol
+    // BSQ-RADC trade.  This BSQ payment verification problem is solved with BSQ swaps, which use a different BSQ
+    // address for each swap transaction.
+    bool is_amount_received = 1;
 }
 
 message GetTxFeeRateRequest {
 }
 
 message GetTxFeeRateReply {
-    TxFeeRateInfo txFeeRateInfo = 1;
+    TxFeeRateInfo tx_fee_rate_info = 1; // The summary of the most recently available bitcoin transaction fee rates.
 }
 
 message SetTxFeeRatePreferenceRequest {
-    uint64 txFeeRatePreference = 1;
+    uint64 tx_fee_rate_preference = 1;
 }
 
 message SetTxFeeRatePreferenceReply {
-    TxFeeRateInfo txFeeRateInfo = 1;
+    TxFeeRateInfo tx_fee_rate_info = 1; // The summary of the most recently available bitcoin transaction fee rates.
 }
 
 message UnsetTxFeeRatePreferenceRequest {
 }
 
 message UnsetTxFeeRatePreferenceReply {
-    TxFeeRateInfo txFeeRateInfo = 1;
+    TxFeeRateInfo tx_fee_rate_info = 1; // The summary of the most recently available bitcoin transaction fee rates.
 }
 
 message GetTransactionRequest {
-    string txId = 1;
+    string tx_id = 1;
 }
 
 message GetTransactionReply {
-    TxInfo txInfo = 1;
+    TxInfo tx_info = 1; // The summary of a bitcoin transaction.
 }
 
 message GetFundingAddressesRequest {
 }
 
 message GetFundingAddressesReply {
-    repeated AddressBalanceInfo addressBalanceInfo = 1;
+    repeated AddressBalanceInfo address_balance_info = 1; // The list of RADC wallet addresses with their balances.
 }
 
 message SetWalletPasswordRequest {
-    string password = 1;
-    string newPassword = 2;
+    string password = 1;        // The new password for encrypting an unencrypted Bisq wallet.
+    string new_password = 2;    // The new password for encrypting an already encrypted Bisq wallet (a password override).
 }
 
 message SetWalletPasswordReply {
 }
 
 message RemoveWalletPasswordRequest {
-    string password = 1;
+    string password = 1;    // The Bisq wallet's current encryption password.
 }
 
 message RemoveWalletPasswordReply {
@@ -710,49 +873,61 @@ message LockWalletReply {
 }
 
 message UnlockWalletRequest {
-    string password = 1;
-    uint64 timeout = 2;
+    string password = 1;    // The Bisq wallet's encryption password.
+    uint64 timeout = 2;     // The Bisq wallet's unlock time period, in seconds.
 }
 
 message UnlockWalletReply {
 }
 
 message BalancesInfo {
-    // Field names are shortened for readability's sake, i.e.,
-    // balancesInfo.getBtc().getAvailableBalance() is cleaner than
-    // balancesInfo.getBtcBalanceInfo().getAvailableBalance().
-    BsqBalanceInfo bsq = 1;
-    BtcBalanceInfo btc = 2;
+    BsqBalanceInfo bsq = 1;     // BSQ wallet balance information.
+    BtcBalanceInfo btc = 2;     // RADC wallet balance information.
 }
 
+// TODO Thoroughly review field descriptions.
 message BsqBalanceInfo {
-    uint64 availableConfirmedBalance = 1;
-    uint64 unverifiedBalance = 2;
-    uint64 unconfirmedChangeBalance = 3;
-    uint64 lockedForVotingBalance = 4;
-    uint64 lockupBondsBalance = 5;
-    uint64 unlockingBondsBalance = 6;
+    // The BSQ amount currently available to send to other addresses at the user's discretion, in satoshis.
+    uint64 available_confirmed_balance = 1;
+    // The BSQ amount currently being used in send transactions, in satoshis. Unverified BSQ balances are
+    // not spendable until returned to the available_confirmed_balance when send transactions have been confirmed.
+    uint64 unverified_balance = 2;
+    // The BSQ transaction change amount tied up in unconfirmed transactions, remaining unspendable until transactions
+    // have been confirmed and the change returned to the available_confirmed_balance.
+    uint64 unconfirmed_change_balance = 3;
+    // The locked BSQ amount held by DAO voting transaction.
+    uint64 locked_for_voting_balance = 4;
+    // The locked BSQ amount held by DAO bonding transaction.
+    uint64 lockup_bonds_balance = 5;
+    // The BSQ bonding amount in unlocking state, awaiting a lockup transaction's lock time expiry before the funds
+    // can be spent in normal transactions.
+    uint64 unlocking_bonds_balance = 6;
 }
 
+// TODO Thoroughly review field descriptions.
 message BtcBalanceInfo {
-    uint64 availableBalance = 1;
-    uint64 reservedBalance = 2;
-    uint64 totalAvailableBalance = 3;
-    uint64 lockedBalance = 4;
+    // The RADC amount currently available to send to other addresses at the user's discretion, in satoshis.
+    uint64 available_balance = 1;
+    // The RADC amount currently reserved to cover open offers' security deposits, and RADC sellers' payout amounts,
+    // in satoshis.  Reserved funds are not spendable, but are recoverable by users. When a user cancels an offer
+    // funds reserved for that offer are returned to the available_balance.
+    uint64 reserved_balance = 2;
+    // The sum of available_balance + reserved_balance, in satoshis.
+    uint64 total_available_balance = 3;
+    // The RADC amount being locked to cover the security deposits and RADC seller's pending trade payouts.  Locked
+    // funds are not recoverable until a trade is completed, when security deposits are returned to the available_balance.
+    uint64 locked_balance = 4;
 }
 
 message AddressBalanceInfo {
-    string address = 1;
-    int64 balance = 2;
-    int64 numConfirmations = 3;
-    bool isAddressUnused = 4;
+    string address = 1;             // The bitcoin wallet address.
+    int64 balance = 2;              // The address' RADC balance in satoshis.
+    int64 num_confirmations = 3;    // The number of confirmations for the most recent transaction referencing the output address.
+    bool is_address_unused = 4;     // Whether the bitcoin address has ever been used, or not.
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////
-// Version
-///////////////////////////////////////////////////////////////////////////////////////////
-
 service GetVersion {
+    // Get the current Bisq version number.
     rpc GetVersion (GetVersionRequest) returns (GetVersionReply) {
     }
 }
@@ -761,5 +936,5 @@ message GetVersionRequest {
 }
 
 message GetVersionReply {
-    string version = 1;
+    string version = 1;     // The version of the Bisq software release.
 }

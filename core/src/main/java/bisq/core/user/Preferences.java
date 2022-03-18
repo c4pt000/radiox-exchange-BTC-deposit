@@ -79,46 +79,23 @@ import static com.google.common.base.Preconditions.checkNotNull;
 @Singleton
 public final class Preferences implements PersistedDataHost, BridgeAddressProvider {
 
-    private static final ArrayList<BlockChainExplorer> BTC_MAIN_NET_EXPLORERS = new ArrayList<>(Arrays.asList(
-            new BlockChainExplorer("mempool.space (@wiz)", "https://mempool.space/tx/", "https://mempool.space/address/"),
-            new BlockChainExplorer("mempool.space Tor V3", "http://mempoolhqx4isw62xs7abwphsq7ldayuidyx2v2oethdhhj6mlo2r6ad.onion/tx/", "http://mempoolhqx4isw62xs7abwphsq7ldayuidyx2v2oethdhhj6mlo2r6ad.onion/address/"),
-            new BlockChainExplorer("mempool.emzy.de (@emzy)", "https://mempool.emzy.de/tx/", "https://mempool.emzy.de/address/"),
-            new BlockChainExplorer("mempool.emzy.de Tor V3", "http://mempool4t6mypeemozyterviq3i5de4kpoua65r3qkn5i3kknu5l2cad.onion/tx/", "http://mempool4t6mypeemozyterviq3i5de4kpoua65r3qkn5i3kknu5l2cad.onion/address/"),
-            new BlockChainExplorer("mempool.bisq.services (@devinbileck)", "https://mempool.bisq.services/tx/", "https://mempool.bisq.services/address/"),
-            new BlockChainExplorer("mempool.bisq.services Tor V3", "http://mempoolcutehjtynu4k4rd746acmssvj2vz4jbz4setb72clbpx2dfqd.onion/tx/", "http://mempoolcutehjtynu4k4rd746acmssvj2vz4jbz4setb72clbpx2dfqd.onion/address/"),
-            new BlockChainExplorer("Blockstream.info", "https://blockstream.info/tx/", "https://blockstream.info/address/"),
-            new BlockChainExplorer("Blockstream.info Tor V3", "http://explorerzydxu5ecjrkwceayqybizmpjjznk5izmitf2modhcusuqlid.onion/tx/", "http://explorerzydxu5ecjrkwceayqybizmpjjznk5izmitf2modhcusuqlid.onion/address/"),
-            new BlockChainExplorer("OXT", "https://oxt.me/transaction/", "https://oxt.me/address/"),
-            new BlockChainExplorer("Bitaps", "https://bitaps.com/", "https://bitaps.com/"),
-            new BlockChainExplorer("Blockcypher", "https://live.blockcypher.com/btc/tx/", "https://live.blockcypher.com/btc/address/"),
-            new BlockChainExplorer("Tradeblock", "https://tradeblock.com/bitcoin/tx/", "https://tradeblock.com/bitcoin/address/"),
-            new BlockChainExplorer("Biteasy", "https://www.biteasy.com/transactions/", "https://www.biteasy.com/addresses/"),
-            new BlockChainExplorer("Blockonomics", "https://www.blockonomics.co/api/tx?txid=", "https://www.blockonomics.co/#/search?q="),
-            new BlockChainExplorer("Chainflyer", "http://chainflyer.bitflyer.jp/Transaction/", "http://chainflyer.bitflyer.jp/Address/"),
-            new BlockChainExplorer("Smartbit", "https://www.smartbit.com.au/tx/", "https://www.smartbit.com.au/address/"),
-            new BlockChainExplorer("SoChain. Wow.", "https://chain.so/tx/BTC/", "https://chain.so/address/BTC/"),
-            new BlockChainExplorer("Blockchain.info", "https://blockchain.info/tx/", "https://blockchain.info/address/"),
-            new BlockChainExplorer("Insight", "https://insight.bitpay.com/tx/", "https://insight.bitpay.com/address/"),
-            new BlockChainExplorer("Blockchair", "https://blockchair.com/bitcoin/transaction/", "https://blockchair.com/bitcoin/address/")
+
+
+ private static final ArrayList<BlockChainExplorer> RADC_MAIN_NET_EXPLORERS = new ArrayList<>(Arrays.asList(
+            new BlockChainExplorer("radioblockchain.info", "http://radioblockchain.info/tx/", "http://radioblockchain.info/address/")
     ));
-    private static final ArrayList<BlockChainExplorer> BTC_TEST_NET_EXPLORERS = new ArrayList<>(Arrays.asList(
-            new BlockChainExplorer("Blockstream.info", "https://blockstream.info/testnet/tx/", "https://blockstream.info/testnet/address/"),
-            new BlockChainExplorer("Blockstream.info Tor V3", "http://explorerzydxu5ecjrkwceayqybizmpjjznk5izmitf2modhcusuqlid.onion/testnet/tx/", "http://explorerzydxu5ecjrkwceayqybizmpjjznk5izmitf2modhcusuqlid.onion/testnet/address/"),
-            new BlockChainExplorer("Blockcypher", "https://live.blockcypher.com/btc-testnet/tx/", "https://live.blockcypher.com/btc-testnet/address/"),
-            new BlockChainExplorer("Blocktrail", "https://www.blocktrail.com/tBTC/tx/", "https://www.blocktrail.com/tBTC/address/"),
-            new BlockChainExplorer("Biteasy", "https://www.biteasy.com/testnet/transactions/", "https://www.biteasy.com/testnet/addresses/"),
-            new BlockChainExplorer("Smartbit", "https://testnet.smartbit.com.au/tx/", "https://testnet.smartbit.com.au/address/"),
-            new BlockChainExplorer("SoChain. Wow.", "https://chain.so/tx/BTCTEST/", "https://chain.so/address/BTCTEST/"),
-            new BlockChainExplorer("Blockchair", "https://blockchair.com/bitcoin/testnet/transaction/", "https://blockchair.com/bitcoin/testnet/address/")
+    private static final ArrayList<BlockChainExplorer> RADC_TEST_NET_EXPLORERS = new ArrayList<>(Arrays.asList(
+            new BlockChainExplorer("Blockstream.info", "https://blockstream.info/testnet/tx/", "https://blockstream.info/testnet/address/")
     ));
-    private static final ArrayList<BlockChainExplorer> BTC_DAO_TEST_NET_EXPLORERS = new ArrayList<>(Collections.singletonList(
-            new BlockChainExplorer("BTC DAO-testnet explorer", "https://bisq.network/explorer/btc/dao_testnet/tx/", "https://bisq.network/explorer/btc/dao_testnet/address/")
+    private static final ArrayList<BlockChainExplorer> RADC_DAO_TEST_NET_EXPLORERS = new ArrayList<>(Collections.singletonList(
+
+          new BlockChainExplorer("RADC DAO-testnet explorer", "https://bisq.network/explorer/btc/dao_testnet/tx/", "https://bisq.network/explorer/btc/dao_testnet/address/")
     ));
 
     public static final ArrayList<BlockChainExplorer> BSQ_MAIN_NET_EXPLORERS = new ArrayList<>(Arrays.asList(
-            new BlockChainExplorer("mempool.space (@wiz)", "https://mempool.space/bisq/tx/", "https://mempool.space/bisq/address/"),
-            new BlockChainExplorer("mempool.emzy.de (@emzy)", "https://mempool.emzy.de/bisq/tx/", "https://mempool.emzy.de/bisq/address/"),
-            new BlockChainExplorer("mempool.bisq.services (@devinbileck)", "https://mempool.bisq.services/bisq/tx/", "https://mempool.bisq.services/bisq/address/")
+            new BlockChainExplorer("radiocoin-api.com (@c4pt000)", "http://172.105.240.205/bisq/tx/", "http://172.105.240.205/bisq/address/")
+
+//            new BlockChainExplorer("mempool.bisq.services (@devinbileck)", "https://mempool.bisq.services/bisq/tx/", "https://mempool.bisq.services/bisq/address/")
     ));
 
     private static final ArrayList<String> XMR_TX_PROOF_SERVICES_CLEAR_NET = new ArrayList<>(Arrays.asList(
@@ -131,21 +108,29 @@ public final class Preferences implements PersistedDataHost, BridgeAddressProvid
             "devinxmrwu4jrfq2zmq5kqjpxb44hx7i7didebkwrtvmvygj4uuop2ad.onion" // @devinbileck
     ));
 
-
-    private static final ArrayList<String> TX_BROADCAST_SERVICES_CLEAR_NET = new ArrayList<>(Arrays.asList(
-            "https://mempool.space/api/tx",         // @wiz
-            "https://mempool.emzy.de/api/tx",       // @emzy
-            "https://mempool.bisq.services/api/tx"  // @devinbileck
+//broadcast of transaction of posted buy and sell orders (originally i thought it had to do with the transactions of bitcoin going out to the blockchain)
+ private static final ArrayList<String> TX_BROADCAST_SERVICES_CLEAR_NET = new ArrayList<>(Arrays.asList(
+      //      "https://mempool.space/api/tx",         // @wiz
+      //      "https://mempool.emzy.de/api/tx",       // @emzy
+      //      "https://mempool.bisq.services/api/tx",  // @devinbileck
+            "http://172.105.240.205/api/tx"
     ));
 
     private static final ArrayList<String> TX_BROADCAST_SERVICES = new ArrayList<>(Arrays.asList(
-            "http://mempoolhqx4isw62xs7abwphsq7ldayuidyx2v2oethdhhj6mlo2r6ad.onion/api/tx",     // @wiz
-            "http://mempool4t6mypeemozyterviq3i5de4kpoua65r3qkn5i3kknu5l2cad.onion/api/tx",     // @emzy
-            "http://mempoolcutehjtynu4k4rd746acmssvj2vz4jbz4setb72clbpx2dfqd.onion/api/tx"      // @devinbileck
-    ));
+        //    "http://mempoolhqx4isw62xs7abwphsq7ldayuidyx2v2oethdhhj6mlo2r6ad.onion/api/tx",     // @wiz
+         //   "http://mempool4t6mypeemozyterviq3i5de4kpoua65r3qkn5i3kknu5l2cad.onion/api/tx",     // @emzy
+         //   "http://mempoolcutehjtynu4k4rd746acmssvj2vz4jbz4setb72clbpx2dfqd.onion/api/tx"      // @devinbileck
+ "http://172.105.240.205/api/tx"
+ 
+   ));
+
+
+
+
 
     public static final boolean USE_SYMMETRIC_SECURITY_DEPOSIT = true;
-
+    public static final int CLEAR_DATA_AFTER_DAYS_INITIAL = 99999; // feature effectively disabled until user agrees to settings notification
+    public static final int CLEAR_DATA_AFTER_DAYS_DEFAULT = 60; // used when user has agreed to settings notification
 
     // payload is initialized so the default values are available for Property initialization.
     @Setter
@@ -184,7 +169,7 @@ public final class Preferences implements PersistedDataHost, BridgeAddressProvid
                        Config config,
                        FeeService feeService,
                        LocalBitcoinNode localBitcoinNode,
-                       @Named(Config.BTC_NODES) String btcNodesFromOptions,
+                       @Named(Config.RADC_NODES) String btcNodesFromOptions,
                        @Named(Config.REFERRAL_ID) String referralId,
                        @Named(Config.FULL_DAO_NODE) boolean fullDaoNode,
                        @Named(Config.RPC_USER) String rpcUser,
@@ -276,16 +261,21 @@ public final class Preferences implements PersistedDataHost, BridgeAddressProvid
         prefPayload.setUserLanguage(GlobalSettings.getLocale().getLanguage());
         prefPayload.setUserCountry(CountryUtil.getDefaultCountry());
         GlobalSettings.setLocale(new Locale(prefPayload.getUserLanguage(), prefPayload.getUserCountry().code));
-        TradeCurrency preferredTradeCurrency = checkNotNull(CurrencyUtil.getCurrencyByCountryCode(prefPayload.getUserCountry().code),
-                "preferredTradeCurrency must not be null");
+
+        TradeCurrency preferredTradeCurrency = CurrencyUtil.getCurrencyByCountryCode("US"); // default fallback option
+        try {
+            preferredTradeCurrency = CurrencyUtil.getCurrencyByCountryCode(prefPayload.getUserCountry().code);
+        } catch (IllegalArgumentException ia) {
+            log.warn("Could not determine currency for country {} [{}]", prefPayload.getUserCountry().code, ia.toString());
+        }
         prefPayload.setPreferredTradeCurrency(preferredTradeCurrency);
         setFiatCurrencies(CurrencyUtil.getMainFiatCurrencies());
         setCryptoCurrencies(CurrencyUtil.getMainCryptoCurrencies());
 
         BaseCurrencyNetwork baseCurrencyNetwork = Config.baseCurrencyNetwork();
-        if ("BTC".equals(baseCurrencyNetwork.getCurrencyCode())) {
-            setBlockChainExplorerMainNet(BTC_MAIN_NET_EXPLORERS.get(0));
-            setBlockChainExplorerTestNet(BTC_TEST_NET_EXPLORERS.get(0));
+        if ("RADC".equals(baseCurrencyNetwork.getCurrencyCode())) {
+            setBlockChainExplorerMainNet(RADC_MAIN_NET_EXPLORERS.get(0));
+            setBlockChainExplorerTestNet(RADC_TEST_NET_EXPLORERS.get(0));
         } else {
             throw new RuntimeException("BaseCurrencyNetwork not defined. BaseCurrencyNetwork=" + baseCurrencyNetwork);
         }
@@ -342,8 +332,8 @@ public final class Preferences implements PersistedDataHost, BridgeAddressProvid
 
         if (btcNodesFromOptions != null && !btcNodesFromOptions.isEmpty()) {
             if (getBitcoinNodes() != null && !getBitcoinNodes().equals(btcNodesFromOptions)) {
-                log.warn("The Bitcoin node(s) from the program argument and the one(s) persisted in the UI are different. " +
-                        "The Bitcoin node(s) {} from the program argument will be used.", btcNodesFromOptions);
+                log.warn("The Radiocoin node(s) from the program argument and the one(s) persisted in the UI are different. " +
+                        "The Radiocoin node(s) {} from the program argument will be used.", btcNodesFromOptions);
             }
             setBitcoinNodes(btcNodesFromOptions);
             setBitcoinNodesOptionOrdinal(BtcNodes.BitcoinNodesOption.CUSTOM.ordinal());
@@ -353,6 +343,10 @@ public final class Preferences implements PersistedDataHost, BridgeAddressProvid
 
         if (prefPayload.getIgnoreDustThreshold() < Restrictions.getMinNonDustOutput().value) {
             setIgnoreDustThreshold(600);
+        }
+
+        if (prefPayload.getClearDataAfterDays() < 1) {
+            setClearDataAfterDays(Preferences.CLEAR_DATA_AFTER_DAYS_INITIAL);
         }
 
         // For users from old versions the 4 flags a false but we want to have it true by default
@@ -533,7 +527,8 @@ public final class Preferences implements PersistedDataHost, BridgeAddressProvid
     }
 
     public void setUseTorForBitcoinJ(boolean useTorForBitcoinJ) {
-        prefPayload.setUseTorForBitcoinJ(useTorForBitcoinJ);
+        prefPayload.setUseTorForBitcoinJ(false);
+//useTorForBitcoinJ);
         requestPersistence();
     }
 
@@ -679,7 +674,7 @@ public final class Preferences implements PersistedDataHost, BridgeAddressProvid
     public void setBridgeAddresses(List<String> bridgeAddresses) {
         prefPayload.setBridgeAddresses(bridgeAddresses);
         // We call that before shutdown so we dont want a delay here
-        requestPersistence();
+        persistenceManager.forcePersistNow();
     }
 
     // Only used from PB but keep it explicit as it may be used from the client and then we want to persist
@@ -690,17 +685,17 @@ public final class Preferences implements PersistedDataHost, BridgeAddressProvid
 
     public void setBridgeOptionOrdinal(int bridgeOptionOrdinal) {
         prefPayload.setBridgeOptionOrdinal(bridgeOptionOrdinal);
-        requestPersistence();
+        persistenceManager.forcePersistNow();
     }
 
     public void setTorTransportOrdinal(int torTransportOrdinal) {
         prefPayload.setTorTransportOrdinal(torTransportOrdinal);
-        requestPersistence();
+        persistenceManager.forcePersistNow();
     }
 
     public void setCustomBridges(String customBridges) {
         prefPayload.setCustomBridges(customBridges);
-        requestPersistence();
+        persistenceManager.forcePersistNow();
     }
 
     public void setBitcoinNodesOptionOrdinal(int bitcoinNodesOptionOrdinal) {
@@ -785,6 +780,11 @@ public final class Preferences implements PersistedDataHost, BridgeAddressProvid
         requestPersistence();
     }
 
+    public void setClearDataAfterDays(int value) {
+        prefPayload.setClearDataAfterDays(value);
+        requestPersistence();
+    }
+
     public void setShowOffersMatchingMyAccounts(boolean value) {
         prefPayload.setShowOffersMatchingMyAccounts(value);
         requestPersistence();
@@ -833,17 +833,17 @@ public final class Preferences implements PersistedDataHost, BridgeAddressProvid
     public BlockChainExplorer getBlockChainExplorer() {
         BaseCurrencyNetwork baseCurrencyNetwork = Config.baseCurrencyNetwork();
         switch (baseCurrencyNetwork) {
-            case BTC_MAINNET:
+            case RADC_MAINNET:
                 return prefPayload.getBlockChainExplorerMainNet();
-            case BTC_TESTNET:
-            case BTC_REGTEST:
+            case RADC_TESTNET:
+            case RADC_REGTEST:
                 return prefPayload.getBlockChainExplorerTestNet();
-            case BTC_DAO_TESTNET:
-                return BTC_DAO_TEST_NET_EXPLORERS.get(0);
-            case BTC_DAO_BETANET:
+            case RADC_DAO_TESTNET:
+                return RADC_DAO_TEST_NET_EXPLORERS.get(0);
+            case RADC_DAO_BETANET:
                 return prefPayload.getBlockChainExplorerMainNet();
-            case BTC_DAO_REGTEST:
-                return BTC_DAO_TEST_NET_EXPLORERS.get(0);
+            case RADC_DAO_REGTEST:
+                return RADC_DAO_TEST_NET_EXPLORERS.get(0);
             default:
                 throw new RuntimeException("BaseCurrencyNetwork not defined. BaseCurrencyNetwork=" + baseCurrencyNetwork);
         }
@@ -852,17 +852,17 @@ public final class Preferences implements PersistedDataHost, BridgeAddressProvid
     public ArrayList<BlockChainExplorer> getBlockChainExplorers() {
         BaseCurrencyNetwork baseCurrencyNetwork = Config.baseCurrencyNetwork();
         switch (baseCurrencyNetwork) {
-            case BTC_MAINNET:
-                return BTC_MAIN_NET_EXPLORERS;
-            case BTC_TESTNET:
-            case BTC_REGTEST:
-                return BTC_TEST_NET_EXPLORERS;
-            case BTC_DAO_TESTNET:
-                return BTC_DAO_TEST_NET_EXPLORERS;
-            case BTC_DAO_BETANET:
-                return BTC_MAIN_NET_EXPLORERS;
-            case BTC_DAO_REGTEST:
-                return BTC_DAO_TEST_NET_EXPLORERS;
+            case RADC_MAINNET:
+                return RADC_MAIN_NET_EXPLORERS;
+            case RADC_TESTNET:
+            case RADC_REGTEST:
+                return RADC_TEST_NET_EXPLORERS;
+            case RADC_DAO_TESTNET:
+                return RADC_DAO_TEST_NET_EXPLORERS;
+            case RADC_DAO_BETANET:
+                return RADC_MAIN_NET_EXPLORERS;
+            case RADC_DAO_REGTEST:
+                return RADC_DAO_TEST_NET_EXPLORERS;
             default:
                 throw new RuntimeException("BaseCurrencyNetwork not defined. BaseCurrencyNetwork=" + baseCurrencyNetwork);
         }

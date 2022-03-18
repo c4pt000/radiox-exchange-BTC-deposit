@@ -21,21 +21,27 @@ import bisq.asset.BitcoinAddressValidator;
 import bisq.asset.Coin;
 
 import org.bitcoinj.core.NetworkParameters;
-import org.bitcoinj.params.MainNetParams;
-import org.bitcoinj.params.RegTestParams;
-import org.bitcoinj.params.TestNet3Params;
+
+
+//import org.bitcoinj.params.MainNetParams;
+//import org.bitcoinj.params.RegTestParams;
+//import org.bitcoinj.params.TestNet3Params;
+
+import org.libdohj.params.DogecoinMainNetParams;
+import org.libdohj.params.DogecoinRegTestParams;
+import org.libdohj.params.DogecoinTestNet3Params;
 
 public abstract class Bitcoin extends Coin {
 
     public Bitcoin(Network network, NetworkParameters networkParameters) {
-        super("Bitcoin", "BTC", new BitcoinAddressValidator(networkParameters), network);
+        super("Radiocoin", "RADC", new BitcoinAddressValidator(networkParameters), network);
     }
 
 
     public static class Mainnet extends Bitcoin {
 
         public Mainnet() {
-            super(Network.MAINNET, MainNetParams.get());
+            super(Network.MAINNET, DogecoinMainNetParams.get());
         }
     }
 
@@ -43,7 +49,7 @@ public abstract class Bitcoin extends Coin {
     public static class Testnet extends Bitcoin {
 
         public Testnet() {
-            super(Network.TESTNET, TestNet3Params.get());
+            super(Network.TESTNET, DogecoinTestNet3Params.get());
         }
     }
 
@@ -51,7 +57,7 @@ public abstract class Bitcoin extends Coin {
     public static class Regtest extends Bitcoin {
 
         public Regtest() {
-            super(Network.REGTEST, RegTestParams.get());
+            super(Network.REGTEST, DogecoinRegTestParams.get());
         }
     }
 }

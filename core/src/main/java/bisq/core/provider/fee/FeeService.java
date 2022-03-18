@@ -20,6 +20,7 @@ package bisq.core.provider.fee;
 import bisq.core.dao.governance.param.Param;
 import bisq.core.dao.governance.period.PeriodService;
 import bisq.core.dao.state.DaoStateService;
+import bisq.core.filter.FilterManager;
 
 import bisq.common.UserThread;
 import bisq.common.config.Config;
@@ -62,31 +63,53 @@ public class FeeService {
     // Static
     ///////////////////////////////////////////////////////////////////////////////////////////
 
-    // Miner fees are between 1-600 sat/vbyte. We try to stay on the safe side. BTC_DEFAULT_TX_FEE is only used if our
+    // Miner fees are between 1-600 sat/vbyte. We try to stay on the safe side. RADC_DEFAULT_TX_FEE is only used if our
     // fee service would not deliver data.
-    private static final long BTC_DEFAULT_TX_FEE = 50;
+    private static final long RADC_DEFAULT_TX_FEE = 50;
     private static final long MIN_PAUSE_BETWEEN_REQUESTS_IN_MIN = 2;
     private static DaoStateService daoStateService;
     private static PeriodService periodService;
+    private static FilterManager filterManager = null;
 
-    private static Coin getFeeFromParamAsCoin(Param parm) {
-        return daoStateService != null && periodService != null ? daoStateService.getParamValueAsCoin(parm, periodService.getChainHeight()) : Coin.ZERO;
+    private static Coin getFeeFromParamAsCoin(Param param) {
+        // if specified, filter values take precedence
+        Coin fromFilter = getFilterFromParamAsCoin(param);
+        if (fromFilter.isGreaterThan(Coin.ZERO)) {
+            return fromFilter;
+        }
+        return daoStateService != null && periodService != null ? daoStateService.getParamValueAsCoin(param, periodService.getChainHeight()) : Coin.ZERO;
+    }
+
+    private static Coin getFilterFromParamAsCoin(Param param) {
+        Coin filterVal = Coin.ZERO;
+        if (filterManager != null && filterManager.getFilter() != null) {
+            if (param == Param.DEFAULT_MAKER_FEE_RADC) {
+                filterVal = Coin.valueOf(filterManager.getFilter().getMakerFeeBtc());
+            } else if (param == Param.DEFAULT_TAKER_FEE_RADC) {
+                filterVal = Coin.valueOf(filterManager.getFilter().getTakerFeeBtc());
+            } else if (param == Param.DEFAULT_MAKER_FEE_BSQ) {
+                filterVal = Coin.valueOf(filterManager.getFilter().getMakerFeeBsq());
+            } else if (param == Param.DEFAULT_TAKER_FEE_BSQ) {
+                filterVal = Coin.valueOf(filterManager.getFilter().getTakerFeeBsq());
+            }
+        }
+        return filterVal;
     }
 
     public static Coin getMakerFeePerBtc(boolean currencyForFeeIsBtc) {
-        return currencyForFeeIsBtc ? getFeeFromParamAsCoin(Param.DEFAULT_MAKER_FEE_BTC) : getFeeFromParamAsCoin(Param.DEFAULT_MAKER_FEE_BSQ);
+        return currencyForFeeIsBtc ? getFeeFromParamAsCoin(Param.DEFAULT_MAKER_FEE_RADC) : getFeeFromParamAsCoin(Param.DEFAULT_MAKER_FEE_BSQ);
     }
 
     public static Coin getMinMakerFee(boolean currencyForFeeIsBtc) {
-        return currencyForFeeIsBtc ? getFeeFromParamAsCoin(Param.MIN_MAKER_FEE_BTC) : getFeeFromParamAsCoin(Param.MIN_MAKER_FEE_BSQ);
+        return currencyForFeeIsBtc ? getFeeFromParamAsCoin(Param.MIN_MAKER_FEE_RADC) : getFeeFromParamAsCoin(Param.MIN_MAKER_FEE_BSQ);
     }
 
     public static Coin getTakerFeePerBtc(boolean currencyForFeeIsBtc) {
-        return currencyForFeeIsBtc ? getFeeFromParamAsCoin(Param.DEFAULT_TAKER_FEE_BTC) : getFeeFromParamAsCoin(Param.DEFAULT_TAKER_FEE_BSQ);
+        return currencyForFeeIsBtc ? getFeeFromParamAsCoin(Param.DEFAULT_TAKER_FEE_RADC) : getFeeFromParamAsCoin(Param.DEFAULT_TAKER_FEE_BSQ);
     }
 
     public static Coin getMinTakerFee(boolean currencyForFeeIsBtc) {
-        return currencyForFeeIsBtc ? getFeeFromParamAsCoin(Param.MIN_TAKER_FEE_BTC) : getFeeFromParamAsCoin(Param.MIN_TAKER_FEE_BSQ);
+        return currencyForFeeIsBtc ? getFeeFromParamAsCoin(Param.MIN_TAKER_FEE_RADC) : getFeeFromParamAsCoin(Param.MIN_TAKER_FEE_BSQ);
     }
 
 
@@ -96,7 +119,7 @@ public class FeeService {
 
     private final FeeProvider feeProvider;
     private final IntegerProperty feeUpdateCounter = new SimpleIntegerProperty(0);
-    private long txFeePerVbyte = BTC_DEFAULT_TX_FEE;
+    private long txFeePerVbyte = RADC_DEFAULT_TX_FEE;
     private Map<String, Long> timeStampMap;
     @Getter
     private long lastRequest;
@@ -122,7 +145,8 @@ public class FeeService {
     // API
     ///////////////////////////////////////////////////////////////////////////////////////////
 
-    public void onAllServicesInitialized() {
+    public void onAllServicesInitialized(FilterManager providedFilterManager) {
+        filterManager = providedFilterManager;
         minFeePerVByte = Config.baseCurrencyNetwork().getDefaultMinFeePerVbyte();
 
         requestFees();
@@ -163,10 +187,10 @@ public class FeeService {
                 UserThread.execute(() -> {
                     checkNotNull(result, "Result must not be null at getFees");
                     timeStampMap = result.first;
-                    epochInSecondAtLastRequest = timeStampMap.get(Config.BTC_FEES_TS);
+                    epochInSecondAtLastRequest = timeStampMap.get(Config.RADC_FEES_TS);
                     final Map<String, Long> map = result.second;
-                    txFeePerVbyte = map.get(Config.BTC_TX_FEE);
-                    minFeePerVByte = map.get(Config.BTC_MIN_TX_FEE);
+                    txFeePerVbyte = map.get(Config.RADC_TX_FEE);
+                    minFeePerVByte = map.get(Config.RADC_MIN_TX_FEE);
 
                     if (txFeePerVbyte < minFeePerVByte) {
                         log.warn("The delivered fee of {} sat/vbyte is smaller than the min. default fee of {} sat/vbyte", txFeePerVbyte, minFeePerVByte);
@@ -174,7 +198,7 @@ public class FeeService {
                     }
 
                     feeUpdateCounter.set(feeUpdateCounter.get() + 1);
-                    log.info("BTC tx fee: txFeePerVbyte={} minFeePerVbyte={}", txFeePerVbyte, minFeePerVByte);
+                    log.info("RADC tx fee: txFeePerVbyte={} minFeePerVbyte={}", txFeePerVbyte, minFeePerVByte);
                     success();
                 });
             }

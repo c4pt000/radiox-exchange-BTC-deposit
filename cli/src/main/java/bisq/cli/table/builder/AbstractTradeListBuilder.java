@@ -20,13 +20,9 @@ package bisq.cli.table.builder;
 import bisq.proto.grpc.ContractInfo;
 import bisq.proto.grpc.TradeInfo;
 
-import java.text.DecimalFormat;
-
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 
 import java.util.List;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -34,15 +30,17 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
+import static bisq.cli.CurrencyFormat.formatSatoshis;
 import static bisq.cli.table.builder.TableBuilderConstants.COL_HEADER_BUYER_DEPOSIT;
 import static bisq.cli.table.builder.TableBuilderConstants.COL_HEADER_SELLER_DEPOSIT;
 import static bisq.cli.table.builder.TableType.TRADE_DETAIL_TBL;
+import static java.lang.String.format;
+import static protobuf.OfferDirection.SELL;
 
 
 
 import bisq.cli.table.column.Column;
 import bisq.cli.table.column.MixedTradeFeeColumn;
-import bisq.cli.table.column.MixedVolumeColumn;
 
 abstract class AbstractTradeListBuilder extends AbstractTableBuilder {
 
@@ -55,15 +53,15 @@ abstract class AbstractTradeListBuilder extends AbstractTableBuilder {
     protected final Column<Long> colCreateDate;
     @Nullable
     protected final Column<String> colMarket;
-    protected final Column<Long> colPrice;
+    protected final Column<String> colPrice;
     @Nullable
     protected final Column<String> colPriceDeviation;
     @Nullable
     protected final Column<String> colCurrency;
     @Nullable
-    protected final Column<Long> colAmountInBtc;
+    protected final Column<Long> colAmount;
     @Nullable
-    protected final MixedVolumeColumn colMixedAmount;
+    protected final Column<String> colMixedAmount;
     @Nullable
     protected final Column<Long> colMinerTxFee;
     @Nullable
@@ -79,7 +77,7 @@ abstract class AbstractTradeListBuilder extends AbstractTableBuilder {
     @Nullable
     protected final Column<String> colOfferType;
     @Nullable
-    protected final Column<String> colStatusDescription;
+    protected final Column<String> colClosingStatus;
 
     // Trade detail tbl specific columns
 
@@ -90,17 +88,26 @@ abstract class AbstractTradeListBuilder extends AbstractTableBuilder {
     @Nullable
     protected final Column<Boolean> colIsPayoutPublished;
     @Nullable
-    protected final Column<Boolean> colIsFundsWithdrawn;
+    protected final Column<Boolean> colIsCompleted;
     @Nullable
     protected final Column<Long> colBisqTradeFee;
     @Nullable
-    protected final Column<Long> colTradeCost;
+    protected final Column<String> colTradeCost;
     @Nullable
-    protected final Column<Boolean> colIsPaymentSent;
+    protected final Column<Boolean> colIsPaymentStartedMessageSent;
     @Nullable
-    protected final Column<Boolean> colIsPaymentReceived;
+    protected final Column<Boolean> colIsPaymentReceivedMessageSent;
     @Nullable
     protected final Column<String> colAltcoinReceiveAddressColumn;
+
+    // BSQ swap trade detail specific columns
+
+    @Nullable
+    protected final Column<String> status;
+    @Nullable
+    protected final Column<String> colTxId;
+    @Nullable
+    protected final Column<Long> colNumConfirmations;
 
     AbstractTradeListBuilder(TableType tableType, List<?> protos) {
         super(tableType, protos);
@@ -115,7 +122,7 @@ abstract class AbstractTradeListBuilder extends AbstractTableBuilder {
         this.colPrice = colSupplier.priceColumn.get();
         this.colPriceDeviation = colSupplier.priceDeviationColumn.get();
         this.colCurrency = colSupplier.currencyColumn.get();
-        this.colAmountInBtc = colSupplier.amountInBtcColumn.get();
+        this.colAmount = colSupplier.amountColumn.get();
         this.colMixedAmount = colSupplier.mixedAmountColumn.get();
         this.colMinerTxFee = colSupplier.minerTxFeeColumn.get();
         this.colMixedTradeFee = colSupplier.mixedTradeFeeColumn.get();
@@ -124,17 +131,26 @@ abstract class AbstractTradeListBuilder extends AbstractTableBuilder {
         this.colPaymentMethod = colSupplier.paymentMethodColumn.get();
         this.colRole = colSupplier.roleColumn.get();
         this.colOfferType = colSupplier.offerTypeColumn.get();
-        this.colStatusDescription = colSupplier.statusDescriptionColumn.get();
-        // Trade detail specific columns
+        this.colClosingStatus = colSupplier.statusDescriptionColumn.get();
+
+        // Trade detail specific columns, some in common with BSQ swap trades detail.
+
         this.colIsDepositPublished = colSupplier.depositPublishedColumn.get();
         this.colIsDepositConfirmed = colSupplier.depositConfirmedColumn.get();
         this.colIsPayoutPublished = colSupplier.payoutPublishedColumn.get();
-        this.colIsFundsWithdrawn = colSupplier.fundsWithdrawnColumn.get();
+        this.colIsCompleted = colSupplier.fundsWithdrawnColumn.get();
         this.colBisqTradeFee = colSupplier.bisqTradeDetailFeeColumn.get();
         this.colTradeCost = colSupplier.tradeCostColumn.get();
-        this.colIsPaymentSent = colSupplier.paymentSentColumn.get();
-        this.colIsPaymentReceived = colSupplier.paymentReceivedColumn.get();
+        this.colIsPaymentStartedMessageSent = colSupplier.paymentStartedMessageSentColumn.get();
+        this.colIsPaymentReceivedMessageSent = colSupplier.paymentReceivedMessageSentColumn.get();
+        //noinspection ConstantConditions
         this.colAltcoinReceiveAddressColumn = colSupplier.altcoinReceiveAddressColumn.get();
+
+        // BSQ swap trade detail specific columns
+
+        this.status = colSupplier.bsqSwapStatusColumn.get();
+        this.colTxId = colSupplier.bsqSwapTxIdColumn.get();
+        this.colNumConfirmations = colSupplier.numConfirmationsColumn.get();
     }
 
     protected void validate() {
@@ -149,22 +165,43 @@ abstract class AbstractTradeListBuilder extends AbstractTableBuilder {
     // Helper Functions
 
     private final Supplier<Boolean> isTradeDetailTblBuilder = () -> tableType.equals(TRADE_DETAIL_TBL);
-
     protected final Predicate<TradeInfo> isFiatTrade = (t) -> isFiatOffer.test(t.getOffer());
-
+    protected final Predicate<TradeInfo> isBsqTrade = (t) -> !isFiatOffer.test(t.getOffer()) && t.getOffer().getBaseCurrencyCode().equals("BSQ");
+    protected final Predicate<TradeInfo> isBsqSwapTrade = (t) -> t.getOffer().getIsBsqSwapOffer();
+    protected final Predicate<TradeInfo> isMyOffer = (t) -> t.getOffer().getIsMyOffer();
     protected final Predicate<TradeInfo> isTaker = (t) -> t.getRole().toLowerCase().contains("taker");
+    protected final Predicate<TradeInfo> isSellOffer = (t) -> t.getOffer().getDirection().equals(SELL.name());
+    protected final Predicate<TradeInfo> isBtcSeller = (t) -> (isMyOffer.test(t) && isSellOffer.test(t))
+            || (!isMyOffer.test(t) && !isSellOffer.test(t));
+    protected final Predicate<TradeInfo> isTradeFeeBtc = (t) -> isMyOffer.test(t)
+            ? t.getOffer().getIsCurrencyForMakerFeeBtc()
+            : t.getIsCurrencyForTakerFeeBtc();
+
 
     // Column Value Functions
 
-    protected final Function<TradeInfo, Long> toAmount = (t) ->
-            isFiatTrade.test(t)
-                    ? t.getTradeAmountAsLong()
-                    : t.getTradeVolume();
+    // Altcoin volumes from server are string representations of decimals.
+    // Converting them to longs ("sats") requires shifting the decimal points
+    // to left:  2 for BSQ, 8 for other altcoins.
+    protected final Function<TradeInfo, Long> toAltcoinTradeVolumeAsLong = (t) ->
+            isBsqTrade.test(t)
+                    ? new BigDecimal(t.getTradeVolume()).movePointRight(2).longValue()
+                    : new BigDecimal(t.getTradeVolume()).movePointRight(8).longValue();
 
-    protected final Function<TradeInfo, Long> toTradeVolume = (t) ->
+    protected final Function<TradeInfo, String> toTradeVolumeAsString = (t) ->
             isFiatTrade.test(t)
                     ? t.getTradeVolume()
-                    : t.getTradeAmountAsLong();
+                    : formatSatoshis(t.getTradeAmountAsLong());
+
+    protected final Function<TradeInfo, Long> toTradeVolumeAsLong = (t) ->
+            isFiatTrade.test(t)
+                    ? Long.parseLong(t.getTradeVolume())
+                    : toAltcoinTradeVolumeAsLong.apply(t);
+
+    protected final Function<TradeInfo, Long> toTradeAmount = (t) ->
+            isFiatTrade.test(t)
+                    ? t.getTradeAmountAsLong()
+                    : toTradeVolumeAsLong.apply(t);
 
     protected final Function<TradeInfo, String> toMarket = (t) ->
             t.getOffer().getBaseCurrencyCode() + "/"
@@ -175,43 +212,37 @@ abstract class AbstractTradeListBuilder extends AbstractTableBuilder {
                     ? t.getOffer().getCounterCurrencyCode()
                     : t.getOffer().getBaseCurrencyCode();
 
+    protected final Function<TradeInfo, String> toPriceDeviation = (t) ->
+            t.getOffer().getUseMarketBasedPrice()
+                    ? format("%.2f%s", t.getOffer().getMarketPriceMarginPct(), "%")
+                    : "N/A";
 
-    protected final Function<TradeInfo, Integer> toDisplayedVolumePrecision = (t) -> {
-        if (isFiatTrade.test(t)) {
-            return 0;
+    protected final Function<TradeInfo, Long> toMyMinerTxFee = (t) -> {
+        if (isBsqSwapTrade.test(t)) {
+            // The RADC seller pays the miner fee for both sides.
+            return isBtcSeller.test(t) ? t.getTxFeeAsLong() : 0L;
         } else {
-            String currencyCode = toPaymentCurrencyCode.apply(t);
-            return currencyCode.equalsIgnoreCase("BSQ") ? 2 : 8;
+            return isTaker.test(t)
+                    ? t.getTxFeeAsLong()
+                    : t.getOffer().getTxFee();
         }
     };
 
-    // TODO Move to TradeUtil ?
-    protected final Function<TradeInfo, String> toPriceDeviation = (t) ->
-            t.getOffer().getUseMarketBasedPrice()
-                    ? formatToPercent(t.getOffer().getMarketPriceMargin())
-                    : "N/A";
-
-    protected final Function<TradeInfo, Long> toMyMinerTxFee = (t) ->
-            isTaker.test(t)
-                    ? t.getTxFeeAsLong()
-                    : t.getOffer().getTxFee();
-
-
-    // TODO Move to TradeUtil ?
-    protected final BiFunction<TradeInfo, Boolean, Long> toTradeFeeBsq = (t, isMyOffer) -> {
+    protected final Function<TradeInfo, Long> toTradeFeeBsq = (t) -> {
+        var isMyOffer = t.getOffer().getIsMyOffer();
         if (isMyOffer) {
             return t.getOffer().getIsCurrencyForMakerFeeBtc()
-                    ? 0L // Maker paid BTC fee, return 0.
+                    ? 0L // Maker paid RADC fee, return 0.
                     : t.getOffer().getMakerFee();
         } else {
             return t.getIsCurrencyForTakerFeeBtc()
-                    ? 0L // Taker paid BTC fee, return 0.
+                    ? 0L // Taker paid RADC fee, return 0.
                     : t.getTakerFeeAsLong();
         }
     };
 
-    // TODO Move to TradeUtil ?
-    protected final BiFunction<TradeInfo, Boolean, Long> toTradeFeeBtc = (t, isMyOffer) -> {
+    protected final Function<TradeInfo, Long> toTradeFeeBtc = (t) -> {
+        var isMyOffer = t.getOffer().getIsMyOffer();
         if (isMyOffer) {
             return t.getOffer().getIsCurrencyForMakerFeeBtc()
                     ? t.getOffer().getMakerFee()
@@ -223,12 +254,18 @@ abstract class AbstractTradeListBuilder extends AbstractTableBuilder {
         }
     };
 
-    protected final Function<TradeInfo, Long> toMyMakerOrTakerFee = (t) ->
-            isTaker.test(t)
+    protected final Function<TradeInfo, Long> toMyMakerOrTakerFee = (t) -> {
+        if (isBsqSwapTrade.test(t)) {
+            return isTaker.test(t)
+                    ? t.getBsqSwapTradeInfo().getBsqTakerTradeFee()
+                    : t.getBsqSwapTradeInfo().getBsqMakerTradeFee();
+        } else {
+            return isTaker.test(t)
                     ? t.getTakerFeeAsLong()
                     : t.getOffer().getMakerFee();
+        }
+    };
 
-    // TODO Move to TradeUtil ? SEE ClosedTradesViewModel # getDirectionLabel
     protected final Function<TradeInfo, String> toOfferType = (t) -> {
         if (isFiatTrade.test(t)) {
             return t.getOffer().getDirection() + " " + t.getOffer().getBaseCurrencyCode();
@@ -259,45 +296,11 @@ abstract class AbstractTradeListBuilder extends AbstractTableBuilder {
         if (showAltCoinBuyerAddress.test(t)) {
             ContractInfo contract = t.getContract();
             boolean isBuyerMakerAndSellerTaker = contract.getIsBuyerMakerAndSellerTaker();
-            return isBuyerMakerAndSellerTaker  // (is BTC buyer / maker)
+            return isBuyerMakerAndSellerTaker  // (is RADC buyer / maker)
                     ? contract.getTakerPaymentAccountPayload().getAddress()
                     : contract.getMakerPaymentAccountPayload().getAddress();
         } else {
             return "";
         }
     };
-
-    // TODO Stuff to move into bisq/cli/CurrencyFormat.java ?
-
-    public static String formatToPercent(double value) {
-        DecimalFormat decimalFormat = new DecimalFormat("#.##");
-        decimalFormat.setMinimumFractionDigits(2);
-        decimalFormat.setMaximumFractionDigits(2);
-        return formatToPercent(value, decimalFormat);
-    }
-
-    public static String formatToPercent(double value, DecimalFormat decimalFormat) {
-        return decimalFormat.format(roundDouble(value * 100.0, 2)).replace(",", ".") + "%";
-    }
-
-    public static double roundDouble(double value, int precision) {
-        return roundDouble(value, precision, RoundingMode.HALF_UP);
-    }
-
-    @SuppressWarnings("SameParameterValue")
-    public static double roundDouble(double value, int precision, RoundingMode roundingMode) {
-        if (precision < 0)
-            throw new IllegalArgumentException();
-        if (!Double.isFinite(value))
-            throw new IllegalArgumentException("Expected a finite double, but found " + value);
-
-        try {
-            BigDecimal bd = BigDecimal.valueOf(value);
-            bd = bd.setScale(precision, roundingMode);
-            return bd.doubleValue();
-        } catch (Throwable t) {
-            t.printStackTrace(); // TODO throw pretty exception for CLI console
-            return 0;
-        }
-    }
 }

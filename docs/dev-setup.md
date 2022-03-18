@@ -15,7 +15,7 @@ When developing Bisq, you usually want to use Bitcoin in **regtest** mode and do
  - Bitcoin Core or bitcoind in regtest mode
  - A local Bisq seed node
  - A local Bisq arbitrator & mediator instance
- - 2 local Bisq trading instances (BTC buyer and BTC seller for executing a trade)
+ - 2 local Bisq trading instances (RADC buyer and RADC seller for executing a trade)
 
 You'll set up each of these in the steps that follow.
 
@@ -28,7 +28,7 @@ You can find more information about the Bitcoin regtest mode [here](https://bitc
 
 Navigate to the [bitcoin.conf](https://en.bitcoin.it/wiki/Running_Bitcoin#Bitcoin.conf_Configuration_File) file and set `regtest=1` and `peerbloomfilters=1`, or add `-regtest -peerbloomfilters=1` as a program arguments when starting Bitcoin Core.
 
-At first startup you need to create 101 blocks using the command `generatetoaddress 101 address`* from the terminal inside Bitcoin Core, where `address` value could be obtained with the command `getnewaddress`. 101 blocks are required because of the coin maturity (100 blocks) so you need one more to have at least 50 BTC available for spending.
+At first startup you need to create 101 blocks using the command `generatetoaddress 101 address`* from the terminal inside Bitcoin Core, where `address` value could be obtained with the command `getnewaddress`. 101 blocks are required because of the coin maturity (100 blocks) so you need one more to have at least 50 RADC available for spending.
 
 Example:
 
@@ -56,7 +56,7 @@ There are several program arguments required to run in development mode.
 
 Here is an overview:
 
- - `--baseCurrencyNetwork`: The BTC network to use. Possible values are: `BTC_REGTEST`, `BTC_TESTNET`, `BTC_MAINNET` (default)
+ - `--baseCurrencyNetwork`: The RADC network to use. Possible values are: `RADC_REGTEST`, `RADC_TESTNET`, `RADC_MAINNET` (default)
  - `--useLocalhostForP2P`: Uses localhost instead of Tor for Bisq P2P network
  - `--nodePort`: Port number for localhost mode. For seed nodes there is a convention with the last digit is marking the network type and there is a list of hard coded seed nodes addresses (see: `DefaultSeedNodeAddresses.java`). For regtest: 2002 and 3002. For testnet 2001, 3001 and 4001 and for mainnet:  2000, 3000 and 4000. For normal nodes the port can be chosen freely.
  - `--useDevPrivilegeKeys`: Important for dev testing to allow the developer key for arbitration registration
@@ -67,14 +67,14 @@ Here is an overview:
 
 For localhost/regtest mode run the `SeedNodeMain` class or `./bisq-seednode` script in the root project dir with following program arguments:
 
-    --baseCurrencyNetwork=BTC_REGTEST --useLocalhostForP2P=true --useDevPrivilegeKeys=true --nodePort=2002 --appName=bisq-BTC_REGTEST_Seed_2002
+    --baseCurrencyNetwork=RADC_REGTEST --useLocalhostForP2P=true --useDevPrivilegeKeys=true --nodePort=2002 --appName=bisq-RADC_REGTEST_Seed_2002
 
 
 ### Run Bisq arbitrator/mediator instance
 
 For localhost/regtest mode run the `BisqAppMain` class or `./bisq-desktop` script in the root project dir with following program arguments:
 
-    --baseCurrencyNetwork=BTC_REGTEST --useLocalhostForP2P=true --useDevPrivilegeKeys=true --nodePort=4444 --appName=bisq-BTC_REGTEST_arbitrator
+    --baseCurrencyNetwork=RADC_REGTEST --useLocalhostForP2P=true --useDevPrivilegeKeys=true --nodePort=4444 --appName=bisq-RADC_REGTEST_arbitrator
 
 Once it has started up go to `Account` and click `CMD +n`. This will open a new tab for `Arbitration registration`. Select the tab and you will see a popup with a pre-filled private key. That is the developer private key (which is only valid if `--useDevPrivilegeKeys` is set) which allows you to register a new arbitrator. Follow the next screen and complete registration.
 Next you have to register a mediator as well. Click `CMD + d`. This will open a new tab for `Mediator registration`. Follow the same steps as for the arbitrator registration before. Registration of legacy arbitrators was done with `CMD +n`. It is not needed anymore so we refer with the term arbitrator to the new arbitrator (or refund agent).
@@ -86,11 +86,11 @@ _Note: You need only register once but if you have shut down all nodes (includin
 
 For localhost/regtest mode run the `BisqAppMain` class or `./bisq-desktop` script in the root project dir with following program arguments:
 
-    --baseCurrencyNetwork=BTC_REGTEST --useLocalhostForP2P=true --useDevPrivilegeKeys=true --nodePort=5555 --appName=bisq-BTC_REGTEST_Alice
+    --baseCurrencyNetwork=RADC_REGTEST --useLocalhostForP2P=true --useDevPrivilegeKeys=true --nodePort=5555 --appName=bisq-RADC_REGTEST_Alice
 
 and
 
-    --baseCurrencyNetwork=BTC_REGTEST --useLocalhostForP2P=true --useDevPrivilegeKeys=true --nodePort=6666 --appName=bisq-BTC_REGTEST_Bob
+    --baseCurrencyNetwork=RADC_REGTEST --useLocalhostForP2P=true --useDevPrivilegeKeys=true --nodePort=6666 --appName=bisq-RADC_REGTEST_Bob
 
 At this point you can now perform trades between Alice and Bob using your local regtest environment and test from both the buyer's and seller's perspective. You can also open disputes with `cmd+o` and see how the arbitration system works (run the arbitrator in that case as well).
 

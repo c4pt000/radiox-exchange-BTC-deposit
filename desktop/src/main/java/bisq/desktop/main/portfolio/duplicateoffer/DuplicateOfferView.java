@@ -41,7 +41,7 @@ public class DuplicateOfferView extends MutableOfferView<DuplicateOfferViewModel
                           Navigation navigation,
                           Preferences preferences,
                           OfferDetailsWindow offerDetailsWindow,
-                          @Named(FormattingUtils.BTC_FORMATTER_KEY) CoinFormatter btcFormatter,
+                          @Named(FormattingUtils.RADC_FORMATTER_KEY) CoinFormatter btcFormatter,
                           BsqFormatter bsqFormatter) {
         super(model, navigation, preferences, offerDetailsWindow, btcFormatter, bsqFormatter);
     }

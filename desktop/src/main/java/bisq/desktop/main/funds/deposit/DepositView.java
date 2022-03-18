@@ -127,7 +127,7 @@ public class DepositView extends ActivatableView<VBox, Void> {
     @Inject
     private DepositView(BtcWalletService walletService,
                         Preferences preferences,
-                        @Named(FormattingUtils.BTC_FORMATTER_KEY) CoinFormatter formatter) {
+                        @Named(FormattingUtils.RADC_FORMATTER_KEY) CoinFormatter formatter) {
         this.walletService = walletService;
         this.preferences = preferences;
         this.formatter = formatter;
@@ -201,7 +201,8 @@ public class DepositView extends ActivatableView<VBox, Void> {
 
         Tuple3<Button, CheckBox, HBox> buttonCheckBoxHBox = addButtonCheckBoxWithBox(gridPane, ++gridRow,
                 Res.get("funds.deposit.generateAddress"),
-                Res.get("funds.deposit.generateAddressSegwit"),
+                Res.get("funds.deposit.generateAddress"),
+//                Res.get("funds.deposit.generateAddressSegwit"),
                 15);
         buttonCheckBoxHBox.third.setSpacing(25);
         generateNewAddressButton = buttonCheckBoxHBox.first;
@@ -210,7 +211,8 @@ public class DepositView extends ActivatableView<VBox, Void> {
         generateNewAddressSegwitCheckbox.setSelected(true);
 
         generateNewAddressButton.setOnAction(event -> {
-            boolean segwit = generateNewAddressSegwitCheckbox.isSelected();
+//            boolean segwit = generateNewAddressSegwitCheckbox.isSelected();
+            boolean segwit = false;
             NetworkParameters params = Config.baseCurrencyNetworkParameters();
             boolean hasUnUsedAddress = observableList.stream().anyMatch(e -> e.getNumTxOutputs() == 0
                             && (Address.fromString(params, e.getAddressString()) instanceof SegwitAddress)  == segwit);

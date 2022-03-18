@@ -93,7 +93,7 @@ public class OfferDetailsWindow extends Overlay<OfferDetailsWindow> {
     ///////////////////////////////////////////////////////////////////////////////////////////
 
     @Inject
-    public OfferDetailsWindow(@Named(FormattingUtils.BTC_FORMATTER_KEY) CoinFormatter formatter,
+    public OfferDetailsWindow(@Named(FormattingUtils.RADC_FORMATTER_KEY) CoinFormatter formatter,
                               User user,
                               KeyRing keyRing,
                               Navigation navigation,
@@ -203,7 +203,7 @@ public class OfferDetailsWindow extends Overlay<OfferDetailsWindow> {
             btcDirectionInfo = direction == OfferDirection.BUY ? toReceive : toSpend;
         } else {
             addConfirmationLabelLabel(gridPane, rowIndex, offerTypeLabel,
-                    DisplayUtils.getDirectionBothSides(direction, currencyCode), firstRowDistance);
+                    DisplayUtils.getDirectionBothSides(direction), firstRowDistance);
         }
         String btcAmount = Res.get("shared.btcAmount");
         if (takeOfferHandlerOptional.isPresent()) {

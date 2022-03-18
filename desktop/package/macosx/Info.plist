@@ -5,28 +5,28 @@
         <!-- See: https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html -->
 
         <key>CFBundleVersion</key>
-        <string>1.7.5</string>
+        <string>1.8.4</string>
 
         <key>CFBundleShortVersionString</key>
-        <string>1.7.5</string>
+        <string>1.8.4</string>
 
         <key>CFBundleExecutable</key>
-        <string>RadioX</string>
+        <string>Bisq</string>
 
         <key>CFBundleName</key>
-        <string>RadioX</string>
+        <string>Bisq</string>
 
         <key>CFBundleIdentifier</key>
-        <string>io.radiox.CAT</string>
+        <string>io.bisq.CAT</string>
 
         <key>CFBundleIconFile</key>
-        <string>RadioX.icns</string>
+        <string>Bisq.icns</string>
 
         <key>LSApplicationCategoryType</key>
         <string>public.app-category.finance</string>
 
         <key>NSHumanReadableCopyright</key>
-        <string>Copyright © 2013-2021 - The RadioX developers</string>
+        <string>Copyright © 2013-2022 - The Bisq developers</string>
 
          <!-- Only supported in older OSX versions.
               See: https://github.com/bitcoin/bitcoin/issues/11896#issuecomment-352148399-->

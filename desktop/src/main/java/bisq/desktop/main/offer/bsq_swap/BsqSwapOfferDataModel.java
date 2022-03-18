@@ -58,7 +58,7 @@ public abstract class BsqSwapOfferDataModel extends ActivatableDataModel {
     public BsqSwapOfferDataModel(BsqSwapOfferModel bsqSwapOfferModel,
                                  User user,
                                  P2PService p2PService,
-                                 @Named(FormattingUtils.BTC_FORMATTER_KEY) CoinFormatter btcFormatter) {
+                                 @Named(FormattingUtils.RADC_FORMATTER_KEY) CoinFormatter btcFormatter) {
         this.bsqSwapOfferModel = bsqSwapOfferModel;
         this.user = user;
         this.p2PService = p2PService;

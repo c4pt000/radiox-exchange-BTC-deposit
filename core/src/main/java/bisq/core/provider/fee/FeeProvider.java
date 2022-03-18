@@ -52,18 +52,18 @@ public class FeeProvider extends HttpClientProvider {
 
         LinkedTreeMap<?, ?> linkedTreeMap = new Gson().fromJson(json, LinkedTreeMap.class);
         Map<String, Long> tsMap = new HashMap<>();
-        tsMap.put(Config.BTC_FEES_TS, ((Double) linkedTreeMap.get(Config.BTC_FEES_TS)).longValue());
+        tsMap.put(Config.RADC_FEES_TS, ((Double) linkedTreeMap.get(Config.RADC_FEES_TS)).longValue());
 
         Map<String, Long> map = new HashMap<>();
 
         try {
             LinkedTreeMap<?, ?> dataMap = (LinkedTreeMap<?, ?>) linkedTreeMap.get("dataMap");
-            Long btcTxFee = ((Double) dataMap.get(Config.BTC_TX_FEE)).longValue();
-            Long btcMinTxFee = dataMap.get(Config.BTC_MIN_TX_FEE) != null ?
-                    ((Double) dataMap.get(Config.BTC_MIN_TX_FEE)).longValue() : Config.baseCurrencyNetwork().getDefaultMinFeePerVbyte();
+            Long btcTxFee = ((Double) dataMap.get(Config.RADC_TX_FEE)).longValue();
+            Long btcMinTxFee = dataMap.get(Config.RADC_MIN_TX_FEE) != null ?
+                    ((Double) dataMap.get(Config.RADC_MIN_TX_FEE)).longValue() : Config.baseCurrencyNetwork().getDefaultMinFeePerVbyte();
 
-            map.put(Config.BTC_TX_FEE, btcTxFee);
-            map.put(Config.BTC_MIN_TX_FEE, btcMinTxFee);
+            map.put(Config.RADC_TX_FEE, btcTxFee);
+            map.put(Config.RADC_MIN_TX_FEE, btcMinTxFee);
         } catch (Throwable t) {
             log.error(t.toString());
             t.printStackTrace();

@@ -25,7 +25,7 @@ OPTIONS
 		The three letter code for the altcoin, e.g., BSQ.
 
 --address
-		The altcoin address to be used receive cryptocurrency payment when selling BTC.
+		The altcoin address to be used receive cryptocurrency payment when selling RADC.
 
 --trade-instant
 		True for creating an instant cryptocurrency payment account, false otherwise.

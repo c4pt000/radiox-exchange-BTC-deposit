@@ -5,7 +5,7 @@
 
 set -e
 
-BTC_NETWORK=regtest
+RADC_NETWORK=regtest
 GENESIS_BSQ_AMOUNT=0
 GENESIS_BSQ_DISTRIBUTION=()
 BITCOIND_CONFIG=/var/lib/bitcoind/bitcoin.conf
@@ -81,7 +81,7 @@ while (( $# )); do
             ;;
         -n|--network)
             if [[ $2 =~ ^REGTEST|TESTNET$ ]]; then
-                BTC_NETWORK=$2
+                RADC_NETWORK=$2
                 shift
             else
                 echo "ERROR: Specified 'network' is not valid, must be REGTEST or TESTNET"
@@ -117,7 +117,7 @@ elif [[ "$2" ]]; then
 fi
 
 BITCOIN_CLI="bitcoin-cli -conf=${BITCOIND_CONFIG}"
-BITCOIN_TX="bitcoin-tx -${BTC_NETWORK}"
+BITCOIN_TX="bitcoin-tx -${RADC_NETWORK}"
 
 ${BITCOIN_CLI} getblockcount &>/dev/null
 if [[ $? -eq 1 ]]; then
@@ -130,12 +130,12 @@ if (( $(echo "${GENESIS_BSQ_AMOUNT} == 0" | bc -l) )); then
     GENESIS_BSQ_AMOUNT=$(read_input "^[0-9]+\.?[0-9]*$")
 fi
 
-GENESIS_BTC_AMOUNT=$(awk "BEGIN {printf \"%.8f\",${GENESIS_BSQ_AMOUNT}/1000000.00}")
-GENESIS_BTC_FUNDING_AMOUNT=$(awk "BEGIN {printf \"%.8f\",${GENESIS_BTC_AMOUNT}+0.0001}")
+GENESIS_RADC_AMOUNT=$(awk "BEGIN {printf \"%.8f\",${GENESIS_BSQ_AMOUNT}/1000000.00}")
+GENESIS_RADC_FUNDING_AMOUNT=$(awk "BEGIN {printf \"%.8f\",${GENESIS_RADC_AMOUNT}+0.0001}")
 
 btc_balance=$(${BITCOIN_CLI} getbalance)
-if (( $(echo "${btc_balance} < ${GENESIS_BTC_FUNDING_AMOUNT}" | bc -l) )); then
-	printf "ERROR: Insufficient balance; %'.8f BTC is required but only %'.8f BTC is available\n" ${GENESIS_BTC_FUNDING_AMOUNT} ${btc_balance}
+if (( $(echo "${btc_balance} < ${GENESIS_RADC_FUNDING_AMOUNT}" | bc -l) )); then
+	printf "ERROR: Insufficient balance; %'.8f RADC is required but only %'.8f RADC is available\n" ${GENESIS_RADC_FUNDING_AMOUNT} ${btc_balance}
 	exit 1
 fi
 
@@ -163,13 +163,13 @@ if (( $(echo "${distributed_bsq_amount} != ${GENESIS_BSQ_AMOUNT}" | bc -l) )); t
 fi
 
 genesis_input_address=$(${BITCOIN_CLI} getnewaddress "Genesis funding address")
-printf "Sending %'.8f BTC to genesis funding address ${genesis_input_address}\n" ${GENESIS_BTC_FUNDING_AMOUNT}
-genesis_input_txid=$(${BITCOIN_CLI} sendtoaddress ${genesis_input_address} ${GENESIS_BTC_FUNDING_AMOUNT})
+printf "Sending %'.8f RADC to genesis funding address ${genesis_input_address}\n" ${GENESIS_RADC_FUNDING_AMOUNT}
+genesis_input_txid=$(${BITCOIN_CLI} sendtoaddress ${genesis_input_address} ${GENESIS_RADC_FUNDING_AMOUNT})
 echo "Genesis funding txid is ${genesis_input_txid}"
 
 echo "Creating genesis transaction"
 tx_hex=$(${BITCOIN_CLI} gettransaction ${genesis_input_txid} | jq '.hex'|tr -d '"')
-vin_json=$(${BITCOIN_CLI} decoderawtransaction ${tx_hex} | jq ".vout | map(select(.value==${GENESIS_BTC_FUNDING_AMOUNT}))[0]" | tr -d "[ \n\t]")
+vin_json=$(${BITCOIN_CLI} decoderawtransaction ${tx_hex} | jq ".vout | map(select(.value==${GENESIS_RADC_FUNDING_AMOUNT}))[0]" | tr -d "[ \n\t]")
 vout=$(echo ${vin_json}|jq '.n')
 
 generate_prevtx_json ${vin_json} ${genesis_input_txid}

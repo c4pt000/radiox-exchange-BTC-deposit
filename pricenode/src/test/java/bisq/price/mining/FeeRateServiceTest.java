@@ -101,10 +101,10 @@ public class FeeRateServiceTest {
         // Check if the response has the expected format. Since the timestamp is that of
         // the average (not that of the individual fee rates reported by the individual
         // providers), we always expect a non-zero timestamp
-        assertNotEquals(0L, retrievedData.get(Config.BTC_FEES_TS));
+        assertNotEquals(0L, retrievedData.get(Config.RADC_FEES_TS));
 
         Map<String, String> retrievedDataMap = (Map<String, String>) retrievedData.get(Config.LEGACY_FEE_DATAMAP);
         assertEquals(2, retrievedDataMap.size());
-        assertEquals(expectedFeeRate, retrievedDataMap.get(Config.BTC_TX_FEE));
+        assertEquals(expectedFeeRate, retrievedDataMap.get(Config.RADC_TX_FEE));
     }
 }

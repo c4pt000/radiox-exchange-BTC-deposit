@@ -85,7 +85,7 @@ public class WalletAppSetup {
     @Getter
     private final ObjectProperty<RejectedTxException> rejectedTxException = new SimpleObjectProperty<>();
     @Getter
-    private final BooleanProperty useTorForBTC = new SimpleBooleanProperty();
+    private final BooleanProperty useTorForRADC = new SimpleBooleanProperty();
 
     @Inject
     public WalletAppSetup(CoreContext coreContext,
@@ -100,7 +100,7 @@ public class WalletAppSetup {
         this.feeService = feeService;
         this.config = config;
         this.preferences = preferences;
-        this.useTorForBTC.set(preferences.getUseTorForBitcoinJ());
+        this.useTorForRADC.set(preferences.getUseTorForBitcoinJ());
     }
 
     void init(@Nullable Consumer<String> chainFileLockedExceptionHandler,

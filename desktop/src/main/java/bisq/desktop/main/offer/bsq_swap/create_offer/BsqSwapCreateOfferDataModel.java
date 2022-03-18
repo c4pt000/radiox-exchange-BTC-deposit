@@ -28,6 +28,7 @@ import bisq.core.offer.Offer;
 import bisq.core.offer.OfferDirection;
 import bisq.core.offer.OfferUtil;
 import bisq.core.offer.bsq_swap.BsqSwapOfferModel;
+import bisq.core.offer.bsq_swap.BsqSwapOfferPayload;
 import bisq.core.offer.bsq_swap.OpenBsqSwapOfferService;
 import bisq.core.payment.PaymentAccount;
 import bisq.core.user.User;
@@ -52,6 +53,8 @@ import java.util.function.Consumer;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.annotation.Nullable;
+
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Comparator.comparing;
 
@@ -75,7 +78,7 @@ class BsqSwapCreateOfferDataModel extends BsqSwapOfferDataModel {
                                 OpenBsqSwapOfferService openBsqSwapOfferService,
                                 User user,
                                 P2PService p2PService,
-                                @Named(FormattingUtils.BTC_FORMATTER_KEY) CoinFormatter btcFormatter) {
+                                @Named(FormattingUtils.RADC_FORMATTER_KEY) CoinFormatter btcFormatter) {
         super(bsqSwapOfferModel,
                 user,
                 p2PService,
@@ -91,8 +94,8 @@ class BsqSwapCreateOfferDataModel extends BsqSwapOfferDataModel {
     // API
     ///////////////////////////////////////////////////////////////////////////////////////////
 
-    void initWithData(OfferDirection direction) {
-        bsqSwapOfferModel.init(direction, true);
+    void initWithData(OfferDirection direction, @Nullable BsqSwapOfferPayload offerPayload) {
+        bsqSwapOfferModel.init(direction, true, offerPayload != null ? new Offer(offerPayload) : null);
 
         fillPaymentAccounts();
         applyPaymentAccount();

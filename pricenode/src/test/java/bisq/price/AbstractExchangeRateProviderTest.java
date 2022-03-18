@@ -34,7 +34,7 @@ public abstract class AbstractExchangeRateProviderTest {
     }
 
     /**
-     * Check that every retrieved currency pair is between BTC and either
+     * Check that every retrieved currency pair is between RADC and either
      * A) a fiat currency on the list of Bisq-supported fiat currencies, or
      * B) an altcoin on the list of Bisq-supported altcoins
      *

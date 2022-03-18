@@ -511,7 +511,7 @@ public class DaoStateService implements DaoSetupService {
             case GENESIS_OUTPUT:
             case BSQ_OUTPUT:
                 return true;
-            case BTC_OUTPUT:
+            case RADC_OUTPUT:
                 return false;
             case PROPOSAL_OP_RETURN_OUTPUT:
             case COMP_REQ_OP_RETURN_OUTPUT:
@@ -557,7 +557,7 @@ public class DaoStateService implements DaoSetupService {
             case GENESIS_OUTPUT:
             case BSQ_OUTPUT:
                 return true;
-            case BTC_OUTPUT:
+            case RADC_OUTPUT:
                 return false;
             case PROPOSAL_OP_RETURN_OUTPUT:
             case COMP_REQ_OP_RETURN_OUTPUT:

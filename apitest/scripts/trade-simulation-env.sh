@@ -179,6 +179,86 @@ parselimitorderopts() {
     fi
 }
 
+parsebsqswaporderopts() {
+    usage() {
+        echo "Usage: $0 [-d buy|sell] [-f <fixed-price>] [-a <amount in btc>]" 1>&2
+        exit 1;
+    }
+
+    local OPTIND o d f a
+    while getopts "d:f:a:" o; do
+        case "${o}" in
+            d) d=$(echo "${OPTARG}" | tr '[:lower:]' '[:upper:]')
+                ((d == "BUY" || d == "SELL")) || usage
+                export DIRECTION=${d}
+                ;;
+            f) f=${OPTARG}
+               export FIXED_PRICE=${f}
+               ;;
+            a) a=${OPTARG}
+               export AMOUNT=${a}
+               ;;
+            *) usage ;;
+        esac
+    done
+    shift $((OPTIND-1))
+
+    if [ -z "${d}" ] || [ -z "${a}" ]; then
+        usage
+    fi
+
+    if [ -z "${f}" ] ; then
+        usage
+    fi
+
+    export CURRENCY_CODE="BSQ"
+}
+
+parsexmrscriptopts() {
+    usage() {
+        echo "Usage: $0 [-d buy|sell] [-f <fixed-price> || -m <margin-from-price>] [-a <amount in btc>]" 1>&2
+        exit 1;
+    }
+
+    local OPTIND o d f m a
+    while getopts "d:f:m:a:" o; do
+        case "${o}" in
+            d) d=$(echo "${OPTARG}" | tr '[:lower:]' '[:upper:]')
+                ((d == "BUY" || d == "SELL")) || usage
+                export DIRECTION=${d}
+                ;;
+            f) f=${OPTARG}
+               export FIXED_PRICE=${f}
+               ;;
+             m) m=${OPTARG}
+                export MKT_PRICE_MARGIN=${m}
+                ;;
+            a) a=${OPTARG}
+               export AMOUNT=${a}
+               ;;
+            *) usage ;;
+        esac
+    done
+    shift $((OPTIND-1))
+
+    if [ -z "${d}" ] ||  [ -z "${a}" ]; then
+        usage
+    fi
+
+    if [ -z "${f}" ] && [ -z "${m}" ]; then
+        usage
+    fi
+
+    if [ "$DIRECTION" = "SELL" ]
+    then
+        export BOB_ROLE="(taker/buyer)"
+        export ALICE_ROLE="(maker/seller)"
+    else
+        export BOB_ROLE="(taker/seller)"
+        export ALICE_ROLE="(maker/buyer)"
+    fi
+}
+
 checkbitcoindrunning() {
     # There may be a '+' char in the path and we have to escape it for pgrep.
     if [[ $APP_HOME == *"+"* ]]; then
@@ -226,14 +306,14 @@ checkseednoderunning() {
 
 checkarbnoderunning() {
     if [[ "$LINUX" == "TRUE" ]]; then
-        if pgrep -f "bisq.daemon.app.BisqDaemonMain --appName=bisq-BTC_REGTEST_Arb_dao" > /dev/null ; then
+        if pgrep -f "bisq.daemon.app.BisqDaemonMain --appName=bisq-RADC_REGTEST_Arb_dao" > /dev/null ; then
             printdate "The arbitration node is running on host."
         else
             printdate "Error:  arbitration node is not running on host, exiting."
             apitestusage
         fi
     elif [[ "$DARWIN" == "TRUE" ]]; then
-        if ps -A | awk '/[b]isq.daemon.app.BisqDaemonMain --appName=bisq-BTC_REGTEST_Arb_dao/ {print $1}' > /dev/null ; then
+        if ps -A | awk '/[b]isq.daemon.app.BisqDaemonMain --appName=bisq-RADC_REGTEST_Arb_dao/ {print $1}' > /dev/null ; then
             printdate "The arbitration node is running on host."
         else
             printdate "Error:  arbitration node is not running on host, exiting."
@@ -247,14 +327,14 @@ checkarbnoderunning() {
 
 checkalicenoderunning() {
     if [[ "$LINUX" == "TRUE" ]]; then
-        if pgrep -f "bisq.daemon.app.BisqDaemonMain --appName=bisq-BTC_REGTEST_Alice_dao" > /dev/null ; then
+        if pgrep -f "bisq.daemon.app.BisqDaemonMain --appName=bisq-RADC_REGTEST_Alice_dao" > /dev/null ; then
             printdate "Alice's node is running on host."
         else
             printdate "Error:  Alice's node is not running on host, exiting."
             apitestusage
         fi
     elif [[ "$DARWIN" == "TRUE" ]]; then
-        if ps -A | awk '/[b]isq.daemon.app.BisqDaemonMain --appName=bisq-BTC_REGTEST_Alice_dao/ {print $1}' > /dev/null ; then
+        if ps -A | awk '/[b]isq.daemon.app.BisqDaemonMain --appName=bisq-RADC_REGTEST_Alice_dao/ {print $1}' > /dev/null ; then
             printdate "Alice's node node is running on host."
         else
             printdate "Error:  Alice's node is not running on host, exiting."
@@ -268,14 +348,14 @@ checkalicenoderunning() {
 
 checkbobnoderunning() {
     if [[ "$LINUX" == "TRUE" ]]; then
-        if pgrep -f "bisq.daemon.app.BisqDaemonMain --appName=bisq-BTC_REGTEST_Alice_dao" > /dev/null ; then
+        if pgrep -f "bisq.daemon.app.BisqDaemonMain --appName=bisq-RADC_REGTEST_Alice_dao" > /dev/null ; then
             printdate "Bob's node is running on host."
         else
             printdate "Error:  Bob's node is not running on host, exiting."
             apitestusage
         fi
     elif [[ "$DARWIN" == "TRUE" ]]; then
-        if ps -A | awk '/[b]isq.daemon.app.BisqDaemonMain --appName=bisq-BTC_REGTEST_Alice_dao/ {print $1}' > /dev/null ; then
+        if ps -A | awk '/[b]isq.daemon.app.BisqDaemonMain --appName=bisq-RADC_REGTEST_Alice_dao/ {print $1}' > /dev/null ; then
             printdate "Bob's node node is running on host."
         else
             printdate "Error:  Bob's node is not running on host, exiting."
@@ -309,4 +389,10 @@ printscriptparams() {
     if [ -n "${WAIT+1}" ]; then
         echo "	WAIT = $WAIT"
     fi
+}
+
+printbsqswapscriptparams() {
+    echo "	DIRECTION = $DIRECTION"
+    echo "	FIXED_PRICE = $FIXED_PRICE"
+    echo "	AMOUNT = $AMOUNT"
 }

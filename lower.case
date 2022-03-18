@@ -1,0 +1,58 @@
+pricenode/src/main/java/bisq/price/mining/FeeRateService.java:            if ("RADC".equals(currency)) {
+pricenode/src/main/java/bisq/price/mining/providers/MempoolFeeRateProvider.java:        return new FeeRate("RADC", MIN_FEE_RATE_FOR_TRADING, MIN_FEE_RATE_FOR_WITHDRAWAL, Instant.now().getEpochSecond());
+pricenode/src/main/java/bisq/price/mining/providers/MempoolFeeRateProvider.java:        return new FeeRate("RADC", estimatedFeeRate, minimumFee, Instant.now().getEpochSecond());
+pricenode/src/test/java/bisq/price/mining/providers/MempoolFeeRateProviderTest.java:                return new FeeRate("RADC", feeRate, MIN_FEE_RATE_FOR_WITHDRAWAL, Instant.now().getEpochSecond());
+btc.txt:pricenode/src/main/java/bisq/price/mining/FeeRateService.java:            if ("RADC".equals(currency)) {
+btc.txt:pricenode/src/main/java/bisq/price/mining/providers/MempoolFeeRateProvider.java:        return new FeeRate("RADC", MIN_FEE_RATE_FOR_TRADING, MIN_FEE_RATE_FOR_WITHDRAWAL, Instant.now().getEpochSecond());
+btc.txt:pricenode/src/main/java/bisq/price/mining/providers/MempoolFeeRateProvider.java:        return new FeeRate("RADC", estimatedFeeRate, minimumFee, Instant.now().getEpochSecond());
+btc.txt:pricenode/src/test/java/bisq/price/mining/providers/MempoolFeeRateProviderTest.java:                return new FeeRate("RADC", feeRate, MIN_FEE_RATE_FOR_WITHDRAWAL, Instant.now().getEpochSecond());
+btc.txt:desktop/src/main/java/bisq/desktop/main/settings/preferences/PreferencesView.java.null:            EditCustomExplorerWindow urlWindow = new EditCustomExplorerWindow("RADC",
+btc.txt:desktop/src/main/java/bisq/desktop/main/portfolio/bsqswaps/UnconfirmedBsqSwapsView.java:                return "RADC" + tradeFee;
+btc.txt:desktop/src/main/java/bisq/desktop/main/portfolio/closedtrades/ClosedTradesView.java:                return "RADC" + tradeFee;
+btc.txt:desktop/src/main/java/bisq/desktop/main/overlays/windows/BtcEmptyWalletWindow.java:        headLine(Res.get("emptyWalletWindow.headline", "RADC"));
+btc.txt:desktop/src/main/java/bisq/desktop/main/offer/bsq_swap/create_offer/BsqSwapCreateOfferView.java:        priceCurrencyLabel.setText("RADC");
+btc.txt:desktop/src/main/java/bisq/desktop/main/offer/bsq_swap/create_offer/BsqSwapCreateOfferView.java:            String wallet = model.dataModel.isBuyer() ? "BSQ" : "RADC";
+btc.txt:desktop/src/main/java/bisq/desktop/main/offer/bsq_swap/take_offer/BsqSwapTakeOfferView.java:        priceCurrencyLabel.setText("RADC");
+btc.txt:desktop/src/main/java/bisq/desktop/main/offer/bsq_swap/take_offer/BsqSwapTakeOfferView.java:            String wallet = model.dataModel.isBuyer() ? "BSQ" : "RADC";
+btc.txt:desktop/src/main/java/bisq/desktop/main/offer/bisq_v1/takeoffer/TakeOfferView.java:        tradeFeeInBtcToggle.setText("RADC");
+btc.txt:desktop/src/main/java/bisq/desktop/main/offer/bisq_v1/MutableOfferView.java:        tradeFeeInBtcToggle.setText("RADC");
+btc.txt:desktop/src/main/java/bisq/desktop/main/market/trades/TradesChartsView.java:        volumeChart = getVolumeChart(volumeAxisX, volumeAxisY, volumeSeries, "RADC");
+btc.txt:desktop/src/main/java/bisq/desktop/main/market/trades/TradesChartsView.java:                return currency.equals("RADC") ?
+btc.txt:monitor/src/main/java/bisq/monitor/metric/MarketStats.java:                if (market.group(1).endsWith("btc")) {
+btc.txt:apitest/src/main/java/bisq/apitest/config/ApiTestConfig.java:    public static final String RADC = "RADC";
+btc.txt:cli/src/main/java/bisq/cli/CliMain.java:                        case "RADC":
+btc.txt:cli/src/main/java/bisq/cli/CliMain.java:                            out.println("RADC");
+btc.txt:cli/src/main/java/bisq/cli/request/WalletsServiceRequest.java:        return getBalances("RADC").getBtc();
+btc.txt:cli/src/main/java/bisq/cli/opts/TakeOfferOptionParser.java:            .defaultsTo("btc");
+btc.txt:cli/src/main/java/bisq/cli/opts/TakeOfferOptionParser.java:        return options.has(takerFeeCurrencyCodeOpt) ? options.valueOf(takerFeeCurrencyCodeOpt) : "btc";
+btc.txt:cli/src/main/java/bisq/cli/opts/CreateOfferOptionParser.java:            .defaultsTo("btc");
+btc.txt:cli/src/main/java/bisq/cli/opts/CreateOfferOptionParser.java:        return options.has(makerFeeCurrencyCodeOpt) ? options.valueOf(makerFeeCurrencyCodeOpt) : "btc";
+btc.txt:cli/src/main/java/bisq/cli/table/builder/AddressBalanceTableBuilder.java:        colAddress = new StringColumn(format(COL_HEADER_ADDRESS, "RADC"));
+btc.txt:assets/src/main/java/bisq/asset/PrintTool.java:                .filter(e -> !e.getTickerSymbol().equals("RADC"))
+btc.txt:assets/src/main/java/bisq/asset/Asset.java: * eg "RADC", and an address validation function. Together, these properties represent
+btc.txt:core/src/main/java/bisq/core/trade/statistics/TradeStatistics2.java:        return baseCurrency.equals("RADC") ? counterCurrency : baseCurrency;
+btc.txt:core/src/main/java/bisq/core/util/FormattingUtils.java:    public static final String RADC_FORMATTER_KEY = "RADC";
+btc.txt:core/src/main/java/bisq/core/dao/node/explorer/JsonTxOutputType.java:    RADC_OUTPUT("RADC"),
+btc.txt:core/src/main/java/bisq/core/offer/Offer.java:        currencyCode = getBaseCurrencyCode().equals("RADC") ?
+btc.txt:core/src/main/java/bisq/core/offer/bsq_swap/BsqSwapOfferPayload.java:                "RADC",
+btc.txt:core/src/main/java/bisq/core/api/CoreWalletsService.java:            case "RADC":
+btc.txt:core/src/main/java/bisq/core/api/CoreWalletsService.java:                && !currencyCode.equalsIgnoreCase("RADC"))
+monitor/src/main/java/bisq/monitor/metric/MarketStats.java:                if (market.group(1).endsWith("btc")) {
+apitest/src/main/java/bisq/apitest/config/ApiTestConfig.java:    public static final String RADC = "RADC";
+cli/src/main/java/bisq/cli/CliMain.java:                        case "RADC":
+cli/src/main/java/bisq/cli/CliMain.java:                            out.println("RADC");
+cli/src/main/java/bisq/cli/request/WalletsServiceRequest.java:        return getBalances("RADC").getBtc();
+cli/src/main/java/bisq/cli/opts/TakeOfferOptionParser.java:            .defaultsTo("btc");
+cli/src/main/java/bisq/cli/opts/TakeOfferOptionParser.java:        return options.has(takerFeeCurrencyCodeOpt) ? options.valueOf(takerFeeCurrencyCodeOpt) : "btc";
+cli/src/main/java/bisq/cli/opts/CreateOfferOptionParser.java:            .defaultsTo("btc");
+cli/src/main/java/bisq/cli/opts/CreateOfferOptionParser.java:        return options.has(makerFeeCurrencyCodeOpt) ? options.valueOf(makerFeeCurrencyCodeOpt) : "btc";
+cli/src/main/java/bisq/cli/table/builder/AddressBalanceTableBuilder.java:        colAddress = new StringColumn(format(COL_HEADER_ADDRESS, "RADC"));
+assets/src/main/java/bisq/asset/PrintTool.java:                .filter(e -> !e.getTickerSymbol().equals("RADC"))
+assets/src/main/java/bisq/asset/Asset.java: * eg "RADC", and an address validation function. Together, these properties represent
+core/src/main/java/bisq/core/trade/statistics/TradeStatistics2.java:        return baseCurrency.equals("RADC") ? counterCurrency : baseCurrency;
+core/src/main/java/bisq/core/util/FormattingUtils.java:    public static final String RADC_FORMATTER_KEY = "RADC";
+core/src/main/java/bisq/core/dao/node/explorer/JsonTxOutputType.java:    RADC_OUTPUT("RADC"),
+core/src/main/java/bisq/core/offer/Offer.java:        currencyCode = getBaseCurrencyCode().equals("RADC") ?
+core/src/main/java/bisq/core/offer/bsq_swap/BsqSwapOfferPayload.java:                "RADC",
+core/src/main/java/bisq/core/api/CoreWalletsService.java:            case "RADC":
+core/src/main/java/bisq/core/api/CoreWalletsService.java:                && !currencyCode.equalsIgnoreCase("RADC"))

@@ -17,6 +17,7 @@
 
 package bisq.desktop.main.funds.transactions;
 
+import bisq.desktop.util.filtering.FilterableListItem;
 import bisq.desktop.components.indicator.TxConfidenceIndicator;
 import bisq.desktop.util.DisplayUtils;
 import bisq.desktop.util.GUIUtil;
@@ -43,6 +44,8 @@ import org.bitcoinj.core.TransactionOutput;
 
 import com.google.common.base.Suppliers;
 
+import org.apache.commons.lang3.StringUtils;
+
 import javafx.scene.control.Tooltip;
 
 import java.util.Date;
@@ -55,7 +58,7 @@ import lombok.extern.slf4j.Slf4j;
 import javax.annotation.Nullable;
 
 @Slf4j
-class TransactionsListItem {
+class TransactionsListItem implements FilterableListItem {
     private final BtcWalletService btcWalletService;
     private final CoinFormatter formatter;
     private String dateString;
@@ -236,7 +239,7 @@ class TransactionsListItem {
                             } else {
                                 // We have spent the deposit tx outputs to the Bisq donation address to enable
                                 // the refund process (refund agent -> reimbursement). As the funds have left our wallet
-                                // already when funding the deposit tx we show 0 BTC as amount.
+                                // already when funding the deposit tx we show 0 RADC as amount.
                                 // Confirmation is not known from the BitcoinJ side (not 100% clear why) as no funds
                                 // left our wallet nor we received funds. So we set indicator invisible.
                                 amountAsCoin = Coin.ZERO;
@@ -257,7 +260,7 @@ class TransactionsListItem {
                 direction = amountAsCoin.isPositive() ? Res.get("funds.tx.bsqSwapBuy") :
                         Res.get("funds.tx.bsqSwapSell");
 
-                // Find my BTC output address
+                // Find my RADC output address
                 var tx = btcWalletService.getTransaction(((BsqSwapTrade) tradable).getTxId());
                 addressString = tx != null ?
                         tx.getOutputs().stream()
@@ -376,5 +379,31 @@ class TransactionsListItem {
 
     public String getMemo() {
         return memo;
+    }
+
+    @Override
+    public boolean match(String filterString) {
+        if (filterString.isEmpty()) {
+            return true;
+        }
+        if (StringUtils.containsIgnoreCase(getTxId(), filterString)) {
+            return true;
+        }
+        if (StringUtils.containsIgnoreCase(getDetails(), filterString)) {
+            return true;
+        }
+        if (getMemo() != null && StringUtils.containsIgnoreCase(getMemo(), filterString)) {
+            return true;
+        }
+        if (StringUtils.containsIgnoreCase(getDirection(), filterString)) {
+            return true;
+        }
+        if (StringUtils.containsIgnoreCase(getDateString(), filterString)) {
+            return true;
+        }
+        if (StringUtils.containsIgnoreCase(getAmount(), filterString)) {
+            return true;
+        }
+        return StringUtils.containsIgnoreCase(getAddressString(), filterString);
     }
 }

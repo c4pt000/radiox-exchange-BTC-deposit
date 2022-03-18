@@ -69,7 +69,7 @@ class CoinGecko extends ExchangeRateProvider {
                     if (getSupportedCryptoCurrencies().contains(key)) {
                         // Use inverse rate for alts, because the API returns the
                         // conversion rate in the opposite direction than what we need
-                        // API returns the BTC/Alt rate, we need the Alt/BTC rate
+                        // API returns the RADC/Alt rate, we need the Alt/RADC rate
                         useInverseRate = true;
                     }
 

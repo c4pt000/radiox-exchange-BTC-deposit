@@ -57,7 +57,7 @@ class EditOfferViewModel extends MutableOfferViewModel<EditOfferDataModel> {
                               AccountAgeWitnessService accountAgeWitnessService,
                               Navigation navigation,
                               Preferences preferences,
-                              @Named(FormattingUtils.BTC_FORMATTER_KEY) CoinFormatter btcFormatter,
+                              @Named(FormattingUtils.RADC_FORMATTER_KEY) CoinFormatter btcFormatter,
                               BsqFormatter bsqFormatter,
                               OfferUtil offerUtil) {
         super(dataModel,
@@ -111,7 +111,6 @@ class EditOfferViewModel extends MutableOfferViewModel<EditOfferDataModel> {
     }
 
     public void onInvalidateMarketPriceMargin() {
-        marketPriceMargin.set("0.00%");
         marketPriceMargin.set(FormattingUtils.formatToPercent(dataModel.getMarketPriceMargin()));
     }
 
@@ -126,7 +125,7 @@ class EditOfferViewModel extends MutableOfferViewModel<EditOfferDataModel> {
 
     @Override
     public void triggerFocusOutOnAmountFields() {
-        // do not update BTC Amount or minAmount here
-        // issue 2798: "after a few edits of offer the BTC amount has increased"
+        // do not update RADC Amount or minAmount here
+        // issue 2798: "after a few edits of offer the RADC amount has increased"
     }
 }

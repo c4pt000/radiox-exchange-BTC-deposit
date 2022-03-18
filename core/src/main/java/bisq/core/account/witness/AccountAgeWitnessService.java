@@ -25,7 +25,6 @@ import bisq.core.locale.Res;
 import bisq.core.offer.Offer;
 import bisq.core.offer.OfferDirection;
 import bisq.core.offer.OfferRestrictions;
-import bisq.core.payment.AssetAccount;
 import bisq.core.payment.ChargeBackRisk;
 import bisq.core.payment.PaymentAccount;
 import bisq.core.payment.payload.PaymentAccountPayload;
@@ -228,7 +227,7 @@ public class AccountAgeWitnessService {
     private void republishAllFiatAccounts() {
         if (user.getPaymentAccounts() != null)
             user.getPaymentAccounts().stream()
-                    .filter(account -> !(account instanceof AssetAccount))
+                    .filter(account -> account.getPaymentMethod().isFiat())
                     .forEach(account -> {
                         AccountAgeWitness myWitness = getMyWitness(account.getPaymentAccountPayload());
                         // We only publish if the date of our witness is inside the date tolerance.
@@ -287,7 +286,7 @@ public class AccountAgeWitnessService {
         return new AccountAgeWitness(hash, new Date().getTime());
     }
 
-    Optional<AccountAgeWitness> findWitness(PaymentAccountPayload paymentAccountPayload,
+    public Optional<AccountAgeWitness> findWitness(PaymentAccountPayload paymentAccountPayload,
                                             PubKeyRing pubKeyRing) {
         if (paymentAccountPayload == null) {
             return Optional.empty();
@@ -412,7 +411,7 @@ public class AccountAgeWitnessService {
     }
 
     // Get trade limit based on a time schedule
-    // Buying of BTC with a payment method that has chargeback risk will use a low trade limit schedule
+    // Buying of RADC with a payment method that has chargeback risk will use a low trade limit schedule
     // All selling and all other fiat payment methods use the normal trade limit schedule
     // Non fiat always has max limit
     // Account types that can get signed will use time since signing, other methods use time since account age creation
@@ -579,7 +578,7 @@ public class AccountAgeWitnessService {
         checkNotNull(offer);
 
         // In case we don't find the witness we check if the trade amount is above the
-        // TOLERATED_SMALL_TRADE_AMOUNT (0.01 BTC) and only in that case return false.
+        // TOLERATED_SMALL_TRADE_AMOUNT (0.01 RADC) and only in that case return false.
         return findWitness(offer)
                 .map(witness -> verifyPeersTradeLimit(offer, tradeAmount, witness, new Date(), errorMessageHandler))
                 .orElse(isToleratedSmalleAmount(tradeAmount));

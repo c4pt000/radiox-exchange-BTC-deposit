@@ -29,6 +29,7 @@ import java.util.function.Predicate;
 import lombok.Getter;
 
 import static bisq.cli.opts.OptLabel.OPT_HELP;
+import static java.lang.String.format;
 
 @SuppressWarnings("unchecked")
 abstract class AbstractMethodOptionParser implements MethodOpts {
@@ -39,7 +40,7 @@ abstract class AbstractMethodOptionParser implements MethodOpts {
 
     protected final OptionParser parser = new OptionParser();
 
-    // The help option for a specific api method, e.g., takeoffer -help.
+    // The help option for a specific api method, e.g., takeoffer --help.
     protected final OptionSpec<Void> helpOpt = parser.accepts(OPT_HELP, "Print method help").forHelp();
 
     @Getter
@@ -63,6 +64,14 @@ abstract class AbstractMethodOptionParser implements MethodOpts {
 
     public boolean isForHelp() {
         return options.has(helpOpt);
+    }
+
+    protected void verifyStringIsValidDouble(String string) {
+        try {
+            Double.valueOf(string);
+        } catch (NumberFormatException ex) {
+            throw new IllegalArgumentException(format("%s is not a number", string));
+        }
     }
 
     protected final Predicate<OptionSpec<String>> valueNotSpecified = (opt) ->

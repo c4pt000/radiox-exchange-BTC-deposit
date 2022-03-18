@@ -228,7 +228,7 @@ public class BisqSetup {
                      UnconfirmedBsqChangeOutputListService unconfirmedBsqChangeOutputListService,
                      Config config,
                      AccountAgeWitnessService accountAgeWitnessService,
-                     @Named(FormattingUtils.BTC_FORMATTER_KEY) CoinFormatter formatter,
+                     @Named(FormattingUtils.RADC_FORMATTER_KEY) CoinFormatter formatter,
                      LocalBitcoinNode localBitcoinNode,
                      AppStartupState appStartupState,
                      Socks5ProxyProvider socks5ProxyProvider,
@@ -297,7 +297,7 @@ public class BisqSetup {
 
     public void start() {
         // If user tried to downgrade we require a shutdown
-        if (Config.baseCurrencyNetwork() == BaseCurrencyNetwork.BTC_MAINNET &&
+        if (Config.baseCurrencyNetwork() == BaseCurrencyNetwork.RADC_MAINNET &&
                 hasDowngraded(downGradePreventionHandler)) {
             return;
         }
@@ -769,8 +769,8 @@ public class BisqSetup {
         return walletAppSetup.getBtcSplashSyncIconId();
     }
 
-    public BooleanProperty getUseTorForBTC() {
-        return walletAppSetup.getUseTorForBTC();
+    public BooleanProperty getUseTorForRADC() {
+        return walletAppSetup.getUseTorForRADC();
     }
 
     // P2P

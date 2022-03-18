@@ -82,7 +82,7 @@ public class P2PModule extends AppModule {
         bindConstant().annotatedWith(named(MAX_CONNECTIONS)).to(config.maxConnections);
 
         bind(new TypeLiteral<List<String>>(){}).annotatedWith(named(BAN_LIST)).toInstance(config.banList);
-        bindConstant().annotatedWith(named(SOCKS_5_PROXY_BTC_ADDRESS)).to(config.socks5ProxyBtcAddress);
+        bindConstant().annotatedWith(named(SOCKS_5_PROXY_RADC_ADDRESS)).to(config.socks5ProxyBtcAddress);
         bindConstant().annotatedWith(named(SOCKS_5_PROXY_HTTP_ADDRESS)).to(config.socks5ProxyHttpAddress);
         bind(File.class).annotatedWith(named(TORRC_FILE)).toProvider(of(config.torrcFile)); // allow null value
         bindConstant().annotatedWith(named(TORRC_OPTIONS)).to(config.torrcOptions);

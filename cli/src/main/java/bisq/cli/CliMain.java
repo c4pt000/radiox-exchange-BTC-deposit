@@ -18,6 +18,7 @@
 package bisq.cli;
 
 import bisq.proto.grpc.OfferInfo;
+import bisq.proto.grpc.TradeInfo;
 
 import io.grpc.StatusRuntimeException;
 
@@ -34,22 +35,24 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 
-import java.math.BigDecimal;
-
 import java.util.Date;
 import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
 
-import static bisq.cli.CurrencyFormat.*;
+import static bisq.cli.CurrencyFormat.formatInternalFiatPrice;
+import static bisq.cli.CurrencyFormat.formatTxFeeRateInfo;
+import static bisq.cli.CurrencyFormat.toSatoshis;
 import static bisq.cli.Method.*;
 import static bisq.cli.opts.OptLabel.*;
 import static bisq.cli.table.builder.TableType.*;
+import static bisq.proto.grpc.GetOfferCategoryReply.OfferCategory.BSQ_SWAP;
+import static bisq.proto.grpc.GetTradesRequest.Category.CLOSED;
+import static bisq.proto.grpc.GetTradesRequest.Category.OPEN;
 import static java.lang.String.format;
 import static java.lang.System.err;
 import static java.lang.System.exit;
 import static java.lang.System.out;
-import static java.math.BigDecimal.ZERO;
 
 
 
@@ -60,13 +63,14 @@ import bisq.cli.opts.CreateOfferOptionParser;
 import bisq.cli.opts.CreatePaymentAcctOptionParser;
 import bisq.cli.opts.EditOfferOptionParser;
 import bisq.cli.opts.GetAddressBalanceOptionParser;
-import bisq.cli.opts.GetBTCMarketPriceOptionParser;
+import bisq.cli.opts.GetRADCMarketPriceOptionParser;
 import bisq.cli.opts.GetBalanceOptionParser;
-import bisq.cli.opts.GetOfferOptionParser;
 import bisq.cli.opts.GetOffersOptionParser;
 import bisq.cli.opts.GetPaymentAcctFormOptionParser;
 import bisq.cli.opts.GetTradeOptionParser;
+import bisq.cli.opts.GetTradesOptionParser;
 import bisq.cli.opts.GetTransactionOptionParser;
+import bisq.cli.opts.OfferIdOptionParser;
 import bisq.cli.opts.RegisterDisputeAgentOptionParser;
 import bisq.cli.opts.RemoveWalletPasswordOptionParser;
 import bisq.cli.opts.SendBsqOptionParser;
@@ -172,13 +176,13 @@ public class CliMain {
                         case "BSQ":
                             new TableBuilder(BSQ_BALANCE_TBL, balances.getBsq()).build().print(out);
                             break;
-                        case "BTC":
-                            new TableBuilder(BTC_BALANCE_TBL, balances.getBtc()).build().print(out);
+                        case "RADC":
+                            new TableBuilder(RADC_BALANCE_TBL, balances.getBtc()).build().print(out);
                             break;
                         case "":
                         default: {
-                            out.println("BTC");
-                            new TableBuilder(BTC_BALANCE_TBL, balances.getBtc()).build().print(out);
+                            out.println("RADC");
+                            new TableBuilder(RADC_BALANCE_TBL, balances.getBtc()).build().print(out);
                             out.println("BSQ");
                             new TableBuilder(BSQ_BALANCE_TBL, balances.getBsq()).build().print(out);
                             break;
@@ -198,7 +202,7 @@ public class CliMain {
                     return;
                 }
                 case getbtcprice: {
-                    var opts = new GetBTCMarketPriceOptionParser(args).parse();
+                    var opts = new GetRADCMarketPriceOptionParser(args).parse();
                     if (opts.isForHelp()) {
                         out.println(client.getMethodHelp(method));
                         return;
@@ -332,6 +336,7 @@ public class CliMain {
                         out.println(client.getMethodHelp(method));
                         return;
                     }
+                    var isSwap = opts.getIsSwap();
                     var paymentAcctId = opts.getPaymentAccountId();
                     var direction = opts.getDirection();
                     var currencyCode = opts.getCurrencyCode();
@@ -339,41 +344,56 @@ public class CliMain {
                     var minAmount = toSatoshis(opts.getMinAmount());
                     var useMarketBasedPrice = opts.isUsingMktPriceMargin();
                     var fixedPrice = opts.getFixedPrice();
-                    var marketPriceMargin = opts.getMktPriceMarginAsBigDecimal();
-                    var securityDeposit = toSecurityDepositAsPct(opts.getSecurityDeposit());
+                    var marketPriceMarginPct = opts.getMktPriceMarginPct();
+                    var securityDepositPct = isSwap ? 0.00d : opts.getSecurityDepositPct();
                     var makerFeeCurrencyCode = opts.getMakerFeeCurrencyCode();
-                    var triggerPrice = 0; // Cannot be defined until offer is in book.
-                    var offer = client.createOffer(direction,
-                            currencyCode,
-                            amount,
-                            minAmount,
-                            useMarketBasedPrice,
-                            fixedPrice,
-                            marketPriceMargin.doubleValue(),
-                            securityDeposit,
-                            paymentAcctId,
-                            makerFeeCurrencyCode,
-                            triggerPrice);
+                    var triggerPrice = "0"; // Cannot be defined until the new offer is added to book.
+                    OfferInfo offer;
+                    if (isSwap) {
+                        offer = client.createBsqSwapOffer(direction,
+                                amount,
+                                minAmount,
+                                fixedPrice);
+                    } else {
+                        offer = client.createOffer(direction,
+                                currencyCode,
+                                amount,
+                                minAmount,
+                                useMarketBasedPrice,
+                                fixedPrice,
+                                marketPriceMarginPct,
+                                securityDepositPct,
+                                paymentAcctId,
+                                makerFeeCurrencyCode,
+                                triggerPrice);
+                    }
                     new TableBuilder(OFFER_TBL, offer).build().print(out);
                     return;
                 }
                 case editoffer: {
-                    var opts = new EditOfferOptionParser(args).parse();
-                    if (opts.isForHelp()) {
+                    var offerIdOpt = new OfferIdOptionParser(args, true).parse();
+                    if (offerIdOpt.isForHelp()) {
                         out.println(client.getMethodHelp(method));
                         return;
                     }
-                    var offerId = opts.getOfferId();
+                    // What kind of offer is being edited? BSQ swaps cannot be edited.
+                    var offerId = offerIdOpt.getOfferId();
+                    var offerCategory = client.getMyOfferCategory(offerId);
+                    if (offerCategory.equals(BSQ_SWAP))
+                        throw new IllegalStateException("bsq swap offers cannot be edited,"
+                                + " but you may cancel them without forfeiting any funds");
+
+                    var opts = new EditOfferOptionParser(args).parse();
                     var fixedPrice = opts.getFixedPrice();
                     var isUsingMktPriceMargin = opts.isUsingMktPriceMargin();
-                    var marketPriceMargin = opts.getMktPriceMarginAsBigDecimal();
-                    var triggerPrice = toInternalTriggerPrice(client, offerId, opts.getTriggerPriceAsBigDecimal());
+                    var marketPriceMarginPct = opts.getMktPriceMarginPct();
+                    var triggerPrice = opts.getTriggerPrice();
                     var enable = opts.getEnableAsSignedInt();
                     var editOfferType = opts.getOfferEditType();
                     client.editOffer(offerId,
                             fixedPrice,
                             isUsingMktPriceMargin,
-                            marketPriceMargin.doubleValue(),
+                            marketPriceMarginPct,
                             triggerPrice,
                             enable,
                             editOfferType);
@@ -392,7 +412,7 @@ public class CliMain {
                     return;
                 }
                 case getoffer: {
-                    var opts = new GetOfferOptionParser(args).parse();
+                    var opts = new OfferIdOptionParser(args).parse();
                     if (opts.isForHelp()) {
                         out.println(client.getMethodHelp(method));
                         return;
@@ -403,7 +423,7 @@ public class CliMain {
                     return;
                 }
                 case getmyoffer: {
-                    var opts = new GetOfferOptionParser(args).parse();
+                    var opts = new OfferIdOptionParser(args).parse();
                     if (opts.isForHelp()) {
                         out.println(client.getMethodHelp(method));
                         return;
@@ -446,15 +466,25 @@ public class CliMain {
                     return;
                 }
                 case takeoffer: {
-                    var opts = new TakeOfferOptionParser(args).parse();
-                    if (opts.isForHelp()) {
+                    var offerIdOpt = new OfferIdOptionParser(args, true).parse();
+                    if (offerIdOpt.isForHelp()) {
                         out.println(client.getMethodHelp(method));
                         return;
                     }
-                    var offerId = opts.getOfferId();
-                    var paymentAccountId = opts.getPaymentAccountId();
-                    var takerFeeCurrencyCode = opts.getTakerFeeCurrencyCode();
-                    var trade = client.takeOffer(offerId, paymentAccountId, takerFeeCurrencyCode);
+                    var offerId = offerIdOpt.getOfferId();
+                    TradeInfo trade;
+                    // We only send an 'offer-id' param when taking a BsqSwapOffer.
+                    // Find out what kind of offer is being taken before sending a
+                    // 'takeoffer' request.
+                    var offerCategory = client.getAvailableOfferCategory(offerId);
+                    if (offerCategory.equals(BSQ_SWAP)) {
+                        trade = client.takeBsqSwapOffer(offerId);
+                    } else {
+                        var opts = new TakeOfferOptionParser(args).parse();
+                        var paymentAccountId = opts.getPaymentAccountId();
+                        var takerFeeCurrencyCode = opts.getTakerFeeCurrencyCode();
+                        trade = client.takeOffer(offerId, paymentAccountId, takerFeeCurrencyCode);
+                    }
                     out.printf("trade %s successfully taken%n", trade.getTradeId());
                     return;
                 }
@@ -473,6 +503,26 @@ public class CliMain {
                     else
                         new TableBuilder(TRADE_DETAIL_TBL, trade).build().print(out);
 
+                    return;
+                }
+                case gettrades: {
+                    var opts = new GetTradesOptionParser(args).parse();
+                    if (opts.isForHelp()) {
+                        out.println(client.getMethodHelp(method));
+                        return;
+                    }
+                    var category = opts.getCategory();
+                    var trades = category.equals(OPEN)
+                            ? client.getOpenTrades()
+                            : client.getTradeHistory(category);
+                    if (trades.isEmpty()) {
+                        out.printf("no %s trades found%n", category.name().toLowerCase());
+                    } else {
+                        var tableType = category.equals(OPEN)
+                                ? OPEN_TRADES_TBL
+                                : category.equals(CLOSED) ? CLOSED_TRADES_TBL : FAILED_TRADES_TBL;
+                        new TableBuilder(tableType, trades).build().print(out);
+                    }
                     return;
                 }
                 case confirmpaymentstarted: {
@@ -497,15 +547,15 @@ public class CliMain {
                     out.printf("trade %s payment received message sent%n", tradeId);
                     return;
                 }
-                case keepfunds: {
+                case closetrade: {
                     var opts = new GetTradeOptionParser(args).parse();
                     if (opts.isForHelp()) {
                         out.println(client.getMethodHelp(method));
                         return;
                     }
                     var tradeId = opts.getTradeId();
-                    client.keepFunds(tradeId);
-                    out.printf("funds from trade %s saved in bisq wallet%n", tradeId);
+                    client.closeTrade(tradeId);
+                    out.printf("trade %s is closed%n", tradeId);
                     return;
                 }
                 case withdrawfunds: {
@@ -529,6 +579,28 @@ public class CliMain {
                     }
                     var paymentMethods = client.getPaymentMethods();
                     paymentMethods.forEach(p -> out.println(p.getId()));
+                    return;
+                }
+                case failtrade: {
+                    var opts = new GetTradeOptionParser(args).parse();
+                    if (opts.isForHelp()) {
+                        out.println(client.getMethodHelp(method));
+                        return;
+                    }
+                    var tradeId = opts.getTradeId();
+                    client.failTrade(tradeId);
+                    out.printf("open trade %s changed to failed trade%n", tradeId);
+                    return;
+                }
+                case unfailtrade: {
+                    var opts = new GetTradeOptionParser(args).parse();
+                    if (opts.isForHelp()) {
+                        out.println(client.getMethodHelp(method));
+                        return;
+                    }
+                    var tradeId = opts.getTradeId();
+                    client.unFailTrade(tradeId);
+                    out.printf("failed trade %s changed to open trade%n", tradeId);
                     return;
                 }
                 case getpaymentacctform: {
@@ -668,7 +740,8 @@ public class CliMain {
                 }
             }
         } catch (StatusRuntimeException ex) {
-            // Remove the leading gRPC status code (e.g. "UNKNOWN: ") from the message
+            // Remove the leading gRPC status code, e.g., INVALID_ARGUMENT,
+            // NOT_FOUND, ..., UNKNOWN from the exception message.
             String message = ex.getMessage().replaceFirst("^[A-Z_]+: ", "");
             if (message.equals("io exception"))
                 throw new RuntimeException(message + ", server may not be running", ex);
@@ -716,25 +789,6 @@ public class CliMain {
         }
     }
 
-    private static long toInternalTriggerPrice(GrpcClient client,
-                                               String offerId,
-                                               BigDecimal unscaledTriggerPrice) {
-        if (unscaledTriggerPrice.compareTo(ZERO) >= 0) {
-            // Unfortunately, the EditOffer proto triggerPrice field was declared as
-            // a long instead of a string, so the CLI has to look at the offer to know
-            // how to scale the trigger-price (for a fiat or altcoin offer) param sent
-            // to the server in its 'editoffer' request.  That means a preliminary round
-            // trip to the server:  a 'getmyoffer' request.
-            var offer = client.getMyOffer(offerId);
-            if (offer.getCounterCurrencyCode().equals("BTC"))
-                return toInternalCryptoCurrencyPrice(unscaledTriggerPrice);
-            else
-                return toInternalFiatPrice(unscaledTriggerPrice);
-        } else {
-            return 0L;
-        }
-    }
-
     private static File saveFileToDisk(String prefix,
                                        @SuppressWarnings("SameParameterValue") String suffix,
                                        String text) {
@@ -774,14 +828,14 @@ public class CliMain {
             stream.println();
             stream.format(rowFormat, getbtcprice.name(), "--currency-code=<currency-code>", "Get current market btc price");
             stream.println();
-            stream.format(rowFormat, getfundingaddresses.name(), "", "Get BTC funding addresses");
+            stream.format(rowFormat, getfundingaddresses.name(), "", "Get RADC funding addresses");
             stream.println();
             stream.format(rowFormat, getunusedbsqaddress.name(), "", "Get unused BSQ address");
             stream.println();
             stream.format(rowFormat, sendbsq.name(), "--address=<bsq-address> --amount=<bsq-amount>  \\", "Send BSQ");
             stream.format(rowFormat, "", "[--tx-fee-rate=<sats/byte>]", "");
             stream.println();
-            stream.format(rowFormat, sendbtc.name(), "--address=<btc-address> --amount=<btc-amount> \\", "Send BTC");
+            stream.format(rowFormat, sendbtc.name(), "--address=<btc-address> --amount=<btc-amount> \\", "Send RADC");
             stream.format(rowFormat, "", "[--tx-fee-rate=<sats/byte>]", "");
             stream.format(rowFormat, "", "[--memo=<\"memo\">]", "");
             stream.println();
@@ -801,10 +855,11 @@ public class CliMain {
             stream.format(rowFormat, "", "--currency-code=<currency-code> \\", "");
             stream.format(rowFormat, "", "--amount=<btc-amount> \\", "");
             stream.format(rowFormat, "", "[--min-amount=<min-btc-amount>] \\", "");
-            stream.format(rowFormat, "", "--fixed-price=<price> | --market-price=margin=<percent> \\", "");
+            stream.format(rowFormat, "", "--fixed-price=<price> | --market-price-margin=<percent> \\", "");
             stream.format(rowFormat, "", "--security-deposit=<percent> \\", "");
             stream.format(rowFormat, "", "[--fee-currency=<bsq|btc>]", "");
             stream.format(rowFormat, "", "[--trigger-price=<price>]", "");
+            stream.format(rowFormat, "", "[--swap=<true|false>]", "");
             stream.println();
             stream.format(rowFormat, editoffer.name(), "--offer-id=<offer-id> \\", "Edit offer with id");
             stream.format(rowFormat, "", "[--fixed-price=<price>] \\", "");
@@ -825,21 +880,27 @@ public class CliMain {
             stream.format(rowFormat, "", "--currency-code=<currency-code>", "");
             stream.println();
             stream.format(rowFormat, takeoffer.name(), "--offer-id=<offer-id> \\", "Take offer with id");
-            stream.format(rowFormat, "", "--payment-account=<payment-account-id>", "");
+            stream.format(rowFormat, "", "[--payment-account=<payment-account-id>]", "");
             stream.format(rowFormat, "", "[--fee-currency=<btc|bsq>]", "");
             stream.println();
             stream.format(rowFormat, gettrade.name(), "--trade-id=<trade-id> \\", "Get trade summary or full contract");
             stream.format(rowFormat, "", "[--show-contract=<true|false>]", "");
             stream.println();
+            stream.format(rowFormat, gettrades.name(), "[--category=<open|closed|failed>]", "Get open (default), closed, or failed trades");
+            stream.println();
             stream.format(rowFormat, confirmpaymentstarted.name(), "--trade-id=<trade-id>", "Confirm payment started");
             stream.println();
             stream.format(rowFormat, confirmpaymentreceived.name(), "--trade-id=<trade-id>", "Confirm payment received");
             stream.println();
-            stream.format(rowFormat, keepfunds.name(), "--trade-id=<trade-id>", "Keep received funds in Bisq wallet");
+            stream.format(rowFormat, closetrade.name(), "--trade-id=<trade-id>", "Close completed trade");
             stream.println();
             stream.format(rowFormat, withdrawfunds.name(), "--trade-id=<trade-id> --address=<btc-address> \\",
-                    "Withdraw received funds to external wallet address");
+                    "Withdraw received trade funds to external wallet address");
             stream.format(rowFormat, "", "[--memo=<\"memo\">]", "");
+            stream.println();
+            stream.format(rowFormat, failtrade.name(), "--trade-id=<trade-id>", "Change open trade to failed trade");
+            stream.println();
+            stream.format(rowFormat, unfailtrade.name(), "--trade-id=<trade-id>", "Change failed trade to open trade");
             stream.println();
             stream.format(rowFormat, getpaymentmethods.name(), "", "Get list of supported payment account method ids");
             stream.println();

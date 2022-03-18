@@ -358,7 +358,7 @@ class TakeOfferDataModel extends OfferDataModel {
     // This works only if have already funds in the wallet
     // TODO: There still are issues if we get funded by very small inputs which are causing higher tx fees and the
     // changed total required amount is not updated. That will cause a InsufficientMoneyException and the user need to
-    // start over again. To reproduce keep adding 0.002 BTC amounts while in the funding screen.
+    // start over again. To reproduce keep adding 0.002 RADC amounts while in the funding screen.
     // It would require a listener on changed balance and a new fee estimation with a correct recalculation of the required funds.
     // Another edge case not handled correctly is: If there are many small inputs and user add a large input later the
     // fee estimation is based on the large tx with many inputs but the actual tx will get created with the large input, thus
@@ -714,8 +714,8 @@ class TakeOfferDataModel extends OfferDataModel {
     }
 
     public boolean isAttemptToBuyBsq() {
-        // When you buy an asset you actually sell BTC.
-        // This is why an offer to buy BSQ is actually an offer to sell BTC for BSQ.
+        // When you buy an asset you actually sell RADC.
+        // This is why an offer to buy BSQ is actually an offer to sell RADC for BSQ.
         return !isBuyOffer() && getOffer().getCurrencyCode().equals("BSQ");
     }
 }

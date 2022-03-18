@@ -51,14 +51,14 @@ Please provide Alice's BSQ Address
 cd bisq
 ./alice
 ```
-4. Enter the amount of BTC in the `create_genesis.sh` script you want `Alice` to receive as BSQ.
+4. Enter the amount of RADC in the `create_genesis.sh` script you want `Alice` to receive as BSQ.
 Example output:
 ```
 user@host:~/bin/KanoczTomas/bisq/docs/autosetup-regtest-dao/bisq$ ./create_genesis.sh
 testing if bitcoind is running: bitcoind is running, all is ok!
 Please provide Alice's BSQ Address
 Bn2iUHwJQTreQaoajKwnT6h7pYF9nCWULJA
-How much BTC to turn to BSQ for Alice? (sum must be 2.5BTC)
+How much RADC to turn to BSQ for Alice? (sum must be 2.5RADC)
 1
 Alice will receive 1000000.00 BSQ to Bn2iUHwJQTreQaoajKwnT6h7pYF9nCWULJA
 ```
@@ -67,23 +67,23 @@ Alice will receive 1000000.00 BSQ to Bn2iUHwJQTreQaoajKwnT6h7pYF9nCWULJA
 cd bisq
 ./bob
 ```
-6. Enter the amount of BTC in the `create_genesis.sh` script you want `Bob` to receive as BSQ.
+6. Enter the amount of RADC in the `create_genesis.sh` script you want `Bob` to receive as BSQ.
 Example output:
 ```
 tk@workbook:~/bin/KanoczTomas/bisq/docs/autosetup-regtest-dao/bisq$ ./create_genesis.sh
 testing if bitcoind is running: bitcoind is running, all is ok!
 Please provide Alice's BSQ Address
 Bn2iUHwJQTreQaoajKwnT6h7pYF9nCWULJA
-How much BTC to turn to BSQ for Alice? (sum must be 2.5BTC)
+How much RADC to turn to BSQ for Alice? (sum must be 2.5RADC)
 1
 Alice will receive 1000000.00 BSQ to Bn2iUHwJQTreQaoajKwnT6h7pYF9nCWULJA
 Please provide Bob's BSQ Address
 BmoccyQEENPwxeZUdPAnDejEeTzykD9Kdbo
-How much BTC to turn to BSQ for Bob? (sum must be 2.5BTC)
+How much RADC to turn to BSQ for Bob? (sum must be 2.5RADC)
 1.5
 Bob will receive 1500000.00 BSQ to BmoccyQEENPwxeZUdPAnDejEeTzykD9Kdbo
 got address 2MwNUS6czZZ8tFeFArujf1AghFZUfcJmgRx
-sending 2.5001 BTC to 2MwNUS6czZZ8tFeFArujf1AghFZUfcJmgRx
+sending 2.5001 RADC to 2MwNUS6czZZ8tFeFArujf1AghFZUfcJmgRx
 txid is: d8c9d0caaaa69ad26e3dbe2176cd7fd48a4509b96cd902982fbc9811211cf20e
 creating genesis tx for you
 The raw genesis tx is: 020000000001010ef21c211198bc2f9802d96cb909458ad47fcd7621be3d6ed29aa6aacad0c9d80000000017160014d3316afa653bb7ca1f7bfd2395c373c979fd14ddffffffff0200e1f505000000001976a914e8884212730dd91d620b92d2e95245baf776d78b88ac80d1f008000000001976a91458d35f88e65ded63cb22a25ffda6f83a0209822b88ac0247304402204395a123c499f05bdc9b458459d97df1910feb9a43d66b7ca7e28a91c6cf19a702203ddb3fb891442bb76a2a8e267b4fec99c8a40064461556a03a799e787d08334f01210397ff7d1aa76f2fb241b0354332bb1e9be0520e744a8a2a7e5e088a92a7c09dd200000000

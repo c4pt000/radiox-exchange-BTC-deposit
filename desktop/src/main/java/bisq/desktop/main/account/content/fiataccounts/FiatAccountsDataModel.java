@@ -119,9 +119,15 @@ class FiatAccountsDataModel extends ActivatableDataModel {
         }
 
         user.addPaymentAccount(paymentAccount);
+        paymentAccount.onPersistChanges();
 
         accountAgeWitnessService.publishMyAccountAgeWitness(paymentAccount.getPaymentAccountPayload());
         accountAgeWitnessService.signAndPublishSameNameAccounts();
+    }
+
+    public void onUpdateAccount(PaymentAccount paymentAccount) {
+        paymentAccount.onPersistChanges();
+        user.requestPersistence();
     }
 
     public boolean onDeleteAccount(PaymentAccount paymentAccount) {

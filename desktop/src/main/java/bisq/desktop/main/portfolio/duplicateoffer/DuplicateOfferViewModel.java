@@ -57,7 +57,7 @@ class DuplicateOfferViewModel extends MutableOfferViewModel<DuplicateOfferDataMo
                               AccountAgeWitnessService accountAgeWitnessService,
                               Navigation navigation,
                               Preferences preferences,
-                              @Named(FormattingUtils.BTC_FORMATTER_KEY) CoinFormatter btcFormatter,
+                              @Named(FormattingUtils.RADC_FORMATTER_KEY) CoinFormatter btcFormatter,
                               BsqFormatter bsqFormatter,
                               OfferUtil offerUtil) {
         super(dataModel,

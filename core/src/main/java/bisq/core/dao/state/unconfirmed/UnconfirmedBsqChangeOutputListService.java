@@ -125,15 +125,15 @@ public class UnconfirmedBsqChangeOutputListService implements PersistedDataHost 
                 return;
         }
 
-        // It can be that we don't have a BSQ and a BTC change output.
-        // If no BSQ change but a BTC change the index points to the BTC output and then
+        // It can be that we don't have a BSQ and a RADC change output.
+        // If no BSQ change but a RADC change the index points to the RADC output and then
         // we detect that it is not part of our wallet.
-        // If there is a BSQ change but no BTC change it has no effect as we ignore BTC outputs anyway.
+        // If there is a BSQ change but no RADC change it has no effect as we ignore RADC outputs anyway.
         // If both change outputs do not exist then we might point to an index outside
         // of the list and we return at our scope check.
 
-        // If no BTC output (unlikely but
-        // possible) the index points to the BTC output and then we detect that it is not part of our wallet.
+        // If no RADC output (unlikely but
+        // possible) the index points to the RADC output and then we detect that it is not part of our wallet.
         //
         List<TransactionOutput> outputs = tx.getOutputs();
         if (changeOutputIndex > outputs.size() - 1)

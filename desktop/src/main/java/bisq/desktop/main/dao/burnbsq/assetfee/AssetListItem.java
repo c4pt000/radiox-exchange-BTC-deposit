@@ -51,7 +51,7 @@ class AssetListItem {
         totalFeesPaidAsString = bsqFormatter.formatCoinWithCode(totalFeesPaid);
         trialPeriodInBlocks = (int) totalFeesPaid * 144;
         tradedVolume = statefulAsset.getTradeVolume();
-        tradedVolumeAsString = bsqFormatter.formatBTCWithCode(tradedVolume);
+        tradedVolumeAsString = bsqFormatter.formatRADCWithCode(tradedVolume);
         lookBackPeriodInDays = Res.get("dao.burnBsq.assets.days", statefulAsset.getLookBackPeriodInDays());
     }
 }

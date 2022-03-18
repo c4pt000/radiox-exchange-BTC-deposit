@@ -410,7 +410,7 @@ public class MainViewModel implements ViewModel, BisqSetup.BisqSetupListener {
                 .onAesKey(aesKeyHandler::accept)
                 .onClose(() -> BisqApp.getShutDownHandler().run())
                 .show());
-/*
+
         bisqSetup.setDisplayUpdateHandler((alert, key) -> new DisplayUpdateDownloadWindow(alert, config)
                 .actionButtonText(Res.get("displayUpdateDownloadWindow.button.downloadLater"))
                 .onAction(() -> {
@@ -421,7 +421,6 @@ public class MainViewModel implements ViewModel, BisqSetup.BisqSetupListener {
                     preferences.dontShowAgain(key, true); // ignore update
                 })
                 .show());
-*/
         bisqSetup.setDisplayAlertHandler(alert -> new DisplayAlertMessageWindow()
                 .alertMessage(alert)
                 .closeButtonText(Res.get("shared.close"))
@@ -517,8 +516,7 @@ public class MainViewModel implements ViewModel, BisqSetup.BisqSetupListener {
         this.footerVersionInfo.setValue("v" + Version.VERSION);
         this.getNewVersionAvailableProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue) {
-         //       this.footerVersionInfo.setValue("v" + Version.VERSION + " " + Res.get("mainView.version.update"));
-                this.footerVersionInfo.setValue("v" + Version.VERSION);
+                this.footerVersionInfo.setValue("v" + Version.VERSION + " " + Res.get("mainView.version.update"));
             } else {
                 this.footerVersionInfo.setValue("v" + Version.VERSION);
             }
@@ -805,8 +803,8 @@ public class MainViewModel implements ViewModel, BisqSetup.BisqSetupListener {
         return bisqSetup.getBtcSplashSyncIconId();
     }
 
-    BooleanProperty getUseTorForBTC() {
-        return bisqSetup.getUseTorForBTC();
+    BooleanProperty getUseTorForRADC() {
+        return bisqSetup.getUseTorForRADC();
     }
 
     // P2P

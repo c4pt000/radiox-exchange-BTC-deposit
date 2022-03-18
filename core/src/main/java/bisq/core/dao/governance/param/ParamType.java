@@ -20,7 +20,7 @@ package bisq.core.dao.governance.param;
 public enum ParamType {
     UNDEFINED,
     BSQ,
-    BTC,
+    RADC,
     PERCENT,
     BLOCK,
     ADDRESS

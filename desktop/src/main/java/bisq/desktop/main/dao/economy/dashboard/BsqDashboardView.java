@@ -153,11 +153,11 @@ public class BsqDashboardView extends ActivatableView<GridPane, Void> implements
                     priceFormat.setMaximumFractionDigits(8);
                   /*  yAxisFormatter = value -> {
                         value = MathUtils.scaleDownByPowerOf10(value.longValue(), 8);
-                        return priceFormat.format(value) + " BSQ/BTC";
+                        return priceFormat.format(value) + " BSQ/RADC";
                     };*/
 
                     double scaled = MathUtils.scaleDownByPowerOf10(priceChartView.averageBsqBtcPriceProperty().get(), 8);
-                    return priceFormat.format(scaled) + " BSQ/BTC";
+                    return priceFormat.format(scaled) + " BSQ/RADC";
                 },
                 priceChartView.averageBsqBtcPriceProperty()));
 
@@ -174,7 +174,7 @@ public class BsqDashboardView extends ActivatableView<GridPane, Void> implements
                     DecimalFormat volumeFormat = (DecimalFormat) DecimalFormat.getNumberInstance(GlobalSettings.getLocale());
                     volumeFormat.setMaximumFractionDigits(4);
                     double scaled = MathUtils.scaleDownByPowerOf10(volumeChartView.btcVolumeProperty().get(), 8);
-                    return volumeFormat.format(scaled) + " BTC";
+                    return volumeFormat.format(scaled) + " RADC";
                 },
                 volumeChartView.btcVolumeProperty()));
     }
@@ -308,7 +308,7 @@ public class BsqDashboardView extends ActivatableView<GridPane, Void> implements
         Optional<Price> optionalBsqPrice = priceFeedService.getBsqPrice();
         if (optionalBsqPrice.isPresent()) {
             Price bsqPrice = optionalBsqPrice.get();
-            marketPriceLabel.setText(FormattingUtils.formatPrice(bsqPrice) + " BSQ/BTC");
+            marketPriceLabel.setText(FormattingUtils.formatPrice(bsqPrice) + " BSQ/RADC");
         } else {
             marketPriceLabel.setText(Res.get("shared.na"));
         }
@@ -356,7 +356,7 @@ public class BsqDashboardView extends ActivatableView<GridPane, Void> implements
                 avg30DayUSDPrice = usdPrice;
             }
         } else {
-            textField.setText(bsqPrice + " BSQ/BTC");
+            textField.setText(bsqPrice + " BSQ/RADC");
         }
 
         Price average = isUSDField ? usdPrice : bsqPrice;

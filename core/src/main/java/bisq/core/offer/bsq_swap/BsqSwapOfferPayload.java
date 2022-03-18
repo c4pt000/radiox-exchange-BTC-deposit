@@ -85,7 +85,7 @@ public final class BsqSwapOfferPayload extends OfferPayloadBase
                 ownerNodeAddress,
                 pubKeyRing,
                 "BSQ",
-                "BTC",
+                "RADC",
                 direction,
                 price,
                 amount,

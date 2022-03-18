@@ -117,8 +117,8 @@ public class TxValidator {
         try {
             if (status) {
                 if (checkNotNull(isFeeCurrencyBtc)) {
-                    status = checkFeeAddressBTC(jsonTxt, btcFeeReceivers)
-                            && checkFeeAmountBTC(jsonTxt, amount, true, getBlockHeightForFeeCalculation(jsonTxt));
+                    status = checkFeeAddressRADC(jsonTxt, btcFeeReceivers)
+                            && checkFeeAmountRADC(jsonTxt, amount, true, getBlockHeightForFeeCalculation(jsonTxt));
                 } else {
                     status = checkFeeAmountBSQ(jsonTxt, amount, true, getBlockHeightForFeeCalculation(jsonTxt));
                 }
@@ -138,11 +138,11 @@ public class TxValidator {
         try {
             if (status) {
                 if (isFeeCurrencyBtc == null) {
-                    isFeeCurrencyBtc = checkFeeAddressBTC(jsonTxt, btcFeeReceivers);
+                    isFeeCurrencyBtc = checkFeeAddressRADC(jsonTxt, btcFeeReceivers);
                 }
                 if (isFeeCurrencyBtc) {
-                    status = checkFeeAddressBTC(jsonTxt, btcFeeReceivers)
-                            && checkFeeAmountBTC(jsonTxt, amount, false, getBlockHeightForFeeCalculation(jsonTxt));
+                    status = checkFeeAddressRADC(jsonTxt, btcFeeReceivers)
+                            && checkFeeAmountRADC(jsonTxt, amount, false, getBlockHeightForFeeCalculation(jsonTxt));
                 } else {
                     status = checkFeeAmountBSQ(jsonTxt, amount, false, getBlockHeightForFeeCalculation(jsonTxt));
                 }
@@ -165,7 +165,7 @@ public class TxValidator {
 
     ///////////////////////////////////////////////////////////////////////////////////////////
 
-    private boolean checkFeeAddressBTC(String jsonTxt, List<String> btcFeeReceivers) {
+    private boolean checkFeeAddressRADC(String jsonTxt, List<String> btcFeeReceivers) {
         try {
             JsonArray jsonVout = getVinAndVout(jsonTxt).second;
             JsonObject jsonVout0 = jsonVout.get(0).getAsJsonObject();
@@ -177,7 +177,7 @@ public class TxValidator {
                 log.info("Leniency rule, unrecognised fee receiver but its a really old offer so let it pass, {}", jsonFeeAddress.getAsString());
                 return true;
             } else {
-                String error = "fee address: " + jsonFeeAddress.getAsString() + " was not a known BTC fee receiver";
+                String error = "fee address: " + jsonFeeAddress.getAsString() + " was not a known RADC fee receiver";
                 errorList.add(error);
                 log.info(error);
             }
@@ -188,7 +188,7 @@ public class TxValidator {
         return false;
     }
 
-    private boolean checkFeeAmountBTC(String jsonTxt, Coin tradeAmount, boolean isMaker, long blockHeight) {
+    private boolean checkFeeAmountRADC(String jsonTxt, Coin tradeAmount, boolean isMaker, long blockHeight) {
         JsonArray jsonVin = getVinAndVout(jsonTxt).first;
         JsonArray jsonVout = getVinAndVout(jsonTxt).second;
         JsonObject jsonVin0 = jsonVin.get(0).getAsJsonObject();
@@ -199,19 +199,19 @@ public class TxValidator {
             throw new JsonSyntaxException("vin/vout missing data");
         }
         long feeValue = jsonFeeValue.getAsLong();
-        log.debug("BTC fee: {}", feeValue);
+        log.debug("RADC fee: {}", feeValue);
 
-        Param minFeeParam = isMaker ? Param.MIN_MAKER_FEE_BTC : Param.MIN_TAKER_FEE_BTC;
+        Param minFeeParam = isMaker ? Param.MIN_MAKER_FEE_RADC : Param.MIN_TAKER_FEE_RADC;
         Coin expectedFee = calculateFee(tradeAmount,
                 isMaker ? getMakerFeeRateBtc(blockHeight) : getTakerFeeRateBtc(blockHeight),
                 minFeeParam);
 
         Coin feeValueAsCoin = Coin.valueOf(feeValue);
         long expectedFeeAsLong = expectedFee.getValue();
-        String description = "Expected BTC fee: " + expectedFee + " sats , actual fee paid: " +
+        String description = "Expected RADC fee: " + expectedFee + " sats , actual fee paid: " +
                 feeValueAsCoin + " sats";
         if (expectedFeeAsLong == feeValue) {
-            log.debug("The fee matched what we expected");
+            log.debug("The fee matched. " + description);
             return true;
         }
 
@@ -237,7 +237,7 @@ public class TxValidator {
             return result.get();
         }
 
-        Param defaultFeeParam = isMaker ? Param.DEFAULT_MAKER_FEE_BTC : Param.DEFAULT_TAKER_FEE_BTC;
+        Param defaultFeeParam = isMaker ? Param.DEFAULT_MAKER_FEE_RADC : Param.DEFAULT_TAKER_FEE_RADC;
         if (feeExistsUsingDifferentDaoParam(tradeAmount, feeValueAsCoin, defaultFeeParam, minFeeParam)) {
             log.info("Leniency rule: the fee matches a different DAO parameter {}", description);
             return true;
@@ -269,9 +269,9 @@ public class TxValidator {
                 minFeeParam);
         long feeValue = jsonVIn0Value.getAsLong() - jsonFeeValue.getAsLong();
         // if the first output (BSQ) is greater than the first input (BSQ) include the second input (presumably BSQ)
-        if (jsonFeeValue.getAsLong() > jsonVIn0Value.getAsLong()) {
+        if ((jsonFeeValue.getAsLong() > jsonVIn0Value.getAsLong() ||
+                expectedFee.getValue() > jsonVIn0Value.getAsLong()) && jsonVin.size() > 2) {
             // in this case 2 or more UTXOs were spent to pay the fee:
-            //TODO missing handling of > 2 BSQ inputs
             JsonObject jsonVin1 = jsonVin.get(1).getAsJsonObject();
             JsonElement jsonVIn1Value = jsonVin1.getAsJsonObject("prevout").get("value");
             feeValue += jsonVIn1Value.getAsLong();
@@ -282,7 +282,7 @@ public class TxValidator {
                 (double) expectedFeeAsLong / 100.0, (double) feeValue / 100.0);
 
         if (expectedFeeAsLong == feeValue) {
-            log.debug("The fee matched what we expected");
+            log.debug("The fee matched. " + description);
             return true;
         }
 
@@ -424,11 +424,11 @@ public class TxValidator {
     }
 
     private Coin getMakerFeeRateBtc(long blockHeight) {
-        return daoStateService.getParamValueAsCoin(Param.DEFAULT_MAKER_FEE_BTC, (int) blockHeight);
+        return daoStateService.getParamValueAsCoin(Param.DEFAULT_MAKER_FEE_RADC, (int) blockHeight);
     }
 
     private Coin getTakerFeeRateBtc(long blockHeight) {
-        return daoStateService.getParamValueAsCoin(Param.DEFAULT_TAKER_FEE_BTC, (int) blockHeight);
+        return daoStateService.getParamValueAsCoin(Param.DEFAULT_TAKER_FEE_RADC, (int) blockHeight);
     }
 
     private Optional<Boolean> maybeCheckAgainstFeeFromFilter(Coin tradeAmount,

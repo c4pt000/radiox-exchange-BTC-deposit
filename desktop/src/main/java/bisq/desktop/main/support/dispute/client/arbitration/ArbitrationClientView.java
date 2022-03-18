@@ -53,7 +53,7 @@ public class ArbitrationClientView extends DisputeClientView {
                                  KeyRing keyRing,
                                  P2PService p2PService,
                                  TradeManager tradeManager,
-                                 @Named(FormattingUtils.BTC_FORMATTER_KEY) CoinFormatter formatter,
+                                 @Named(FormattingUtils.RADC_FORMATTER_KEY) CoinFormatter formatter,
                                  Preferences preferences,
                                  DisputeSummaryWindow disputeSummaryWindow,
                                  PrivateNotificationManager privateNotificationManager,

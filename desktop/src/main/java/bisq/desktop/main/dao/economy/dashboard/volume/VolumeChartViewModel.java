@@ -103,6 +103,6 @@ public class VolumeChartViewModel extends ChartViewModel<VolumeChartDataModel> {
 
     void setBtcVolumeFormatter() {
         volumeFormat.setMaximumFractionDigits(4);
-        yAxisFormatter = value -> volumeFormat.format(MathUtils.scaleDownByPowerOf10(value.longValue(), 8)) + " BTC";
+        yAxisFormatter = value -> volumeFormat.format(MathUtils.scaleDownByPowerOf10(value.longValue(), 8)) + " RADC";
     }
 }

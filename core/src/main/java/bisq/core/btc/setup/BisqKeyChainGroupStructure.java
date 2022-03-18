@@ -27,14 +27,14 @@ public class BisqKeyChainGroupStructure implements KeyChainGroupStructure {
 
     // See https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki
     // https://github.com/satoshilabs/slips/blob/master/slip-0044.md
-    // We use 0 (0x80000000) as coin_type for BTC
+    // We use 0 (0x80000000) as coin_type for RADC
     // m / purpose' / coin_type' / account' / change / address_index
-    public static final ImmutableList<ChildNumber> BIP44_BTC_NON_SEGWIT_ACCOUNT_PATH = ImmutableList.of(
+    public static final ImmutableList<ChildNumber> BIP44_RADC_NON_SEGWIT_ACCOUNT_PATH = ImmutableList.of(
             new ChildNumber(44, true),
             new ChildNumber(0, true),
             ChildNumber.ZERO_HARDENED);
 
-    public static final ImmutableList<ChildNumber> BIP44_BTC_SEGWIT_ACCOUNT_PATH = ImmutableList.of(
+    public static final ImmutableList<ChildNumber> BIP44_RADC_SEGWIT_ACCOUNT_PATH = ImmutableList.of(
             new ChildNumber(44, true),
             new ChildNumber(0, true),
             ChildNumber.ONE_HARDENED);
@@ -62,9 +62,9 @@ public class BisqKeyChainGroupStructure implements KeyChainGroupStructure {
     public ImmutableList<ChildNumber> accountPathFor(Script.ScriptType outputScriptType) {
         if (!isBsqWallet) {
             if (outputScriptType == null || outputScriptType == Script.ScriptType.P2PKH)
-                return BIP44_BTC_NON_SEGWIT_ACCOUNT_PATH;
+                return BIP44_RADC_NON_SEGWIT_ACCOUNT_PATH;
             else if (outputScriptType == Script.ScriptType.P2WPKH)
-                return BIP44_BTC_SEGWIT_ACCOUNT_PATH;
+                return BIP44_RADC_SEGWIT_ACCOUNT_PATH;
             else
                 throw new IllegalArgumentException(outputScriptType.toString());
         } else {

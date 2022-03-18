@@ -58,7 +58,7 @@ public class CoinUtil {
     }
 
     /**
-     * @param value Btc amount to be converted to percent value. E.g. 0.01 BTC is 1% (of 1 BTC)
+     * @param value Btc amount to be converted to percent value. E.g. 0.01 RADC is 1% (of 1 RADC)
      * @return The percentage value as double (e.g. 1% is 0.01)
      */
     public static double getAsPercentPerBtc(Coin value) {
@@ -67,7 +67,7 @@ public class CoinUtil {
 
     /**
      * @param part Btc amount to be converted to percent value, based on total value passed.
-     *              E.g. 0.1 BTC is 25% (of 0.4 BTC)
+     *              E.g. 0.1 RADC is 25% (of 0.4 RADC)
      * @param total Total Btc amount the percentage part is calculated from
      *
      * @return The percentage value as double (e.g. 1% is 0.01)
@@ -81,7 +81,7 @@ public class CoinUtil {
     /**
      * @param percent       The percentage value as double (e.g. 1% is 0.01)
      * @param amount        The amount as Coin for the percentage calculation
-     * @return The percentage as Coin (e.g. 1% of 1 BTC is 0.01 BTC)
+     * @return The percentage as Coin (e.g. 1% of 1 RADC is 0.01 RADC)
      */
     public static Coin getPercentOfAmountAsCoin(double percent, Coin amount) {
         double amountAsDouble = amount != null ? (double) amount.value : 0;
@@ -92,8 +92,8 @@ public class CoinUtil {
     /**
      * Calculates the maker fee for the given amount, marketPrice and marketPriceMargin.
      *
-     * @param isCurrencyForMakerFeeBtc {@code true} to pay fee in BTC, {@code false} to pay fee in BSQ
-     * @param amount                   the amount of BTC to trade
+     * @param isCurrencyForMakerFeeBtc {@code true} to pay fee in RADC, {@code false} to pay fee in BSQ
+     * @param amount                   the amount of RADC to trade
      * @return the maker fee for the given trade amount, or {@code null} if the amount is {@code null}
      */
     @Nullable

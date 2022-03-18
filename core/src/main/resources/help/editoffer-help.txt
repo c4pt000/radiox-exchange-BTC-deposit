@@ -2,7 +2,7 @@ editoffer
 
 NAME
 ----
-editoffer - edit an existing offer to buy or sell BTC
+editoffer - edit an existing offer to buy or sell RADC
 
 SYNOPSIS
 --------
@@ -31,21 +31,21 @@ OPTIONS
         The ID of the buy or sell offer to edit.
 
 --market-price-margin
-        Changes the % above or below market BTC price, e.g., 1.00 (1%).
+        Changes the % above or below market RADC price, e.g., 1.00 (1%).
         A --fixed-price offer can be changed to a --market-price-margin offer with this option.
         The --market-price-margin and --trigger-price options can be used in the same editoffer command.
         The --market-price-margin and --fixed-price options cannot be used in the same editoffer command.
 
 --fixed-price
-        Changes the fixed BTC price in fiat used to buy or sell BTC, e.g., 34000 (USD).
+        Changes the fixed RADC price in fiat used to buy or sell RADC, e.g., 34000 (USD).
         A --market-price-margin offer can be changed to a --fixed-price offer with this option.
         The --fixed-price and --market-price-margin options cannot be used in the same editoffer command.
 
 --trigger-price
         Sets the market price for triggering the de-activation of an offer, or defines trigger-price on an
         offer that did not have a trigger-price when it was created.
-        A buy BTC offer is de-activated when the market price rises above the trigger-price.
-        A sell BTC offer is de-activated when the market price falls below the trigger-price.
+        A buy RADC offer is de-activated when the market price rises above the trigger-price.
+        A sell RADC offer is de-activated when the market price falls below the trigger-price.
         Only applies to market-price-margin based offers;  a fixed-price offer's trigger-price is ignored.
         The --fixed-price and --trigger-price options cannot be used in the same editoffer command.
 

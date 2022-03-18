@@ -53,7 +53,7 @@ public class BtcValidator extends NumberValidator {
     protected Coin maxTradeLimit;
 
     @Inject
-    public BtcValidator(@Named(FormattingUtils.BTC_FORMATTER_KEY) CoinFormatter formatter) {
+    public BtcValidator(@Named(FormattingUtils.RADC_FORMATTER_KEY) CoinFormatter formatter) {
         this.formatter = formatter;
     }
 

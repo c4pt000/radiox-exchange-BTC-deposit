@@ -14,7 +14,7 @@ DESCRIPTION
 -----------
 Verify an exact amount of BSQ was sent to a specific Bisq wallet's BSQ address.
 Receipt of BSQ to a BSQ (altcoin) payment account address should always be verified
-before a BSQ seller sends a confirmpaymentreceived message for a BSQ/BTC trade.
+before a BSQ seller sends a confirmpaymentreceived message for a BSQ/RADC trade.
 
 Warning:  The verification result should be considered a false positive if a BSQ wallet
 address has received the same amount of BSQ in more than one transaction.  A way to

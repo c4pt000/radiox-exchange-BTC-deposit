@@ -131,7 +131,7 @@ public class PendingTradesViewModel extends ActivatableWithDataModel<PendingTrad
 
     @Inject
     public PendingTradesViewModel(PendingTradesDataModel dataModel,
-                                  @Named(FormattingUtils.BTC_FORMATTER_KEY) CoinFormatter btcFormatter,
+                                  @Named(FormattingUtils.RADC_FORMATTER_KEY) CoinFormatter btcFormatter,
                                   BsqFormatter bsqFormatter,
                                   BtcAddressValidator btcAddressValidator,
                                   P2PService p2PService,
@@ -245,16 +245,6 @@ public class PendingTradesViewModel extends ActivatableWithDataModel<PendingTrad
         return sellerState;
     }
 
-    public String getPayoutAmount() {
-        return dataModel.getTrade() != null
-                ? btcFormatter.formatCoinWithCode(dataModel.getTrade().getPayoutAmount())
-                : "";
-    }
-
-    String getMarketLabel(PendingTradesListItem item) {
-        return item == null ? "" : tradeUtil.getMarketDescription(item.getTrade());
-    }
-
     public String getRemainingTradeDurationAsWords() {
         checkNotNull(dataModel.getTrade(), "model's trade must not be null");
         return tradeUtil.getRemainingTradeDurationAsWords(dataModel.getTrade());
@@ -297,10 +287,6 @@ public class PendingTradesViewModel extends ActivatableWithDataModel<PendingTrad
         }
     }
 
-    String getPaymentMethod(PendingTradesListItem item) {
-        return item == null ? "" : tradeUtil.getPaymentMethodNameWithCountryCode(item.getTrade());
-    }
-
     // summary
     public String getTradeVolume() {
         return dataModel.getTrade() != null
@@ -331,15 +317,15 @@ public class PendingTradesViewModel extends ActivatableWithDataModel<PendingTrad
             checkNotNull(dataModel.getTrade());
             if (dataModel.isMaker() && dataModel.getOffer().isCurrencyForMakerFeeBtc() ||
                     !dataModel.isMaker() && dataModel.getTrade().isCurrencyForTakerFeeBtc()) {
-                Coin tradeFeeInBTC = dataModel.getTradeFeeInBTC();
+                Coin tradeFeeInRADC = dataModel.getTradeFeeInRADC();
 
                 Coin minTradeFee = dataModel.isMaker() ?
                         FeeService.getMinMakerFee(true) :
                         FeeService.getMinTakerFee(true);
 
-                String percentage = GUIUtil.getPercentageOfTradeAmount(tradeFeeInBTC, trade.getAmount(),
+                String percentage = GUIUtil.getPercentageOfTradeAmount(tradeFeeInRADC, trade.getAmount(),
                         minTradeFee);
-                return btcFormatter.formatCoinWithCode(tradeFeeInBTC) + percentage;
+                return btcFormatter.formatCoinWithCode(tradeFeeInRADC) + percentage;
             } else {
                 return bsqFormatter.formatCoinWithCode(dataModel.getTradeFeeAsBsq());
             }

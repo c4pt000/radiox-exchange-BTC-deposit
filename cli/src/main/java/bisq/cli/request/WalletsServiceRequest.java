@@ -63,7 +63,7 @@ public class WalletsServiceRequest {
     }
 
     public BtcBalanceInfo getBtcBalances() {
-        return getBalances("BTC").getBtc();
+        return getBalances("RADC").getBtc();
     }
 
     public BalancesInfo getBalances(String currencyCode) {
