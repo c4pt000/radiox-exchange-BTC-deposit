@@ -832,7 +832,7 @@ public class GUIUtil {
 
     public static boolean isChainHeightSyncedWithinToleranceOrShowPopup(WalletsSetup walletsSetup) {
         if (!walletsSetup.isChainHeightSyncedWithinTolerance()) {
-            new Popup().information(Res.get("popup.warning.chainNotSynced")).show();
+         //   new Popup().information(Res.get("popup.warning.chainNotSynced")).show();
             return true;
         }
 
