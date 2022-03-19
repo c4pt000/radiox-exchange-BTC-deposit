@@ -181,10 +181,9 @@ public class MainView extends InitializableView<StackPane, MainViewModel>
         ToggleButton sellButton = new NavButton(SellOfferView.class, Res.get("mainView.menu.sellBtc").toUpperCase());
         ToggleButton portfolioButton = new NavButton(PortfolioView.class, Res.get("mainView.menu.portfolio").toUpperCase());
         ToggleButton fundsButton = new NavButton(FundsView.class, Res.get("mainView.menu.funds").toUpperCase());
-
-        ToggleButton supportButton = new NavButton(SupportView.class, Res.get("mainView.menu.support"));
-        ToggleButton settingsButton = new NavButton(SettingsView.class, Res.get("mainView.menu.settings"));
         ToggleButton accountButton = new NavButton(AccountView.class, Res.get("mainView.menu.account"));
+        ToggleButton settingsButton = new NavButton(SettingsView.class, Res.get("mainView.menu.settings"));
+        ToggleButton supportButton = new NavButton(SupportView.class, Res.get("mainView.menu.support"));
         //ToggleButton daoButton = new NavButton(DaoView.class, Res.get("mainView.menu.dao"));
 
         JFXBadge portfolioButtonWithBadge = new JFXBadge(portfolioButton);
@@ -211,12 +210,11 @@ public class MainView extends InitializableView<StackPane, MainViewModel>
                     } else if (Utilities.isAltOrCtrlPressed(KeyCode.DIGIT5, keyEvent)) {
                         fundsButton.fire();
                     } else if (Utilities.isAltOrCtrlPressed(KeyCode.DIGIT6, keyEvent)) {
-                        supportButton.fire();
+                        accountButton.fire();
                     } else if (Utilities.isAltOrCtrlPressed(KeyCode.DIGIT7, keyEvent)) {
                         settingsButton.fire();
                     } else if (Utilities.isAltOrCtrlPressed(KeyCode.DIGIT8, keyEvent)) {
-                        accountButton.fire();
-                    
+                        supportButton.fire();
    //else if (Utilities.isAltOrCtrlPressed(KeyCode.DIGIT9, keyEvent)) {
                       //  if (daoButton.isVisible())
                         //    daoButton.fire();
@@ -322,9 +320,19 @@ public class MainView extends InitializableView<StackPane, MainViewModel>
         primaryNav.getStyleClass().add("nav-primary");
         HBox.setHgrow(primaryNav, Priority.SOMETIMES);
 
-        HBox secondaryNav = new HBox(supportButtonWithBadge, getNavigationSpacer(), settingsButtonWithBadge,
-                getNavigationSpacer(), accountButton, getNavigationSpacer());
+        HBox secondaryNav = new HBox(accountButton, getNavigationSpacer(), 
+
+settingsButtonWithBadge, 
+
+getNavigationSpacer(), 
+
+supportButtonWithBadge, 
+
+getNavigationSpacer());
+
+//      getNavigationSpacer(), accountButton, getNavigationSpacer());
 //, daoButtonWithBadge);
+
         secondaryNav.getStyleClass().add("nav-secondary");
         HBox.setHgrow(secondaryNav, Priority.SOMETIMES);
 

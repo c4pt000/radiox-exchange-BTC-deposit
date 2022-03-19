@@ -823,7 +823,7 @@ public class GUIUtil {
         }
 
         if (!walletsSetup.isDownloadComplete()) {
-            new Popup().information(Res.get("popup.warning.downloadNotComplete")).show();
+//            new Popup().information(Res.get("popup.warning.downloadNotComplete")).show();
             return true;
         }
 

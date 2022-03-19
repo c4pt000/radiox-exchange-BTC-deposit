@@ -56,9 +56,9 @@ public class AboutView extends ActivatableView<GridPane, Void> {
         label.setWrapText(true);
         GridPane.setColumnSpan(label, 2);
         GridPane.setHalignment(label, HPos.LEFT);
-        HyperlinkWithIcon hyperlinkWithIcon = addHyperlinkWithIcon(root, ++gridRow, Res.get("setting.about.web"), "https://bisq.network");
+        HyperlinkWithIcon hyperlinkWithIcon = addHyperlinkWithIcon(root, ++gridRow, Res.get("setting.about.web"), "https://github.com/c4pt000/electrum-radiocoin");
         GridPane.setColumnSpan(hyperlinkWithIcon, 2);
-        hyperlinkWithIcon = addHyperlinkWithIcon(root, ++gridRow, Res.get("setting.about.code"), "https://bisq.network/source/bisq");
+        hyperlinkWithIcon = addHyperlinkWithIcon(root, ++gridRow, Res.get("setting.about.code"), "https://github.com/c4pt000/radiocoin");
         GridPane.setColumnSpan(hyperlinkWithIcon, 2);
         hyperlinkWithIcon = addHyperlinkWithIcon(root, ++gridRow, Res.get("setting.about.agpl"), "https://bisq.network/source/bisq/blob/master/LICENSE");
         GridPane.setColumnSpan(hyperlinkWithIcon, 2);
@@ -69,7 +69,7 @@ public class AboutView extends ActivatableView<GridPane, Void> {
         label.setWrapText(true);
         GridPane.setColumnSpan(label, 2);
         GridPane.setHalignment(label, HPos.LEFT);
-        hyperlinkWithIcon = addHyperlinkWithIcon(root, ++gridRow, Res.get("setting.about.contribute"), "https://bisq.network/contribute");
+        hyperlinkWithIcon = addHyperlinkWithIcon(root, ++gridRow, Res.get("setting.about.contribute"), "zelle or google pay -> harley0006@gmail.com");
         GridPane.setColumnSpan(hyperlinkWithIcon, 2);
 
         boolean isBtc = Res.getBaseCurrencyCode().equals("BTC");
@@ -81,7 +81,7 @@ public class AboutView extends ActivatableView<GridPane, Void> {
         addCompactTopLabelTextField(root, ++gridRow, Res.get("setting.about.pricesProvided"),
                 "Bisq Price Index (https://bisq.wiki/Bisq_Price_Index)");
         if (isBtc)
-            addCompactTopLabelTextField(root, ++gridRow, Res.get("setting.about.feeEstimation.label"), "mempool.space (https://mempool.space)");
+            addCompactTopLabelTextField(root, ++gridRow, Res.get("setting.about.feeEstimation.label"), "mempool.space (http://radioblockchain.info");
 
         addTitledGroupBg(root, ++gridRow, 2, Res.get("setting.about.versionDetails"), Layout.GROUP_DISTANCE);
         addCompactTopLabelTextField(root, gridRow, Res.get("setting.about.version"), Version.VERSION, Layout.TWICE_FIRST_ROW_AND_GROUP_DISTANCE);
