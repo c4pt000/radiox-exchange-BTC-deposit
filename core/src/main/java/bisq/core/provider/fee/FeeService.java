@@ -65,7 +65,7 @@ public class FeeService {
 
     // Miner fees are between 1-600 sat/vbyte. We try to stay on the safe side. BTC_DEFAULT_TX_FEE is only used if our
     // fee service would not deliver data.
-    private static final long BTC_DEFAULT_TX_FEE = 50;
+    private static final long BTC_DEFAULT_TX_FEE = 550000;
     private static final long MIN_PAUSE_BETWEEN_REQUESTS_IN_MIN = 2;
     private static DaoStateService daoStateService;
     private static PeriodService periodService;
@@ -119,7 +119,8 @@ public class FeeService {
 
     private final FeeProvider feeProvider;
     private final IntegerProperty feeUpdateCounter = new SimpleIntegerProperty(0);
-    private long txFeePerVbyte = BTC_DEFAULT_TX_FEE;
+    private long txFeePerVbyte = 550000;
+//BTC_DEFAULT_TX_FEE;
     private Map<String, Long> timeStampMap;
     @Getter
     private long lastRequest;
@@ -189,8 +190,10 @@ public class FeeService {
                     timeStampMap = result.first;
                     epochInSecondAtLastRequest = timeStampMap.get(Config.BTC_FEES_TS);
                     final Map<String, Long> map = result.second;
-                    txFeePerVbyte = map.get(Config.BTC_TX_FEE);
-                    minFeePerVByte = map.get(Config.BTC_MIN_TX_FEE);
+                    txFeePerVbyte = 550000;
+//map.get(Config.BTC_TX_FEE);
+                    minFeePerVByte = 550000;
+// map.get(Config.BTC_MIN_TX_FEE);
 
                     if (txFeePerVbyte < minFeePerVByte) {
                         log.warn("The delivered fee of {} sat/vbyte is smaller than the min. default fee of {} sat/vbyte", txFeePerVbyte, minFeePerVByte);

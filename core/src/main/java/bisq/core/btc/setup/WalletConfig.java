@@ -305,7 +305,7 @@ public class WalletConfig extends AbstractIdleService {
                         time = vBtcWallet.getEarliestKeyCreationTime();
                     }
                     if (time < 0)
-                       CheckpointManager.checkpoint(params, checkpoints, vStore, time);
+                        CheckpointManager.checkpoint(params, checkpoints, vStore, time);
                     else
                         log.warn("Creating a new uncheckpointed block store due to a wallet with a creation time of zero: this will result in a very slow chain sync");
                 } else if (chainFileExists) {
@@ -325,7 +325,7 @@ public class WalletConfig extends AbstractIdleService {
             if (peerAddresses != null) {
                 for (PeerAddress addr : peerAddresses) vPeerGroup.addAddress(addr);
                 int maxConnections = Math.min(numConnectionsForBtc, peerAddresses.length);
-                log.info("We try to connect to {} radc nodes", maxConnections);
+                log.info("We try to connect to {} btc nodes", maxConnections);
                 vPeerGroup.setMaxConnections(maxConnections);
                 vPeerGroup.setAddPeersFromAddressMessage(false);
                 peerAddresses = null;

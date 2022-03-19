@@ -139,7 +139,7 @@ public abstract class MutableOfferView<M extends MutableOfferViewModel<?>> exten
     private BusyAnimation waitingForFundsSpinner;
     private AutoTooltipButton nextButton, cancelButton1, cancelButton2, placeOfferButton;
     private Button priceTypeToggleButton;
-    private InputTextField fixedPriceTextField, marketBasedPriceTextField, triggerPriceInputTextField;
+    private InputTextField marketBasedPriceTextField, triggerPriceInputTextField, fixedPriceTextField; 
     protected InputTextField amountTextField, minAmountTextField, volumeTextField, buyerSecurityDepositInputTextField;
     private TextField currencyTextField;
     private AddressTextField addressTextField;
@@ -769,7 +769,7 @@ public abstract class MutableOfferView<M extends MutableOfferViewModel<?>> exten
         currencyComboBoxSelectionHandler = e -> onCurrencyComboBoxSelected();
 
         tradeCurrencyCodeListener = (observable, oldValue, newValue) -> {
-            fixedPriceTextField.clear();
+           fixedPriceTextField.clear();
             marketBasedPriceTextField.clear();
             volumeTextField.clear();
             triggerPriceInputTextField.clear();
@@ -931,7 +931,7 @@ public abstract class MutableOfferView<M extends MutableOfferViewModel<?>> exten
 
     protected void updatePriceToggle() {
         int marketPriceAvailableValue = model.marketPriceAvailableProperty.get();
-        if (marketPriceAvailableValue > -1) {
+        if (marketPriceAvailableValue < -1) {
             boolean showPriceToggle = marketPriceAvailableValue == 1 &&
                     !model.getDataModel().paymentAccount.hasPaymentMethodWithId(HAL_CASH_ID);
             percentagePriceBox.setVisible(showPriceToggle);
@@ -957,7 +957,7 @@ public abstract class MutableOfferView<M extends MutableOfferViewModel<?>> exten
         // focus out
         amountTextField.focusedProperty().addListener(amountFocusedListener);
         minAmountTextField.focusedProperty().addListener(minAmountFocusedListener);
-        fixedPriceTextField.focusedProperty().addListener(priceFocusedListener);
+       fixedPriceTextField.focusedProperty().addListener(priceFocusedListener);
         triggerPriceInputTextField.focusedProperty().addListener(triggerPriceFocusedListener);
         marketBasedPriceTextField.focusedProperty().addListener(priceAsPercentageFocusedListener);
         volumeTextField.focusedProperty().addListener(volumeFocusedListener);
@@ -992,7 +992,7 @@ public abstract class MutableOfferView<M extends MutableOfferViewModel<?>> exten
         // focus out
         amountTextField.focusedProperty().removeListener(amountFocusedListener);
         minAmountTextField.focusedProperty().removeListener(minAmountFocusedListener);
-        fixedPriceTextField.focusedProperty().removeListener(priceFocusedListener);
+       fixedPriceTextField.focusedProperty().removeListener(priceFocusedListener);
         triggerPriceInputTextField.focusedProperty().removeListener(triggerPriceFocusedListener);
         marketBasedPriceTextField.focusedProperty().removeListener(priceAsPercentageFocusedListener);
         volumeTextField.focusedProperty().removeListener(volumeFocusedListener);
@@ -1502,7 +1502,7 @@ public abstract class MutableOfferView<M extends MutableOfferViewModel<?>> exten
         vBox.getChildren().addAll(tradeFeeInBtcLabel, tradeFeeInBsqLabel);
 
         tradeFeeInBtcToggle = new AutoTooltipSlideToggleButton();
-        tradeFeeInBtcToggle.setText("BTC");
+        tradeFeeInBtcToggle.setText("RADC");
         tradeFeeInBtcToggle.setVisible(false);
         tradeFeeInBtcToggle.setPadding(new Insets(-8, 5, -10, 5));
 

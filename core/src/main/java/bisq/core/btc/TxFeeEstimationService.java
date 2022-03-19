@@ -55,8 +55,8 @@ public class TxFeeEstimationService {
 //  segwit deposit tx with change vsize = 263
 //  segwit payout tx vsize = 169
 //  segwit delayed payout tx vsize = 139
-public static final int TYPICAL_TX_WITH_1_INPUT_VSIZE = 175;
-    private static final int DEPOSIT_TX_VSIZE = 233;
+    public static final int TYPICAL_TX_WITH_1_INPUT_VSIZE = 550000;
+    private static final int DEPOSIT_TX_VSIZE = 550000;
 
     private static final int BSQ_INPUT_INCREASE = 70;
     private static final int MAX_ITERATIONS = 10;
@@ -76,7 +76,7 @@ public static final int TYPICAL_TX_WITH_1_INPUT_VSIZE = 175;
     }
 
     public Tuple2<Coin, Integer> getEstimatedFeeAndTxVsizeForTaker(Coin fundsNeededForTrade, Coin tradeFee) {
-        return getEstimatedFeeAndTxVsize(true,
+        return getEstimatedFeeAndTxVsize(false,
                 fundsNeededForTrade,
                 tradeFee,
                 feeService,
@@ -196,7 +196,7 @@ public static final int TYPICAL_TX_WITH_1_INPUT_VSIZE = 175;
         if (!isInTolerance) {
             log.warn("We could not find a tx which satisfies our tolerance requirement of 20%. " +
                             "realTxVsize={}, estimatedTxVsize={}",
-                    realTxVsize, estimatedTxVsize);
+                  realTxVsize, estimatedTxVsize);
         }
         return estimatedTxVsize;
     }

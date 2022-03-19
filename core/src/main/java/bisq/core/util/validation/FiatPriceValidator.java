@@ -22,7 +22,7 @@ import javax.inject.Inject;
 public class FiatPriceValidator extends MonetaryValidator {
     @Override
     protected double getMinValue() {
-        return 0.0001;
+        return 0.00;
     }
 
     @Override

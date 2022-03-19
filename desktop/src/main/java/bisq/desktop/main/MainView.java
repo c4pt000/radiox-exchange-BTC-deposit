@@ -254,7 +254,7 @@ public class MainView extends InitializableView<StackPane, MainViewModel>
                 try {
                     String preferredTradeCurrency = model.getPreferences().getPreferredTradeCurrency().getCode();
                     double availableBalance = Double.parseDouble(
-                            model.getAvailableBalance().getValue().replace("BTC", ""));
+                            model.getAvailableBalance().getValue().replace("RADC", ""));
                     double marketPrice = Double.parseDouble(model.getMarketPrice(preferredTradeCurrency).getValue());
                     tooltipText += "\n" + currencyFormat.format(availableBalance * marketPrice) +
                             " " + preferredTradeCurrency;
@@ -279,7 +279,7 @@ public class MainView extends InitializableView<StackPane, MainViewModel>
                 try {
                     String preferredTradeCurrency = model.getPreferences().getPreferredTradeCurrency().getCode();
                     double reservedBalance = Double.parseDouble(
-                            model.getReservedBalance().getValue().replace("BTC", ""));
+                            model.getReservedBalance().getValue().replace("RADC", ""));
                     double marketPrice = Double.parseDouble(model.getMarketPrice(preferredTradeCurrency).getValue());
                     tooltipText += "\n" + currencyFormat.format(reservedBalance * marketPrice) +
                             " " + preferredTradeCurrency;
@@ -304,7 +304,7 @@ public class MainView extends InitializableView<StackPane, MainViewModel>
                 try {
                     String preferredTradeCurrency = model.getPreferences().getPreferredTradeCurrency().getCode();
                     double lockedBalance = Double.parseDouble(
-                            model.getLockedBalance().getValue().replace("BTC", ""));
+                            model.getLockedBalance().getValue().replace("RADC", ""));
                     double marketPrice = Double.parseDouble(model.getMarketPrice(preferredTradeCurrency).getValue());
                     tooltipText += "\n" + currencyFormat.format(lockedBalance * marketPrice) +
                             " " + preferredTradeCurrency;
@@ -510,14 +510,21 @@ public class MainView extends InitializableView<StackPane, MainViewModel>
 
     @NotNull
     private String getPriceProvider() {
-        return model.getIsFiatCurrencyPriceFeedSelected().get() ? "BitcoinAverage" : "Poloniex";
+//        return model.getIsFiatCurrencyPriceFeedSelected().get() ? "BitcoinAverage" : "Poloniex";
+        return model.getIsFiatCurrencyPriceFeedSelected().get() ? null : null;
     }
 
     private void updateMarketPriceLabel(Label label) {
         if (model.getIsPriceAvailable().get()) {
-            if (model.getIsExternallyProvidedPrice().get()) {
-                label.setText(Res.get("mainView.marketPriceWithProvider.label", "Bisq Price Index"));
-                label.setTooltip(new Tooltip(getPriceProviderTooltipString()));
+            //if (model.getIsExternallyProvidedPrice().get()) {
+              //  label.setText(Res.get("mainView.marketPriceWithProvider.label", "Bisq Price Index"));
+              //  label.setTooltip(new Tooltip(getPriceProviderTooltipString()));
+            
+
+	if (model.getIsExternallyProvidedPrice().get()) {
+                label.setText(Res.get("mainView.marketPrice.bisqInternalPrice"));
+                final Tooltip tooltip = new Tooltip(Res.get("mainView.marketPrice.tooltip.bisqInternalPrice"));
+                label.setTooltip(tooltip);
             } else {
                 label.setText(Res.get("mainView.marketPrice.bisqInternalPrice"));
                 final Tooltip tooltip = new Tooltip(Res.get("mainView.marketPrice.tooltip.bisqInternalPrice"));

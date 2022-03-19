@@ -215,7 +215,8 @@ public class DepositView extends ActivatableView<VBox, Void> {
 
         Tuple3<Button, CheckBox, HBox> buttonCheckBoxHBox = addButtonCheckBoxWithBox(gridPane, ++gridRow,
                 Res.get("funds.deposit.generateAddress"),
-                Res.get("funds.deposit.generateAddressSegwit"),
+                Res.get("funds.deposit.generateAddress"),
+//                Res.get("funds.deposit.generateAddressSegwit"),
                 15);
         buttonCheckBoxHBox.third.setSpacing(25);
         generateNewAddressButton = buttonCheckBoxHBox.first;
@@ -229,7 +230,7 @@ public class DepositView extends ActivatableView<VBox, Void> {
             boolean hasUnUsedAddress = observableList.stream().anyMatch(e -> e.getNumTxOutputs() == 0
                             && (Address.fromString(params, e.getAddressString()) instanceof SegwitAddress)  == segwit);
             if (hasUnUsedAddress) {
-                new Popup().warning(Res.get("funds.deposit.selectUnused")).show();
+            //    new Popup().warning(Res.get("funds.deposit.selectUnused")).show();
             } else {
                 AddressEntry newSavingsAddressEntry = walletService.getFreshAddressEntry(segwit);
                 updateList();

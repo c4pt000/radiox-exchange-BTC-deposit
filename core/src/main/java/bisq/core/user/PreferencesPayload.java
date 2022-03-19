@@ -63,12 +63,12 @@ public final class PreferencesPayload implements PersistableEnvelope {
     private boolean autoSelectArbitrators = true;
     private Map<String, Boolean> dontShowAgainMap = new HashMap<>();
     private boolean tacAccepted;
-    private boolean useTorForBitcoinJ = true;
+    private boolean useTorForBitcoinJ = false;
     private boolean showOwnOffersInOfferBook = true;
     @Nullable
     private TradeCurrency preferredTradeCurrency;
-    private long withdrawalTxFeeInVbytes = 100;
-    private boolean useCustomWithdrawalTxFee = false;
+    private long withdrawalTxFeeInVbytes = 550000;
+    private boolean useCustomWithdrawalTxFee = true;
     private double maxPriceDistanceInPercent = 0.3;
     @Nullable
     private String offerBookChartScreenCurrencyCode;
@@ -81,7 +81,7 @@ public final class PreferencesPayload implements PersistableEnvelope {
     private int tradeStatisticsTickUnitIndex = 3;
     private boolean resyncSpvRequested;
     private boolean sortMarketCurrenciesNumerically = true;
-    private boolean usePercentageBasedPrice = true;
+    private boolean usePercentageBasedPrice = false;
     private Map<String, String> peerTagMap = new HashMap<>();
     // custom btc nodes
     private String bitcoinNodes = "";
@@ -120,7 +120,7 @@ public final class PreferencesPayload implements PersistableEnvelope {
     @Nullable
     private String takeOfferSelectedPaymentAccountId;
     private double buyerSecurityDepositAsPercent = getDefaultBuyerSecurityDepositAsPercent();
-    private int ignoreDustThreshold = 600;
+    private int ignoreDustThreshold = 550000;
     private int clearDataAfterDays = Preferences.CLEAR_DATA_AFTER_DAYS_INITIAL;
     private double buyerSecurityDepositAsPercentForCrypto = getDefaultBuyerSecurityDepositAsPercent();
     private int blockNotifyPort;

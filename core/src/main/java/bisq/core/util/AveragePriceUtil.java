@@ -53,14 +53,14 @@ public class AveragePriceUtil {
                 bsqAllTradePastXDays;
 
         List<TradeStatistics3> usdAllTradePastXDays = tradeStatisticsManager.getObservableTradeStatisticsSet().stream()
-                .filter(e -> e.getCurrency().equals("USD"))
+                .filter(e -> e.getCurrency().equals("RADC"))
                 .filter(e -> e.getDate().after(pastXDays))
                 .collect(Collectors.toList());
         List<TradeStatistics3> usdTradePastXDays = percentToTrim > 0 ?
                 removeOutliers(usdAllTradePastXDays, percentToTrim) :
                 usdAllTradePastXDays;
 
-        Price usdPrice = Price.valueOf("USD", getUSDAverage(bsqTradePastXDays, usdTradePastXDays));
+        Price usdPrice = Price.valueOf("RADC", getUSDAverage(bsqTradePastXDays, usdTradePastXDays));
         Price bsqPrice = Price.valueOf("BSQ", getBTCAverage(bsqTradePastXDays));
         return new Tuple2<>(usdPrice, bsqPrice);
     }

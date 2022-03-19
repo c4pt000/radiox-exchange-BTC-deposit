@@ -80,7 +80,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public final class Preferences implements PersistedDataHost, BridgeAddressProvider {
 
     private static final ArrayList<BlockChainExplorer> BTC_MAIN_NET_EXPLORERS = new ArrayList<>(Arrays.asList(
-            new BlockChainExplorer("radioblockchain.info", "http://radioblockchain.info/tx", "http://radioblockchain.info/address/")
+            new BlockChainExplorer("radioblockchain.info", "http://radioblockchain.info/tx/", "http://radioblockchain.info/address/")
     ));
     private static final ArrayList<BlockChainExplorer> BTC_TEST_NET_EXPLORERS = new ArrayList<>(Arrays.asList(
             new BlockChainExplorer("Blockstream.info", "https://blockstream.info/testnet/tx/", "https://blockstream.info/testnet/address/"),
@@ -114,12 +114,12 @@ public final class Preferences implements PersistedDataHost, BridgeAddressProvid
 
 
     private static final ArrayList<String> TX_BROADCAST_SERVICES_CLEAR_NET = new ArrayList<>(Arrays.asList(
-            "http://172.105.240.205/api/tx"
+            "http://172.105.240.205/api/tx/"
 
     ));
 
     private static final ArrayList<String> TX_BROADCAST_SERVICES = new ArrayList<>(Arrays.asList(
-            "http://172.105.240.205/api/tx"
+            "http://172.105.240.205/api/tx/"
     ));
 
     public static final boolean USE_SYMMETRIC_SECURITY_DEPOSIT = true;

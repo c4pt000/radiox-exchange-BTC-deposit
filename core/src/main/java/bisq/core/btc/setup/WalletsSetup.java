@@ -49,7 +49,7 @@ import org.bitcoinj.core.PeerAddress;
 import org.bitcoinj.core.PeerGroup;
 import org.bitcoinj.core.RejectMessage;
 import org.bitcoinj.core.listeners.DownloadProgressTracker;
-//import org.bitcoinj.params.MainNetParams;
+//mport org.bitcoinj.params.MainNetParams;
 //import org.bitcoinj.params.RegTestParams;
 //import org.bitcoinj.params.TestNet3Params;
 
@@ -57,6 +57,9 @@ import org.bitcoinj.core.listeners.DownloadProgressTracker;
 import org.libdohj.params.DogecoinMainNetParams;
 import org.libdohj.params.DogecoinRegTestParams;
 import org.libdohj.params.DogecoinTestNet3Params;
+
+
+
 import org.bitcoinj.utils.Threading;
 import org.bitcoinj.wallet.DeterministicSeed;
 import org.bitcoinj.wallet.Wallet;

@@ -680,7 +680,7 @@ public class BtcWalletService extends WalletService {
                     return isSegwitOutputScriptType == segwit;
                 })
                 .findAny();
-        return getOrCreateAddressEntry(context, addressEntry, segwit);
+        return getOrCreateAddressEntry(context, addressEntry, false);
     }
 
     public void recoverAddressEntry(String offerId, String address, AddressEntry.Context context) {
@@ -700,7 +700,7 @@ public class BtcWalletService extends WalletService {
             } else {
                 key = (DeterministicKey) wallet.findKeyFromAddress(wallet.freshReceiveAddress(Script.ScriptType.P2PKH));
             }
-            AddressEntry entry = new AddressEntry(key, context, segwit);
+            AddressEntry entry = new AddressEntry(key, context, false);
             log.info("getOrCreateAddressEntry: add new AddressEntry {}", entry);
             addressEntryList.addAddressEntry(entry);
             return entry;

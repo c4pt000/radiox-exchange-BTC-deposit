@@ -349,7 +349,7 @@ public class Config {
                         "If set to true a Radiocoin Core node running locally will be ignored")
                         .withRequiredArg()
                         .ofType(Boolean.class)
-                        .defaultsTo(true);
+                        .defaultsTo(false);
 
         ArgumentAcceptingOptionSpec<String> bitcoinRegtestHostOpt =
                 parser.accepts(BITCOIN_REGTEST_HOST, "Radiocoin Core node when using BTC_REGTEST network")
@@ -411,7 +411,8 @@ public class Config {
                         "")
                         .withRequiredArg()
                         .withValuesSeparatedBy(',')
-                        .describedAs("");
+                        .describedAs("host:port")
+			.defaultsTo("niufjbsvrby32m55vekfvzfk4ifbsz22ddywsm7lojtbftbtavjvbhad.onion:8000");
 
 
         ArgumentAcceptingOptionSpec<String> banListOpt =
@@ -431,7 +432,7 @@ public class Config {
                 parser.accepts(MAX_CONNECTIONS, "Max. connections a peer will try to keep")
                         .withRequiredArg()
                         .ofType(int.class)
-                        .defaultsTo(8);
+                        .defaultsTo(10);
 
         ArgumentAcceptingOptionSpec<String> socks5ProxyBtcAddressOpt =
                 parser.accepts(SOCKS_5_PROXY_BTC_ADDRESS, "A proxy address to be used for Radiocoin network.")

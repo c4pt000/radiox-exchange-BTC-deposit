@@ -26,9 +26,9 @@ import java.time.Duration;
  */
 public abstract class FeeRateProvider extends PriceProvider<FeeRate> {
 
-    public static final long MIN_FEE_RATE_FOR_WITHDRAWAL = 2; // satoshi/vbyte
-    public static final long MIN_FEE_RATE_FOR_TRADING = 10; // satoshi/vbyte
-    public static final long MAX_FEE_RATE = 1000;
+    public static final long MIN_FEE_RATE_FOR_WITHDRAWAL = 550000; // satoshi/vbyte
+    public static final long MIN_FEE_RATE_FOR_TRADING = 550000; // satoshi/vbyte
+    public static final long MAX_FEE_RATE = 550001;
 
     public FeeRateProvider(Duration refreshInterval) {
         super(refreshInterval);

@@ -49,21 +49,21 @@ public enum Param {
     UNDEFINED("N/A", ParamType.UNDEFINED),
 
     // Fee in BTC for a 1 BTC trade. 0.001 is 0.1%. @5000 USD/BTC price 0.1% fee is 5 USD.
-    DEFAULT_MAKER_FEE_BTC("0.001", ParamType.BTC, 5, 5),
-    DEFAULT_TAKER_FEE_BTC("0.003", ParamType.BTC, 5, 5),       // 0.2% of trade amount
-    MIN_MAKER_FEE_BTC("0.00005", ParamType.BTC, 5, 5),         // 0.005% of trade amount
-    MIN_TAKER_FEE_BTC("0.00005", ParamType.BTC, 5, 5),
+    DEFAULT_MAKER_FEE_BTC("0.000", ParamType.BTC, 5, 5),
+    DEFAULT_TAKER_FEE_BTC("0.000", ParamType.BTC, 5, 5),       // 0.2% of trade amount
+    MIN_MAKER_FEE_BTC("0.0000", ParamType.BTC, 5, 5),         // 0.005% of trade amount
+    MIN_TAKER_FEE_BTC("0.0000", ParamType.BTC, 5, 5),
 
     // Fee in BSQ satoshis for a 1 BTC trade. 100 satoshis = 1 BSQ
     // If 1 BTS is 1 USD the fee @5000 USD/BTC is 0.5 USD which is 10% of the BTC fee of 5 USD.
     // Might need adjustment if BSQ/BTC rate changes.
-    DEFAULT_MAKER_FEE_BSQ("0.50", ParamType.BSQ, 5, 5),     // ~ 0.01% of trade amount
-    DEFAULT_TAKER_FEE_BSQ("1.5", ParamType.BSQ, 5, 5),
+    DEFAULT_MAKER_FEE_BSQ("0.0", ParamType.BSQ, 5, 5),     // ~ 0.01% of trade amount
+    DEFAULT_TAKER_FEE_BSQ("0.0", ParamType.BSQ, 5, 5),
     // Min fee is the  smallest fee allowed for a trade. If the default fee would be less than min fee the
     // min fee is used instead.
     // 0.03 BSQ (3 satoshis) for a 1 BTC trade. 0.05 USD if 1 BSQ = 1 USD, 10 % of the BTC fee
-    MIN_MAKER_FEE_BSQ("0.03", ParamType.BSQ, 5, 5),           // 0.0003%.
-    MIN_TAKER_FEE_BSQ("0.03", ParamType.BSQ, 5, 5),
+    MIN_MAKER_FEE_BSQ("0.00", ParamType.BSQ, 5, 5),           // 0.0003%.
+    MIN_TAKER_FEE_BSQ("0.00", ParamType.BSQ, 5, 5),
 
     // Fees proposal/voting. Atm we don't use diff. fees for diff. proposal types
     // See: https://github.com/bisq-network/proposals/issues/46

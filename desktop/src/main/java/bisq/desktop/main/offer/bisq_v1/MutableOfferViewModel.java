@@ -235,8 +235,8 @@ public abstract class MutableOfferViewModel<M extends MutableOfferDataModel> ext
     public void activate() {
         if (DevEnv.isDevMode()) {
             UserThread.runAfter(() -> {
-                amount.set("0.001");
-                price.set("210000");
+                amount.set("0.00");
+                price.set("0");
                 minAmount.set(amount.get());
                 onFocusOutPriceAsPercentageTextField(true, false);
                 applyMakerFee();
@@ -414,7 +414,7 @@ public abstract class MutableOfferViewModel<M extends MutableOfferDataModel> ext
         };
         useMarketBasedPriceListener = (observable, oldValue, newValue) -> {
             if (newValue)
-                priceValidationResult.set(new InputValidator.ValidationResult(true));
+               priceValidationResult.set(new InputValidator.ValidationResult(false));
         };
 
         volumeStringListener = (ov, oldValue, newValue) -> {
@@ -522,9 +522,9 @@ public abstract class MutableOfferViewModel<M extends MutableOfferDataModel> ext
 
 
     private void updateMarketPriceAvailable() {
-        marketPrice = priceFeedService.getMarketPrice(dataModel.getTradeCurrencyCode().get());
-        marketPriceAvailableProperty.set(marketPrice == null || !marketPrice.isExternallyProvidedPrice() ? 0 : 1);
-        dataModel.setMarketPriceAvailable(marketPrice != null && marketPrice.isExternallyProvidedPrice());
+      //  marketPrice = priceFeedService.getMarketPrice(dataModel.getTradeCurrencyCode().get());
+      //  marketPriceAvailableProperty.set(marketPrice == null || !marketPrice.isExternallyProvidedPrice() ? 0 : 1);
+      //  dataModel.setMarketPriceAvailable(marketPrice != null && marketPrice.isExternallyProvidedPrice());
     }
 
     private void addListeners() {

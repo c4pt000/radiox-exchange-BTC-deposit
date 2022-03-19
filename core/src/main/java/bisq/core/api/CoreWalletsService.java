@@ -289,7 +289,7 @@ class CoreWalletsService {
                         feeEstimationTransaction.getFee(),
                         fee.value);
             }
-            log.info("Sending {} BTC to {} with tx fee of {} sats (fee rate {} sats/byte).",
+            log.info("Sending {} RADC to {} with tx fee of {} radiowaves (fee rate {} radiowaves/byte).",
                     amount,
                     address,
                     fee.value,
@@ -304,10 +304,10 @@ class CoreWalletsService {
                     callback);
         } catch (AddressEntryException ex) {
             log.error(ex.toString());
-            throw new IllegalStateException("cannot send btc from any addresses in wallet", ex);
+            throw new IllegalStateException("cannot send radc from any addresses in wallet", ex);
         } catch (InsufficientFundsException | InsufficientMoneyException ex) {
             log.error(ex.toString());
-            throw new NotAvailableException("cannot send btc due to insufficient funds", ex);
+            throw new NotAvailableException("cannot send radc due to insufficient funds", ex);
         }
     }
 
@@ -385,7 +385,7 @@ class CoreWalletsService {
     }
 
     void unsetTxFeeRatePreference(ResultHandler resultHandler) {
-        preferences.setUseCustomWithdrawalTxFee(false);
+        preferences.setUseCustomWithdrawalTxFee(true);
         getTxFeeRate(resultHandler);
     }
 
