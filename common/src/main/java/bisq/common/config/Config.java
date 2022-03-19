@@ -349,7 +349,7 @@ public class Config {
                         "If set to true a Radiocoin Core node running locally will be ignored")
                         .withRequiredArg()
                         .ofType(Boolean.class)
-                        .defaultsTo(false);
+                        .defaultsTo(true);
 
         ArgumentAcceptingOptionSpec<String> bitcoinRegtestHostOpt =
                 parser.accepts(BITCOIN_REGTEST_HOST, "Radiocoin Core node when using BTC_REGTEST network")

@@ -181,9 +181,9 @@ public class MainView extends InitializableView<StackPane, MainViewModel>
         ToggleButton sellButton = new NavButton(SellOfferView.class, Res.get("mainView.menu.sellBtc").toUpperCase());
         ToggleButton portfolioButton = new NavButton(PortfolioView.class, Res.get("mainView.menu.portfolio").toUpperCase());
         ToggleButton fundsButton = new NavButton(FundsView.class, Res.get("mainView.menu.funds").toUpperCase());
-        ToggleButton accountButton = new NavButton(AccountView.class, Res.get("mainView.menu.account"));
-        ToggleButton settingsButton = new NavButton(SettingsView.class, Res.get("mainView.menu.settings"));
-        ToggleButton supportButton = new NavButton(SupportView.class, Res.get("mainView.menu.support"));
+        ToggleButton accountButton = new NavButton(AccountView.class, Res.get("mainView.menu.account").toUpperCase());
+        ToggleButton settingsButton = new NavButton(SettingsView.class, Res.get("mainView.menu.settings").toUpperCase());
+        ToggleButton supportButton = new NavButton(SupportView.class, Res.get("mainView.menu.support").toUpperCase());
         //ToggleButton daoButton = new NavButton(DaoView.class, Res.get("mainView.menu.dao"));
 
         JFXBadge portfolioButtonWithBadge = new JFXBadge(portfolioButton);
