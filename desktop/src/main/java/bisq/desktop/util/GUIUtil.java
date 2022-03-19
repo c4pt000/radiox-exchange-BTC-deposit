@@ -845,12 +845,12 @@ public class GUIUtil {
         }
 
         if (!user.hasAcceptedRefundAgents()) {
-            new Popup().warning(Res.get("popup.warning.noArbitratorsAvailable")).show();
+           // new Popup().warning(Res.get("popup.warning.noArbitratorsAvailable")).show();
             return true;
         }
 
         if (!user.hasAcceptedMediators()) {
-            new Popup().warning(Res.get("popup.warning.noMediatorsAvailable")).show();
+     //       new Popup().warning(Res.get("popup.warning.noMediatorsAvailable")).show();
             return true;
         }
 
