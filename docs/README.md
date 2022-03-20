@@ -1,4 +1,4 @@
-# Bisq developer docs
+# BASED OFF OF Bisq (heavily) developer docs
 
  - [CONTRIBUTING.md](../CONTRIBUTING.md): Understand Bisq's contribution and compensation guidelines
  - [build.md](build.md): Build and run Bisq at the command line
