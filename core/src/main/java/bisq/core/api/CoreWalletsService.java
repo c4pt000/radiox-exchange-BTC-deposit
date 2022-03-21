@@ -161,7 +161,7 @@ class CoreWalletsService {
         switch (currencyCode.trim().toUpperCase()) {
             case "BSQ":
                 return new BalancesInfo(getBsqBalances(), BtcBalanceInfo.EMPTY);
-            case "BTC":
+            case "RADC":
                 return new BalancesInfo(BsqBalanceInfo.EMPTY, getBtcBalances());
             default:
                 return new BalancesInfo(getBsqBalances(), getBtcBalances());
@@ -555,7 +555,7 @@ class CoreWalletsService {
             return;
 
         if (!currencyCode.equalsIgnoreCase("BSQ")
-                && !currencyCode.equalsIgnoreCase("BTC"))
+                && !currencyCode.equalsIgnoreCase("RADC"))
             throw new UnsupportedOperationException(format("wallet does not support %s", currencyCode));
     }
 

@@ -502,7 +502,7 @@ public class BsqSwapCreateOfferView extends BsqSwapOfferView<BsqSwapCreateOfferV
         priceTextField = priceValueCurrencyBoxTuple.second;
         editOfferElements.add(priceTextField);
         priceCurrencyLabel = priceValueCurrencyBoxTuple.third;
-        priceCurrencyLabel.setText("BTC");
+        priceCurrencyLabel.setText("RADC");
         editOfferElements.add(priceCurrencyLabel);
         Tuple2<Label, VBox> priceInputBoxTuple = getTradeInputBox(priceValueCurrencyBox, "");
         priceDescriptionLabel = priceInputBoxTuple.first;
@@ -593,7 +593,7 @@ public class BsqSwapCreateOfferView extends BsqSwapOfferView<BsqSwapCreateOfferV
     protected void checkForMissingFunds(Coin missing) {
         if (missing.isPositive() && !isMissingFundsPopupOpen) {
             isMissingFundsPopupOpen = true;
-            String wallet = model.dataModel.isBuyer() ? "BSQ" : "BTC";
+            String wallet = model.dataModel.isBuyer() ? "BSQ" : "RADC";
             String warning = Res.get("createOffer.bsqSwap.missingFunds.maker",
                     wallet, model.getMissingFunds(missing));
             new Popup().warning(warning)

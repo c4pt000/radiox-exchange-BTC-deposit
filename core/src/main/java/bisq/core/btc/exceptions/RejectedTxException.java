@@ -31,15 +31,15 @@ public class RejectedTxException extends RuntimeException {
     private final String txId;
 
     public RejectedTxException(String message, RejectMessage rejectMessage) {
-     //   super(message);
-       this.rejectMessage = rejectMessage;
+        super(message);
+        this.rejectMessage = rejectMessage;
         txId = rejectMessage.getRejectedObjectHash() != null ? rejectMessage.getRejectedObjectHash().toString() : null;
     }
 
     @Override
     public String toString() {
         return "RejectedTxException{" +
-               "\n     rejectMessage=" + rejectMessage +
+                "\n     rejectMessage=" + rejectMessage +
                 ",\n     txId='" + txId + '\'' +
                 "\n} " + super.toString();
     }

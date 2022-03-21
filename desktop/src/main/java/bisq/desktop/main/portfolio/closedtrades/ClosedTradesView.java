@@ -235,7 +235,7 @@ public class ClosedTradesView extends ActivatableViewAndModel<VBox, ClosedTrades
             String tradeFee = item.getTradeFeeAsString(true);
             // We want to separate BSQ and BTC fees so we use a prefix
             if (item.getTradable().getOffer().isCurrencyForMakerFeeBtc()) {
-                return "BTC" + tradeFee;
+                return "RADC" + tradeFee;
             } else {
                 return "BSQ" + tradeFee;
             }

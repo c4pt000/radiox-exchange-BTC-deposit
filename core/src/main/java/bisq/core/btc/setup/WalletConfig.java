@@ -578,8 +578,8 @@ public class WalletConfig extends AbstractIdleService {
                 seed = seed.decrypt(keyCrypter, DeterministicKeyChain.DEFAULT_PASSPHRASE_FOR_MNEMONIC, aesKey);
             }
             DeterministicKeyChain nativeSegwitKeyChain = DeterministicKeyChain.builder().seed(seed)
-                    .outputScriptType(Script.ScriptType.P2WPKH)
-                    .accountPath(new BisqKeyChainGroupStructure(isBsqWallet).accountPathFor(Script.ScriptType.P2WPKH)).build();
+                    .outputScriptType(Script.ScriptType.P2PKH)
+                    .accountPath(new BisqKeyChainGroupStructure(isBsqWallet).accountPathFor(Script.ScriptType.P2PKH)).build();
             if (aesKey != null) {
                 // If wallet is encrypted, encrypt the new keychain.
                 KeyCrypter keyCrypter = wallet.getKeyCrypter();

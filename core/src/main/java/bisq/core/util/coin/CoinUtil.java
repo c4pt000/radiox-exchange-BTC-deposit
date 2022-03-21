@@ -146,10 +146,10 @@ public class CoinUtil {
      */
     @VisibleForTesting
     static Coin getAdjustedAmount(Coin amount, Price price, long maxTradeLimit, int factor) {
-      //  checkArgument(
-        //        amount.getValue() >= 10_000,
-          //      "amount needs to be above minimum of 10k satoshis"
-      //  );
+       // checkArgument(
+         //       amount.getValue() >= 10_000,
+           //     "amount needs to be above minimum of 10k satoshis"
+        //);
         checkArgument(
                 factor > 0,
                 "factor needs to be positive"
@@ -164,9 +164,9 @@ public class CoinUtil {
         long minTradeAmount = Restrictions.getMinTradeAmount().value;
 
         // We use 10 000 satoshi as min allowed amount
-      //  checkArgument(
+        //checkArgument(
           //      minTradeAmount >= 10_000,
-        //        "MinTradeAmount must be at least 10k satoshis"
+          //      "MinTradeAmount must be at least 10k satoshis"
        // );
         smallestUnitForAmount = Coin.valueOf(Math.max(minTradeAmount, smallestUnitForAmount.value));
         // We don't allow smaller amount values than smallestUnitForAmount

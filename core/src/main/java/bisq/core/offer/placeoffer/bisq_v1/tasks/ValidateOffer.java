@@ -43,13 +43,13 @@ public class ValidateOffer extends Task<PlaceOfferModel> {
             checkArgument(!offer.isBsqSwapOffer());
 
             // Coins
-          //  checkCoinNotNullOrZero(offer.getAmount(), "Amount");
-          //  checkCoinNotNullOrZero(offer.getMinAmount(), "MinAmount");
-       //     checkCoinNotNullOrZero(offer.getMakerFee(), "MakerFee");
-      //      checkCoinNotNullOrZero(offer.getBuyerSecurityDeposit(), "buyerSecurityDeposit");
-        //    checkCoinNotNullOrZero(offer.getSellerSecurityDeposit(), "sellerSecurityDeposit");
-          //  checkCoinNotNullOrZero(offer.getTxFee(), "txFee");
-          //  checkCoinNotNullOrZero(offer.getMaxTradeLimit(), "MaxTradeLimit");
+            checkCoinNotNullOrZero(offer.getAmount(), "Amount");
+            checkCoinNotNullOrZero(offer.getMinAmount(), "MinAmount");
+   //         checkCoinNotNullOrZero(offer.getMakerFee(), "MakerFee");
+     //       checkCoinNotNullOrZero(offer.getBuyerSecurityDeposit(), "buyerSecurityDeposit");
+       //     checkCoinNotNullOrZero(offer.getSellerSecurityDeposit(), "sellerSecurityDeposit");
+            checkCoinNotNullOrZero(offer.getTxFee(), "txFee");
+            checkCoinNotNullOrZero(offer.getMaxTradeLimit(), "MaxTradeLimit");
 
             // We remove those checks to be more flexible with future changes.
             /*checkArgument(offer.getMakerFee().value >= FeeService.getMinMakerFee(offer.isCurrencyForMakerFeeBtc()).value,
@@ -69,7 +69,7 @@ public class ValidateOffer extends Task<PlaceOfferModel> {
 
             checkArgument(offer.getAmount().compareTo(offer.getPaymentMethod().getMaxTradeLimitAsCoin(offer.getCurrencyCode())) <= 0,
                     "Amount is larger than " + offer.getPaymentMethod().getMaxTradeLimitAsCoin(offer.getCurrencyCode()).toFriendlyString());
-         //   checkArgument(offer.getAmount().compareTo(offer.getMinAmount()) >= 0, "MinAmount is larger than Amount");
+            checkArgument(offer.getAmount().compareTo(offer.getMinAmount()) >= 0, "MinAmount is larger than Amount");
 
             checkNotNull(offer.getPrice(), "Price is null");
             checkArgument(offer.getPrice().isPositive(),
@@ -82,13 +82,13 @@ public class ValidateOffer extends Task<PlaceOfferModel> {
             checkNotNull(offer.getDirection(), "Direction is null");
             checkNotNull(offer.getId(), "Id is null");
             checkNotNull(offer.getPubKeyRing(), "pubKeyRing is null");
-          //  checkNotNull(offer.getMinAmount(), "MinAmount is null");
+            checkNotNull(offer.getMinAmount(), "MinAmount is null");
             checkNotNull(offer.getPrice(), "Price is null");
-          //  checkNotNull(offer.getTxFee(), "txFee is null");
-          //  checkNotNull(offer.getMakerFee(), "MakerFee is null");
+            checkNotNull(offer.getTxFee(), "txFee is null");
+           // checkNotNull(offer.getMakerFee(), "MakerFee is null");
             checkNotNull(offer.getVersionNr(), "VersionNr is null");
-         //   checkArgument(offer.getMaxTradePeriod() > 0,
-           //         "maxTradePeriod must be positive. maxTradePeriod=" + offer.getMaxTradePeriod());
+            checkArgument(offer.getMaxTradePeriod() > 0,
+                    "maxTradePeriod must be positive. maxTradePeriod=" + offer.getMaxTradePeriod());
             // TODO check upper and lower bounds for fiat
             // TODO check rest of new parameters
             // TODO check for account age witness base tradeLimit is missing

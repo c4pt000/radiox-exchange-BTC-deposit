@@ -84,7 +84,7 @@ public class MarketStats extends Metric {
                 Matcher amount = amountPattern.matcher(trade);
                 Matcher timestamp = timestampPattern.matcher(trade);
                 market.find();
-                if (market.group(1).endsWith("btc")) {
+                if (market.group(1).endsWith("radc")) {
                     amount = volumePattern.matcher(trade);
                 }
                 amount.find();

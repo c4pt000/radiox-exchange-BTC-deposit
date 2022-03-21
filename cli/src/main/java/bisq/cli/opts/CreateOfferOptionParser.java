@@ -56,7 +56,7 @@ public class CreateOfferOptionParser extends AbstractMethodOptionParser implemen
 
     final OptionSpec<String> makerFeeCurrencyCodeOpt = parser.accepts(OPT_FEE_CURRENCY, "maker fee currency code (bsq|btc)")
             .withOptionalArg()
-            .defaultsTo("btc");
+            .defaultsTo("radc");
 
     final OptionSpec<Boolean> isSwapOpt = parser.accepts(OPT_SWAP, "create bsq swap offer")
             .withOptionalArg()
@@ -163,7 +163,7 @@ public class CreateOfferOptionParser extends AbstractMethodOptionParser implemen
     }
 
     public String getMakerFeeCurrencyCode() {
-        return options.has(makerFeeCurrencyCodeOpt) ? options.valueOf(makerFeeCurrencyCodeOpt) : "btc";
+        return options.has(makerFeeCurrencyCodeOpt) ? options.valueOf(makerFeeCurrencyCodeOpt) : "radc";
     }
 
     public boolean getIsSwap() {

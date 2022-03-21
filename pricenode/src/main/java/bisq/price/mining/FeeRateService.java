@@ -68,7 +68,7 @@ public class FeeRateService {
                 return;
             }
             String currency = feeRate.getCurrency();
-            if ("BTC".equals(currency)) {
+            if ("RADC".equals(currency)) {
                 sumOfAllFeeRates.getAndAdd(feeRate.getPrice());
                 sumOfAllMinFeeRates.getAndAdd(feeRate.getMinimumFee());
                 amountOfFeeRates.getAndAdd(1);

@@ -101,11 +101,11 @@ public class CreateMakerFeeTx extends Task<PlaceOfferModel> {
 
                             @Override
                             public void onFailure(TxBroadcastException exception) {
-                                if (!completed) {
-                                    failed(exception);
-                                } else {
-                                    log.warn("We got the onFailure callback called after the timeout has been triggered a complete().");
-                                }
+                       //         if (!completed) {
+                         //           failed(exception);
+                           //     } else {
+                             //       log.warn("We got the onFailure callback called after the timeout has been triggered a complete().");
+                             //   }
                             }
                         });
             } else {
@@ -145,12 +145,12 @@ public class CreateMakerFeeTx extends Task<PlaceOfferModel> {
 
                             @Override
                             public void onFailure(TxBroadcastException exception) {
-                                log.error(exception.toString());
-                                exception.printStackTrace();
-                                offer.setErrorMessage("An error occurred.\n" +
-                                        "Error message:\n"
-                                        + exception.getMessage());
-                                failed(exception);
+           //                     log.error(exception.toString());
+             //                   exception.printStackTrace();
+               //                 offer.setErrorMessage("An error occurred.\n" +
+                 //                       "Error message:\n"
+                   //                     + exception.getMessage());
+                     //           failed(exception);
                             }
                         },
                         1);
@@ -161,9 +161,9 @@ public class CreateMakerFeeTx extends Task<PlaceOfferModel> {
                         "disabled due technical problems. Please use the BTC fee option until the issues are resolved. " +
                         "For more information please visit the Bisq Forum.");
             } else {
-                offer.setErrorMessage("An error occurred.\n" +
-                        "Error message:\n"
-                        + t.getMessage());
+       //         offer.setErrorMessage("An error occurred.\n" +
+       //                 "Error message:\n"
+         //               + t.getMessage());
             }
 
             failed(t);

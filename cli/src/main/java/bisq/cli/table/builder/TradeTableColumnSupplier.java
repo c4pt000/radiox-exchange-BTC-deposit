@@ -76,7 +76,7 @@ class TradeTableColumnSupplier {
     private final Supplier<Boolean> isClosedTradeTblBuilder = () -> getTableType().equals(CLOSED_TRADES_TBL);
     private final Supplier<Boolean> isFailedTradeTblBuilder = () -> getTableType().equals(FAILED_TRADES_TBL);
     private final Supplier<TradeInfo> firstRow = () -> getTrades().get(0);
-    private final Predicate<OfferInfo> isFiatOffer = (o) -> o.getBaseCurrencyCode().equals("BTC");
+    private final Predicate<OfferInfo> isFiatOffer = (o) -> o.getBaseCurrencyCode().equals("RADC");
     private final Predicate<TradeInfo> isFiatTrade = (t) -> isFiatOffer.test(t.getOffer());
     private final Predicate<TradeInfo> isBsqSwapTrade = (t) -> t.getOffer().getIsBsqSwapOffer();
     private final Predicate<TradeInfo> isTaker = (t) -> t.getRole().toLowerCase().contains("taker");
@@ -209,8 +209,8 @@ class TradeTableColumnSupplier {
         if (isTradeDetailTblBuilder.get()) {
             TradeInfo t = firstRow.get();
             String headerCurrencyCode = isTaker.test(t)
-                    ? t.getIsCurrencyForTakerFeeBtc() ? "BTC" : "BSQ"
-                    : t.getOffer().getIsCurrencyForMakerFeeBtc() ? "BTC" : "BSQ";
+                    ? t.getIsCurrencyForTakerFeeBtc() ? "RADC" : "BSQ"
+                    : t.getOffer().getIsCurrencyForMakerFeeBtc() ? "RADC" : "BSQ";
             String colHeader = isTaker.test(t)
                     ? format(COL_HEADER_TRADE_TAKER_FEE, headerCurrencyCode)
                     : format(COL_HEADER_TRADE_MAKER_FEE, headerCurrencyCode);

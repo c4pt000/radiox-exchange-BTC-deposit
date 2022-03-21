@@ -1213,7 +1213,7 @@ public class TakeOfferView extends ActivatableViewAndModel<AnchorPane, TakeOffer
         vBox.getChildren().addAll(tradeFeeInBtcLabel, tradeFeeInBsqLabel);
 
         tradeFeeInBtcToggle = new AutoTooltipSlideToggleButton();
-        tradeFeeInBtcToggle.setText("BTC");
+        tradeFeeInBtcToggle.setText("RADC");
         tradeFeeInBtcToggle.setPadding(new Insets(-8, 5, -10, 5));
 
         tradeFeeInBsqToggle = new AutoTooltipSlideToggleButton();

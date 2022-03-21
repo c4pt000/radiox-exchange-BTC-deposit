@@ -176,12 +176,12 @@ public class CliMain {
                         case "BSQ":
                             new TableBuilder(BSQ_BALANCE_TBL, balances.getBsq()).build().print(out);
                             break;
-                        case "BTC":
+                        case "RADC":
                             new TableBuilder(BTC_BALANCE_TBL, balances.getBtc()).build().print(out);
                             break;
                         case "":
                         default: {
-                            out.println("BTC");
+                            out.println("RADC");
                             new TableBuilder(BTC_BALANCE_TBL, balances.getBtc()).build().print(out);
                             out.println("BSQ");
                             new TableBuilder(BSQ_BALANCE_TBL, balances.getBsq()).build().print(out);

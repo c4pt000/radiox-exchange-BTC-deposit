@@ -30,7 +30,7 @@ public class TakeOfferOptionParser extends OfferIdOptionParser implements Method
 
     final OptionSpec<String> takerFeeCurrencyCodeOpt = parser.accepts(OPT_FEE_CURRENCY, "taker fee currency code (bsq|btc)")
             .withOptionalArg()
-            .defaultsTo("btc");
+            .defaultsTo("radc");
 
     public TakeOfferOptionParser(String[] args) {
         super(args, true);
@@ -52,6 +52,6 @@ public class TakeOfferOptionParser extends OfferIdOptionParser implements Method
     }
 
     public String getTakerFeeCurrencyCode() {
-        return options.has(takerFeeCurrencyCodeOpt) ? options.valueOf(takerFeeCurrencyCodeOpt) : "btc";
+        return options.has(takerFeeCurrencyCodeOpt) ? options.valueOf(takerFeeCurrencyCodeOpt) : "radc";
     }
 }

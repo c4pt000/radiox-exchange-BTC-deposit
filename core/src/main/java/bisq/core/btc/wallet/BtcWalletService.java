@@ -598,9 +598,8 @@ public class BtcWalletService extends WalletService {
                 // If connectedOutput is null, we don't know here the input type. To avoid underpaying fees,
                 // we treat it as a legacy input which will result in a higher fee estimation.
                 numLegacyInputs++;
-            } else if (ScriptPattern.isP2PKH(connectedOutput.getScriptPubKey())) {
-                numLegacyInputs++;
-//                numSegwitInputs++;
+            } else if (ScriptPattern.isP2WPKH(connectedOutput.getScriptPubKey())) {
+                numSegwitInputs++;
             } else {
                 throw new IllegalArgumentException("Inputs should spend a P2PKH, P2PK or P2WPKH output");
             }
@@ -649,8 +648,8 @@ public class BtcWalletService extends WalletService {
                     context != AddressEntry.Context.MULTI_SIG) {    // always use fresh address for MULTI_SIG GH#5880
                 return addressEntryList.swapAvailableToAddressEntryWithOfferId(emptyAvailableAddressEntry.get(), context, offerId);
             } else {
-                DeterministicKey key = (DeterministicKey) wallet.findKeyFromAddress(wallet.freshReceiveAddress(Script.ScriptType.P2PKH));
-                AddressEntry entry = new AddressEntry(key, context, offerId, false);
+                DeterministicKey key = (DeterministicKey) wallet.findKeyFromAddress(wallet.freshReceiveAddress(Script.ScriptType.P2WPKH));
+                AddressEntry entry = new AddressEntry(key, context, offerId, true);
                 log.info("getOrCreateAddressEntry: new AddressEntry={}", entry);
                 addressEntryList.addAddressEntry(entry);
                 return entry;
@@ -701,7 +700,7 @@ public class BtcWalletService extends WalletService {
             } else {
                 key = (DeterministicKey) wallet.findKeyFromAddress(wallet.freshReceiveAddress(Script.ScriptType.P2PKH));
             }
-            AddressEntry entry = new AddressEntry(key, context, true);
+            AddressEntry entry = new AddressEntry(key, context, false);
             log.info("getOrCreateAddressEntry: add new AddressEntry {}", entry);
             addressEntryList.addAddressEntry(entry);
             return entry;

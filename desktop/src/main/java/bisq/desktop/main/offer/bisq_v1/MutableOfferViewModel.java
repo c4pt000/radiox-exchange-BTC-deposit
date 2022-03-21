@@ -331,11 +331,11 @@ public abstract class MutableOfferViewModel<M extends MutableOfferDataModel> ext
 
                     if (!inputIsMarketBasedPrice) {
                         if (marketPrice != null && marketPrice.isRecentExternalPriceAvailable()) {
-                            double marketPriceAsDouble = 0.001;
+                            double marketPriceAsDouble = 0.0001;
 //marketPrice.getPrice();
-                        
-    try {
-                                double priceAsDouble = ParsingUtils.parseNumberStringToDouble(price.get());
+                            try {
+                                double priceAsDouble = 0.0001;
+//ParsingUtils.parseNumberStringToDouble(price.get());
                                 double relation = priceAsDouble / marketPriceAsDouble;
                                 final OfferDirection compareDirection = CurrencyUtil.isCryptoCurrency(currencyCode) ?
                                         OfferDirection.SELL :
@@ -349,9 +349,7 @@ public abstract class MutableOfferViewModel<M extends MutableOfferDataModel> ext
                                 marketPriceMargin.set("");
                                 new Popup().warning(Res.get("validation.NaN")).show();
                             }
-
-                        } 
-				else {
+                        } else {
                             log.debug("We don't have a market price. We use the static price instead.");
                         }
                     }
@@ -365,9 +363,9 @@ public abstract class MutableOfferViewModel<M extends MutableOfferDataModel> ext
                     if (!newValue.isEmpty() && !newValue.equals("-")) {
                         double percentage = ParsingUtils.parsePercentStringToDouble(newValue);
                         if (percentage >= 1 || percentage <= -1) {
-                      //      new Popup().warning(Res.get("popup.warning.tooLargePercentageValue") + "\n" +
-                        //                    Res.get("popup.warning.examplePercentageValue"))
-                          //          .show();
+                            new Popup().warning(Res.get("popup.warning.tooLargePercentageValue") + "\n" +
+                                            Res.get("popup.warning.examplePercentageValue"))
+                                    .show();
                         } else {
                             final String currencyCode = dataModel.getTradeCurrencyCode().get();
                             MarketPrice marketPrice = priceFeedService.getMarketPrice(currencyCode);
@@ -382,7 +380,8 @@ public abstract class MutableOfferViewModel<M extends MutableOfferDataModel> ext
                                 double factor = dataModel.getDirection() == compareDirection ?
                                         1 - percentage :
                                         1 + percentage;
-                                double targetPrice = marketPriceAsDouble * factor;
+                                double targetPrice = 0.0001;
+//marketPriceAsDouble * factor;
                                 int precision = isCryptoCurrency ?
                                         Altcoin.SMALLEST_UNIT_EXPONENT : Fiat.SMALLEST_UNIT_EXPONENT;
                                 // protect from triggering unwanted updates
@@ -399,9 +398,9 @@ public abstract class MutableOfferViewModel<M extends MutableOfferDataModel> ext
                                 marketPriceMargin.set("");
                                 String id = "showNoPriceFeedAvailablePopup";
                                 if (preferences.showAgain(id)) {
-                                  //  new Popup().warning(Res.get("popup.warning.noPriceFeedAvailable"))
-                                    //        .dontShowAgainId(id)
-                                      //      .show();
+                                    new Popup().warning(Res.get("popup.warning.noPriceFeedAvailable"))
+                                            .dontShowAgainId(id)
+                                            .show();
                                 }
                             }
                         }
@@ -970,14 +969,14 @@ public abstract class MutableOfferViewModel<M extends MutableOfferDataModel> ext
     }
 
     private void displayPriceOutOfRangePopup() {
-      //  Popup popup = new Popup();
-      //  popup.warning(Res.get("createOffer.priceOutSideOfDeviation",
-        //                FormattingUtils.formatToPercentWithSymbol(preferences.getMaxPriceDistanceInPercent())))
-          //      .actionButtonText(Res.get("createOffer.changePrice"))
-            //    .onAction(popup::hide)
-              //  .closeButtonTextWithGoTo("navigation.settings.preferences")
-                //.onClose(() -> navigation.navigateTo(MainView.class, SettingsView.class, PreferencesView.class))
-               // .show();
+        Popup popup = new Popup();
+        popup.warning(Res.get("createOffer.priceOutSideOfDeviation",
+                        FormattingUtils.formatToPercentWithSymbol(preferences.getMaxPriceDistanceInPercent())))
+                .actionButtonText(Res.get("createOffer.changePrice"))
+                .onAction(popup::hide)
+                .closeButtonTextWithGoTo("navigation.settings.preferences")
+                .onClose(() -> navigation.navigateTo(MainView.class, SettingsView.class, PreferencesView.class))
+                .show();
     }
 
     CoinFormatter getBtcFormatter() {

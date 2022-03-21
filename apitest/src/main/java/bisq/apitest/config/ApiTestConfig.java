@@ -56,7 +56,7 @@ public class ApiTestConfig {
 
     // Global constants
     public static final String BSQ = "BSQ";
-    public static final String BTC = "BTC";
+    public static final String BTC = "RADC";
     public static final String EUR = "EUR";
     public static final String USD = "USD";
     public static final String XMR = "XMR";

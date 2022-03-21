@@ -647,7 +647,7 @@ public class CurrencyUtil {
                     .filter(cryptoCurrency -> cryptoCurrency.getCode().equals(currencyCode))
                     .findAny();
 
-            String btcOrRemovedAsset = "RADC".equals(currencyCode) ? "Radiocoin" :
+            String btcOrRemovedAsset = "RADC".equals(currencyCode) ? "Bitcoin" :
                     removedCryptoCurrency.isPresent() ? removedCryptoCurrency.get().getName() : Res.get("shared.na");
             return getCryptoCurrency(currencyCode).map(TradeCurrency::getName).orElse(btcOrRemovedAsset);
         }

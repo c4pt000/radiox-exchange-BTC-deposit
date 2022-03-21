@@ -213,7 +213,8 @@ public class DepositView extends ActivatableView<VBox, Void> {
         addressTextField.setManaged(false);
         amountTextField.setManaged(false);
 
-        Tuple3<Button, CheckBox, HBox> buttonCheckBoxHBox = addButtonCheckBoxWithBox(gridPane, ++gridRow,
+     
+   Tuple3<Button, CheckBox, HBox> buttonCheckBoxHBox = addButtonCheckBoxWithBox(gridPane, ++gridRow,
                 Res.get("funds.deposit.generateAddress"),
                 Res.get("funds.deposit.generateAddress"),
 //                Res.get("funds.deposit.generateAddressSegwit"),
@@ -223,6 +224,7 @@ public class DepositView extends ActivatableView<VBox, Void> {
         generateNewAddressSegwitCheckbox = buttonCheckBoxHBox.second;
         generateNewAddressSegwitCheckbox.setAllowIndeterminate(false);
         generateNewAddressSegwitCheckbox.setSelected(true);
+
 
         generateNewAddressButton.setOnAction(event -> {
             boolean segwit = generateNewAddressSegwitCheckbox.isSelected();
@@ -240,6 +242,7 @@ public class DepositView extends ActivatableView<VBox, Void> {
                         .ifPresent(depositListItem -> tableView.getSelectionModel().select(depositListItem));
             }
         });
+
 
         balanceListener = new BalanceListener() {
             @Override
