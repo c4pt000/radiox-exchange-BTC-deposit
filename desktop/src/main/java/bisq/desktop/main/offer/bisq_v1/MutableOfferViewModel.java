@@ -365,15 +365,16 @@ public abstract class MutableOfferViewModel<M extends MutableOfferDataModel> ext
                     if (!newValue.isEmpty() && !newValue.equals("-")) {
                         double percentage = ParsingUtils.parsePercentStringToDouble(newValue);
                         if (percentage >= 1 || percentage <= -1) {
-                            new Popup().warning(Res.get("popup.warning.tooLargePercentageValue") + "\n" +
-                                            Res.get("popup.warning.examplePercentageValue"))
-                                    .show();
+                      //      new Popup().warning(Res.get("popup.warning.tooLargePercentageValue") + "\n" +
+                        //                    Res.get("popup.warning.examplePercentageValue"))
+                          //          .show();
                         } else {
                             final String currencyCode = dataModel.getTradeCurrencyCode().get();
                             MarketPrice marketPrice = priceFeedService.getMarketPrice(currencyCode);
                             if (marketPrice != null && marketPrice.isRecentExternalPriceAvailable()) {
                                 percentage = MathUtils.roundDouble(percentage, 4);
-                                double marketPriceAsDouble = marketPrice.getPrice();
+                                double marketPriceAsDouble = 0.0001;
+//marketPrice.getPrice();
                                 final boolean isCryptoCurrency = CurrencyUtil.isCryptoCurrency(currencyCode);
                                 final OfferDirection compareDirection = isCryptoCurrency ?
                                         OfferDirection.SELL :
@@ -398,9 +399,9 @@ public abstract class MutableOfferViewModel<M extends MutableOfferDataModel> ext
                                 marketPriceMargin.set("");
                                 String id = "showNoPriceFeedAvailablePopup";
                                 if (preferences.showAgain(id)) {
-                                    new Popup().warning(Res.get("popup.warning.noPriceFeedAvailable"))
-                                            .dontShowAgainId(id)
-                                            .show();
+                                  //  new Popup().warning(Res.get("popup.warning.noPriceFeedAvailable"))
+                                    //        .dontShowAgainId(id)
+                                      //      .show();
                                 }
                             }
                         }
