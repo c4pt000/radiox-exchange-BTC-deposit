@@ -1,10 +1,9 @@
 # WIP 03-20-22
 # requires java11 + basic tor outbound access
 # java -jar radiox-exchange.jar
-# BASED OFF OF Bisq (heavily) developer docs
-# 03-20-2022
+# BASED OFF OF Bisq 
 # QR code deposit is broken right now
-# adjusted trade offer deposit wallet to legacy instead of segwit
+# adjusted "trade offer" deposit wallet to -> legacy addresses instead of segwit addresses to support the api/tx broadcast function to avoid rpc errors (radiocoin doesnt support segwit addresses to send or receive)
 ![s1](https://raw.githubusercontent.com/c4pt000/radiox-exchange-BTC-deposit/main/legacy-trade-offer-funding-NOW.png)
 ```
  b.c.p.mempool.MempoolService: MempoolService bypassed by config setting bypassMempoolValidation=true 
