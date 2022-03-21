@@ -674,7 +674,7 @@ public class Config {
                         "Prevents mempool check of trade parameters")
                         .withRequiredArg()
                         .ofType(boolean.class)
-                        .defaultsTo(false);
+                        .defaultsTo(true);
 
         try {
             CompositeOptionSet options = new CompositeOptionSet();

@@ -111,7 +111,7 @@ public class WalletAppSetup {
               Runnable walletPasswordHandler,
               Runnable downloadCompleteHandler,
               Runnable walletInitializedHandler) {
-        log.info("Initialize WalletAppSetup with BitcoinJ version {} and hash of BitcoinJ commit {}",
+        log.info("Initialize WalletAppSetup with RadiocoinJ version {} and hash of RadiocoinJ commit {}",
                 VersionMessage.BITCOINJ_VERSION, "2a80db4");
 
         ObjectProperty<Throwable> walletServiceException = new SimpleObjectProperty<>();
@@ -163,10 +163,10 @@ public class WalletAppSetup {
                                 spvFileCorruptedHandler.accept(Res.get("error.spvFileCorrupted", exception.getMessage()));
                             }
                         } else if (exception instanceof RejectedTxException) {
-                            rejectedTxException.set((RejectedTxException) exception);
-                            getWalletServiceErrorMsg().set(Res.get("mainView.walletServiceErrorMsg.rejectedTxException", exception.getMessage()));
+                         //   rejectedTxException.set((RejectedTxException) exception);
+                         //   getWalletServiceErrorMsg().set(Res.get("mainView.walletServiceErrorMsg.rejectedTxException", exception.getMessage()));
                         } else {
-                            getWalletServiceErrorMsg().set(Res.get("mainView.walletServiceErrorMsg.connectionError", exception.toString()));
+                         //   getWalletServiceErrorMsg().set(Res.get("mainView.walletServiceErrorMsg.connectionError", exception.toString()));
                         }
                     }
                     return result;
@@ -206,7 +206,7 @@ public class WalletAppSetup {
             }
 
             RejectMessage rejectMessage = newValue.getRejectMessage();
-            log.warn("We received reject message: {}", rejectMessage);
+          //  log.warn("We received reject message: {}", rejectMessage);
 
             // TODO: Find out which reject messages are critical and which not.
             // We got a report where a "tx already known" message caused a failed trade but the deposit tx was valid.
@@ -239,7 +239,7 @@ public class WalletAppSetup {
                                             rejectedTxErrorMessageHandler.accept(Res.get("popup.warning.openOffer.makerFeeTxRejected", openOffer.getId(), txId));
                                         }
                                         openOfferManager.removeOpenOffer(openOffer, () -> {
-                                            log.warn("We removed an open offer because the maker fee was rejected by the Bitcoin " +
+                                            log.warn("We removed an open offer because the maker fee was rejected by the Radiocoin " +
                                                     "network. OfferId={}, txId={}", openOffer.getShortId(), txId);
                                         }, log::warn);
                                     }, 1);

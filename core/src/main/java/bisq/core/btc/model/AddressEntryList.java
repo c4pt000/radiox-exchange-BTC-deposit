@@ -110,7 +110,7 @@ public final class AddressEntryList implements PersistableEnvelope, PersistedDat
         if (!entrySet.isEmpty()) {
             Set<AddressEntry> toBeRemoved = new HashSet<>();
             entrySet.forEach(addressEntry -> {
-                Script.ScriptType scriptType = addressEntry.isSegwit() ? Script.ScriptType.P2WPKH
+                Script.ScriptType scriptType = addressEntry.isSegwit() ? Script.ScriptType.P2PKH
                         : Script.ScriptType.P2PKH;
                 DeterministicKey keyFromPubHash = (DeterministicKey) wallet.findKeyFromPubKeyHash(
                         addressEntry.getPubKeyHash(), scriptType);

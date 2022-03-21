@@ -252,7 +252,7 @@ public class MempoolService {
             }
         });
         btcFeeReceivers.addAll(daoFacade.getAllDonationAddresses());
-        log.info("Known BTC fee receivers: {}", btcFeeReceivers.toString());
+        log.info("Known RADC fee receivers: {}", btcFeeReceivers.toString());
 
         return btcFeeReceivers;
     }

@@ -97,7 +97,7 @@ public class OfferUtil {
     private final TradeStatisticsManager tradeStatisticsManager;
 
     private final Predicate<String> isValidFeePaymentCurrencyCode = (c) ->
-            c.equalsIgnoreCase("BSQ") || c.equalsIgnoreCase("BTC");
+            c.equalsIgnoreCase("BSQ") || c.equalsIgnoreCase("RADC");
 
     @Inject
     public OfferUtil(AccountAgeWitnessService accountAgeWitnessService,
@@ -160,7 +160,7 @@ public class OfferUtil {
 
             if (feeCurrencyCode.equalsIgnoreCase("BSQ") && preferences.isPayFeeInBtc())
                 preferences.setPayFeeInBtc(false);
-            else if (feeCurrencyCode.equalsIgnoreCase("BTC") && !preferences.isPayFeeInBtc())
+            else if (feeCurrencyCode.equalsIgnoreCase("RADC") && !preferences.isPayFeeInBtc())
                 preferences.setPayFeeInBtc(true);
         }
     }
@@ -489,11 +489,11 @@ public class OfferUtil {
     }
 
     public static boolean isFiatOffer(Offer offer) {
-        return offer.getBaseCurrencyCode().equals("BTC") && !offer.isBsqSwapOffer();
+        return offer.getBaseCurrencyCode().equals("RADC") && !offer.isBsqSwapOffer();
     }
 
     public static boolean isAltcoinOffer(Offer offer) {
-        return offer.getCounterCurrencyCode().equals("BTC") && !offer.isBsqSwapOffer();
+        return offer.getCounterCurrencyCode().equals("RADC") && !offer.isBsqSwapOffer();
     }
 
     public static Optional<String> getInvalidMakerFeeTxErrorMessage(Offer offer, BtcWalletService btcWalletService) {

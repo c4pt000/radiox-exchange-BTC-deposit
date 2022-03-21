@@ -33,7 +33,7 @@ configure(subprojects) {
     ext { // in alphabetical order
         bcVersion = '1.63'
         //bitcoinjVersion = '42bbae9'
-        bitcoinjVersion = '65db2cd'
+        bitcoinjVersion = 'a9f4fed'
         codecVersion = '1.13'
         cowwocVersion = '1.2'
         easybindVersion = '1.0.3'
@@ -219,7 +219,7 @@ configure(project(':proto')) {
 
 configure(project(':assets')) {
     dependencies {
-        implementation 'com.github.c4pt000:libdohj:c0f2801'
+        implementation 'com.github.c4pt000:libdohj:4e5d7c5'
 
         implementation("com.github.c4pt000:bitcoinj:$bitcoinjVersion") {
             exclude(module: 'bcprov-jdk15on')
@@ -253,7 +253,7 @@ configure(project(':common')) {
         implementation "ch.qos.logback:logback-classic:$logbackVersion"
         implementation "ch.qos.logback:logback-core:$logbackVersion"
 
-        implementation 'com.github.c4pt000:libdohj:c0f2801'
+        implementation 'com.github.c4pt000:libdohj:4e5d7c5'
 
         implementation("com.github.c4pt000:bitcoinj:$bitcoinjVersion") {
             exclude(module: 'bcprov-jdk15on')
@@ -311,7 +311,7 @@ configure(project(':p2p')) {
             exclude(module: 'slf4j-api')
         }
 
-        implementation 'com.github.c4pt000:libdohj:c0f2801'
+        implementation 'com.github.c4pt000:libdohj:4e5d7c5'
 
         implementation("com.github.c4pt000:bitcoinj:$bitcoinjVersion") {
             exclude(module: 'bcprov-jdk15on')
@@ -341,10 +341,6 @@ configure(project(':p2p')) {
         // If they have not, e.g. because Git LFS is not installed, they will be text files
         // containing a sha256 hash of the remote object, indicating we should stop the
         // build and inform the user how to fix the problem.
-     //   if (file('src/main/resources/ProposalStore_BTC_MAINNET').text.contains("oid sha256:"))
-       //     throw new GradleException("p2p data store files have not been synchronized. " +
-         //       "To fix this, ensure you have Git LFS installed and run `git lfs pull`. " +
-           //     "See docs/build.md for more information.")
     }
 }
 
@@ -391,7 +387,7 @@ configure(project(':core')) {
             exclude(module: 'slf4j-api')
         }
 
-        implementation 'com.github.c4pt000:libdohj:c0f2801'
+        implementation 'com.github.c4pt000:libdohj:4e5d7c5'
 
         implementation("com.github.c4pt000:bitcoinj:$bitcoinjVersion") {
             exclude(module: 'bcprov-jdk15on')
@@ -516,7 +512,7 @@ configure(project(':desktop')) {
 
 
 
-        implementation 'com.github.c4pt000:libdohj:c0f2801'
+        implementation 'com.github.c4pt000:libdohj:4e5d7c5'
 
         implementation("com.github.c4pt000:bitcoinj:$bitcoinjVersion") {
             exclude(module: 'bcprov-jdk15on')
@@ -740,7 +736,7 @@ configure(project(':daemon')) {
         implementation "org.jetbrains:annotations:$jetbrainsAnnotationsVersion"
         implementation "org.slf4j:slf4j-api:$slf4jVersion"
 
-        implementation 'com.github.c4pt000:libdohj:c0f2801'
+        implementation 'com.github.c4pt000:libdohj:4e5d7c5'
 
         implementation("com.github.c4pt000:bitcoinj:$bitcoinjVersion") {
             exclude(module: 'bcprov-jdk15on')
@@ -878,7 +874,7 @@ configure(project(':apitest')) {
         implementation "org.slf4j:slf4j-api:$slf4jVersion"
 
 
-        implementation 'com.github.c4pt000:libdohj:c0f2801'
+        implementation 'com.github.c4pt000:libdohj:4e5d7c5'
 
         implementation("com.github.c4pt000:bitcoinj:$bitcoinjVersion") {
             exclude(module: 'bcprov-jdk15on')

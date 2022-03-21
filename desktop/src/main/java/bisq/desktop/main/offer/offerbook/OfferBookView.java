@@ -686,21 +686,21 @@ public class OfferBookView extends ActivatableViewAndModel<GridPane, OfferBookVi
                 new Popup().warning(Res.get("offerbook.warning.nodeBlocked")).show();
                 break;
             case REQUIRE_UPDATE_TO_NEW_VERSION:
-                new Popup().warning(Res.get("offerbook.warning.requireUpdateToNewVersion")).show();
-                break;
+             //   new Popup().warning(Res.get("offerbook.warning.requireUpdateToNewVersion")).show();
+               // break;
             case IS_INSUFFICIENT_COUNTERPARTY_TRADE_LIMIT:
-                new Popup().warning(Res.get("offerbook.warning.counterpartyTradeRestrictions")).show();
-                break;
+            //    new Popup().warning(Res.get("offerbook.warning.counterpartyTradeRestrictions")).show();
+              //  break;
             case IS_MY_INSUFFICIENT_TRADE_LIMIT:
                 Optional<PaymentAccount> account = model.getMostMaturePaymentAccountForOffer(offer);
                 if (account.isPresent()) {
                     long tradeLimit = model.accountAgeWitnessService.getMyTradeLimit(account.get(),
                             offer.getCurrencyCode(), offer.getMirroredDirection());
-                    new Popup()
-                            .warning(Res.get("popup.warning.tradeLimitDueAccountAgeRestriction.buyer",
-                                    formatter.formatCoinWithCode(Coin.valueOf(tradeLimit)),
-                                    Res.get("offerbook.warning.newVersionAnnouncement")))
-                            .show();
+//                    new Popup()
+                    //        .warning(Res.get("popup.warning.tradeLimitDueAccountAgeRestriction.buyer",
+                      //              formatter.formatCoinWithCode(Coin.valueOf(tradeLimit)),
+                        ///            Res.get("offerbook.warning.newVersionAnnouncement")))
+                        //    .show();
                 } else {
                     DevEnv.logErrorAndThrowIfDevMode("We don't found a payment account but got called the " +
                             "isInsufficientTradeLimit case.");

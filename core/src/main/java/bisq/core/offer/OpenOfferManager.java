@@ -618,6 +618,7 @@ public class OpenOfferManager implements PeerManager.Listener, DecryptedDirectMe
     ///////////////////////////////////////////////////////////////////////////////////////////
 
     private void handleOfferAvailabilityRequest(OfferAvailabilityRequest request, NodeAddress peer) {
+/*
         log.info("Received OfferAvailabilityRequest from {} with offerId {} and uid {}",
                 peer, request.getOfferId(), request.getUid());
 
@@ -639,12 +640,12 @@ public class OpenOfferManager implements PeerManager.Listener, DecryptedDirectMe
         }
 
         // Don't allow trade start if BitcoinJ is not fully synced (bisq issue #4764)
-        if (!btcWalletService.isChainHeightSyncedWithinTolerance()) {
-            errorMessage = "We got a handleOfferAvailabilityRequest but our chain is not synced.";
-            log.info(errorMessage);
-            sendAckMessage(request, peer, false, errorMessage);
-            return;
-        }
+        //if (!btcWalletService.isChainHeightSyncedWithinTolerance()) {
+        //    errorMessage = "We got a handleOfferAvailabilityRequest but our chain is not synced.";
+          //  log.info(errorMessage);
+          //  sendAckMessage(request, peer, false, errorMessage);
+         //   return;
+       // }
 
         if (stopped) {
             errorMessage = "We have stopped already. We ignore that handleOfferAvailabilityRequest call.";
@@ -663,7 +664,8 @@ public class OpenOfferManager implements PeerManager.Listener, DecryptedDirectMe
             return;
         }
 
-        try {
+/*
+  //      try {
             Optional<OpenOffer> openOfferOptional = getOpenOfferById(request.offerId);
             AvailabilityResult availabilityResult;
             NodeAddress arbitratorNodeAddress = null;
@@ -685,21 +687,21 @@ public class OpenOfferManager implements PeerManager.Listener, DecryptedDirectMe
                                 // Check also tradePrice to avoid failures after taker fee is paid caused by a too big difference
                                 // in trade price between the peers. Also here poor connectivity might cause market price API connection
                                 // losses and therefore an outdated market price.
-                                offer.verifyTakersTradePrice(request.getTakersTradePrice());
-                                availabilityResult = AvailabilityResult.AVAILABLE;
-                            } catch (TradePriceOutOfToleranceException e) {
-                                log.warn("Trade price check failed because takers price is outside out tolerance.");
-                                availabilityResult = AvailabilityResult.PRICE_OUT_OF_TOLERANCE;
-                            } catch (MarketPriceNotAvailableException e) {
-                                log.warn(e.getMessage());
-                                availabilityResult = AvailabilityResult.MARKET_PRICE_NOT_AVAILABLE;
-                            } catch (Throwable e) {
-                                log.warn("Trade price check failed. " + e.getMessage());
-                                if (coreContext.isApiUser())
+                            //    offer.verifyTakersTradePrice(request.getTakersTradePrice());
+                              //  availabilityResult = AvailabilityResult.AVAILABLE;
+                           // } catch (TradePriceOutOfToleranceException e) {
+                             //   log.warn("Trade price check failed because takers price is outside out tolerance.");
+                            //    availabilityResult = AvailabilityResult.PRICE_OUT_OF_TOLERANCE;
+                          //  } catch (MarketPriceNotAvailableException e) {
+                            //    log.warn(e.getMessage());
+                            //    availabilityResult = AvailabilityResult.MARKET_PRICE_NOT_AVAILABLE;
+                          //  } catch (Throwable e) {
+                            //    log.warn("Trade price check failed. " + e.getMessage());
+                               // if (coreContext.isApiUser())
                                     // Give api user something more than 'unknown_failure'.
-                                    availabilityResult = AvailabilityResult.PRICE_CHECK_FAILED;
-                                else
-                                    availabilityResult = AvailabilityResult.UNKNOWN_FAILURE;
+                              //      availabilityResult = AvailabilityResult.PRICE_CHECK_FAILED;
+                              //  else
+                              //      availabilityResult = AvailabilityResult.UNKNOWN_FAILURE;
                             }
                         } else {
                             availabilityResult = AvailabilityResult.USER_IGNORED;
@@ -752,12 +754,13 @@ public class OpenOfferManager implements PeerManager.Listener, DecryptedDirectMe
                     });
             result = true;
         } catch (Throwable t) {
-            errorMessage = "Exception at handleRequestIsOfferAvailableMessage " + t.getMessage();
-            log.error(errorMessage);
-            t.printStackTrace();
+        //    errorMessage = "Exception at handleRequestIsOfferAvailableMessage " + t.getMessage();
+         //   log.error(errorMessage);
+        //    t.printStackTrace();
         } finally {
-            sendAckMessage(request, peer, result, errorMessage);
+        //    sendAckMessage(request, peer, result, errorMessage);
         }
+*/
     }
 
     private boolean apiUserDeniedByOffer(OfferAvailabilityRequest request) {

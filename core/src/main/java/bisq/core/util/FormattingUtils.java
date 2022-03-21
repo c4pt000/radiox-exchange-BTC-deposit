@@ -31,7 +31,7 @@ import org.jetbrains.annotations.NotNull;
 
 @Slf4j
 public class FormattingUtils {
-    public static final String BTC_FORMATTER_KEY = "BTC";
+    public static final String BTC_FORMATTER_KEY = "RADC";
 
     public final static String RANGE_SEPARATOR = " - ";
 

@@ -62,7 +62,7 @@ public class CurrencyUtil {
 
     private static final AssetRegistry assetRegistry = new AssetRegistry();
 
-    private static String baseCurrencyCode = "BTC";
+    private static String baseCurrencyCode = "RADC";
 
     // Calls to isFiatCurrency and isCryptoCurrency are very frequent so we use a cache of the results.
     // The main improvement was already achieved with using memoize for the source maps, but
@@ -563,7 +563,7 @@ public class CurrencyUtil {
         if (currencyCode == null) {
             // Some tests call that method with null values. Should be fixed in the tests but to not break them return false.
             isCryptoCurrency = false;
-        } else if (currencyCode.equals("BTC")) {
+        } else if (currencyCode.equals("RADC")) {
             // BTC is not part of our assetRegistry so treat it extra here. Other old base currencies (LTC, DOGE, DASH)
             // are not supported anymore so we can ignore that case.
             isCryptoCurrency = true;
@@ -647,7 +647,7 @@ public class CurrencyUtil {
                     .filter(cryptoCurrency -> cryptoCurrency.getCode().equals(currencyCode))
                     .findAny();
 
-            String btcOrRemovedAsset = "BTC".equals(currencyCode) ? "Bitcoin" :
+            String btcOrRemovedAsset = "RADC".equals(currencyCode) ? "Radiocoin" :
                     removedCryptoCurrency.isPresent() ? removedCryptoCurrency.get().getName() : Res.get("shared.na");
             return getCryptoCurrency(currencyCode).map(TradeCurrency::getName).orElse(btcOrRemovedAsset);
         }
@@ -798,7 +798,7 @@ public class CurrencyUtil {
         // Although this method is only used by the core.api package, its
         // presence here avoids creating a new util class just for this method.
         if (isCryptoCurrency(currencyCode))
-            return currencyCode.equals("BTC")
+            return currencyCode.equals("RADC")
                     || currencyCode.equals("BSQ")
                     || currencyCode.equals("XMR");
         else

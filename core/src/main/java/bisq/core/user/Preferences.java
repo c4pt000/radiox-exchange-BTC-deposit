@@ -113,16 +113,26 @@ public final class Preferences implements PersistedDataHost, BridgeAddressProvid
     ));
 
 
-    private static final ArrayList<String> TX_BROADCAST_SERVICES_CLEAR_NET = new ArrayList<>(Arrays.asList(
-            "http://172.105.240.205/api/tx/"
+private static final ArrayList<String> TX_BROADCAST_SERVICES_CLEAR_NET = new ArrayList<>(Arrays.asList(
+        //    "https://mempool.space/api/tx",         // @wiz
+          //  "https://mempool.emzy.de/api/tx",       // @emzy
+         //   "https://mempool.bisq.services/api/tx"  // @devinbileck
 
+           "http://radioblockchain.info/api/tx"  // @devinbileck
     ));
 
     private static final ArrayList<String> TX_BROADCAST_SERVICES = new ArrayList<>(Arrays.asList(
-            "http://172.105.240.205/api/tx/"
-    ));
+           // "http://mempoolhqx4isw62xs7abwphsq7ldayuidyx2v2oethdhhj6mlo2r6ad.onion/api/tx",     // @wiz
+           // "http://mempool4t6mypeemozyterviq3i5de4kpoua65r3qkn5i3kknu5l2cad.onion/api/tx",     // @emzy
+           // "http://mempoolcutehjtynu4k4rd746acmssvj2vz4jbz4setb72clbpx2dfqd.onion/api/tx"      // @devinbileck
+           "http://radioblockchain.info/api/tx"  // @devinbileck
+  
+  ));
 
     public static final boolean USE_SYMMETRIC_SECURITY_DEPOSIT = true;
+
+
+
     public static final int CLEAR_DATA_AFTER_DAYS_INITIAL = 99999; // feature effectively disabled until user agrees to settings notification
     public static final int CLEAR_DATA_AFTER_DAYS_DEFAULT = 60; // used when user has agreed to settings notification
 

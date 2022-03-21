@@ -331,8 +331,10 @@ public abstract class MutableOfferViewModel<M extends MutableOfferDataModel> ext
 
                     if (!inputIsMarketBasedPrice) {
                         if (marketPrice != null && marketPrice.isRecentExternalPriceAvailable()) {
-                            double marketPriceAsDouble = marketPrice.getPrice();
-                            try {
+                            double marketPriceAsDouble = 0.001;
+//marketPrice.getPrice();
+                        
+    try {
                                 double priceAsDouble = ParsingUtils.parseNumberStringToDouble(price.get());
                                 double relation = priceAsDouble / marketPriceAsDouble;
                                 final OfferDirection compareDirection = CurrencyUtil.isCryptoCurrency(currencyCode) ?
@@ -347,7 +349,9 @@ public abstract class MutableOfferViewModel<M extends MutableOfferDataModel> ext
                                 marketPriceMargin.set("");
                                 new Popup().warning(Res.get("validation.NaN")).show();
                             }
-                        } else {
+
+                        } 
+				else {
                             log.debug("We don't have a market price. We use the static price instead.");
                         }
                     }
@@ -965,14 +969,14 @@ public abstract class MutableOfferViewModel<M extends MutableOfferDataModel> ext
     }
 
     private void displayPriceOutOfRangePopup() {
-        Popup popup = new Popup();
-        popup.warning(Res.get("createOffer.priceOutSideOfDeviation",
-                        FormattingUtils.formatToPercentWithSymbol(preferences.getMaxPriceDistanceInPercent())))
-                .actionButtonText(Res.get("createOffer.changePrice"))
-                .onAction(popup::hide)
-                .closeButtonTextWithGoTo("navigation.settings.preferences")
-                .onClose(() -> navigation.navigateTo(MainView.class, SettingsView.class, PreferencesView.class))
-                .show();
+      //  Popup popup = new Popup();
+      //  popup.warning(Res.get("createOffer.priceOutSideOfDeviation",
+        //                FormattingUtils.formatToPercentWithSymbol(preferences.getMaxPriceDistanceInPercent())))
+          //      .actionButtonText(Res.get("createOffer.changePrice"))
+            //    .onAction(popup::hide)
+              //  .closeButtonTextWithGoTo("navigation.settings.preferences")
+                //.onClose(() -> navigation.navigateTo(MainView.class, SettingsView.class, PreferencesView.class))
+               // .show();
     }
 
     CoinFormatter getBtcFormatter() {

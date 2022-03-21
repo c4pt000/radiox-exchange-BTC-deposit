@@ -32,16 +32,16 @@ public class TakerVerifyMakerFeePayment extends TradeTask {
 
     @Override
     protected void run() {
-        try {
-            runInterceptHook();
+     //   try {
+       //     runInterceptHook();
             //TODO impl. missing
             // int numOfPeersSeenTx = processModel.getWalletService().getNumOfPeersSeenTx(processModel.getTakeOfferFeeTxId().getHashAsString());
        /* if (numOfPeersSeenTx > 2) {
             resultHandler.handleResult();
         }*/
-            complete();
-        } catch (Throwable t) {
-            failed(t);
-        }
+         //   complete();
+     //   } catch (Throwable t) {
+     //       failed(t);
+     //   }
     }
 }

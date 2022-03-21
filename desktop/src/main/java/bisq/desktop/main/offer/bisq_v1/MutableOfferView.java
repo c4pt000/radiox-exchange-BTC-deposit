@@ -139,7 +139,7 @@ public abstract class MutableOfferView<M extends MutableOfferViewModel<?>> exten
     private BusyAnimation waitingForFundsSpinner;
     private AutoTooltipButton nextButton, cancelButton1, cancelButton2, placeOfferButton;
     private Button priceTypeToggleButton;
-    private InputTextField marketBasedPriceTextField, triggerPriceInputTextField, fixedPriceTextField; 
+    private InputTextField fixedPriceTextField, marketBasedPriceTextField, triggerPriceInputTextField;
     protected InputTextField amountTextField, minAmountTextField, volumeTextField, buyerSecurityDepositInputTextField;
     private TextField currencyTextField;
     private AddressTextField addressTextField;
@@ -558,18 +558,16 @@ public abstract class MutableOfferView<M extends MutableOfferViewModel<?>> exten
             currencySelection.setVisible(paymentAccount.hasMultipleCurrencies());
             currencySelection.setManaged(paymentAccount.hasMultipleCurrencies());
             currencyTextFieldBox.setVisible(!paymentAccount.hasMultipleCurrencies());
-
-            model.onPaymentAccountSelected(paymentAccount);
-            model.onCurrencySelected(model.getTradeCurrency());
-
             if (paymentAccount.hasMultipleCurrencies()) {
                 final List<TradeCurrency> tradeCurrencies = paymentAccount.getTradeCurrencies();
                 currencyComboBox.setItems(FXCollections.observableArrayList(tradeCurrencies));
-                currencyComboBox.getSelectionModel().select(model.getTradeCurrency());
+                model.onPaymentAccountSelected(paymentAccount);
             } else {
                 TradeCurrency singleTradeCurrency = paymentAccount.getSingleTradeCurrency();
                 if (singleTradeCurrency != null)
                     currencyTextField.setText(singleTradeCurrency.getNameAndCode());
+                model.onPaymentAccountSelected(paymentAccount);
+                model.onCurrencySelected(model.getDataModel().getTradeCurrency());
             }
         } else {
             currencySelection.setVisible(false);
@@ -769,7 +767,7 @@ public abstract class MutableOfferView<M extends MutableOfferViewModel<?>> exten
         currencyComboBoxSelectionHandler = e -> onCurrencyComboBoxSelected();
 
         tradeCurrencyCodeListener = (observable, oldValue, newValue) -> {
-           fixedPriceTextField.clear();
+            fixedPriceTextField.clear();
             marketBasedPriceTextField.clear();
             volumeTextField.clear();
             triggerPriceInputTextField.clear();
@@ -802,7 +800,7 @@ public abstract class MutableOfferView<M extends MutableOfferViewModel<?>> exten
             }
         };
 
-        marketPriceAvailableListener = (observable, oldValue, newValue) -> updatePriceToggle();
+      //  marketPriceAvailableListener = (observable, oldValue, newValue) -> updatePriceToggle();
 
         getShowWalletFundedNotificationListener = (observable, oldValue, newValue) -> {
             if (newValue) {
@@ -931,20 +929,20 @@ public abstract class MutableOfferView<M extends MutableOfferViewModel<?>> exten
 
     protected void updatePriceToggle() {
         int marketPriceAvailableValue = model.marketPriceAvailableProperty.get();
-        if (marketPriceAvailableValue < -1) {
+        if (marketPriceAvailableValue > -1) {
             boolean showPriceToggle = marketPriceAvailableValue == 1 &&
                     !model.getDataModel().paymentAccount.hasPaymentMethodWithId(HAL_CASH_ID);
-            percentagePriceBox.setVisible(showPriceToggle);
-            priceTypeToggleButton.setVisible(showPriceToggle);
+            //percentagePriceBox.setVisible(showPriceToggle);
+            //priceTypeToggleButton.setVisible(showPriceToggle);
             boolean fixedPriceSelected = !model.getDataModel().getUseMarketBasedPrice().get() || !showPriceToggle;
-            updatePriceToggleButtons(fixedPriceSelected);
+           // updatePriceToggleButtons(fixedPriceSelected);
         }
     }
 
     private void addListeners() {
         model.tradeCurrencyCode.addListener(tradeCurrencyCodeListener);
-        model.marketPriceAvailableProperty.addListener(marketPriceAvailableListener);
-        model.marketPriceMargin.addListener(marketPriceMarginListener);
+      //  model.marketPriceAvailableProperty.addListener(marketPriceAvailableListener);
+      //  model.marketPriceMargin.addListener(marketPriceMarginListener);
         model.volume.addListener(volumeListener);
         model.getDataModel().missingCoin.addListener(missingCoinListener);
         model.isTradeFeeVisible.addListener(tradeFeeVisibleListener);
@@ -957,7 +955,7 @@ public abstract class MutableOfferView<M extends MutableOfferViewModel<?>> exten
         // focus out
         amountTextField.focusedProperty().addListener(amountFocusedListener);
         minAmountTextField.focusedProperty().addListener(minAmountFocusedListener);
-       fixedPriceTextField.focusedProperty().addListener(priceFocusedListener);
+        fixedPriceTextField.focusedProperty().addListener(priceFocusedListener);
         triggerPriceInputTextField.focusedProperty().addListener(triggerPriceFocusedListener);
         marketBasedPriceTextField.focusedProperty().addListener(priceAsPercentageFocusedListener);
         volumeTextField.focusedProperty().addListener(volumeFocusedListener);
@@ -979,8 +977,8 @@ public abstract class MutableOfferView<M extends MutableOfferViewModel<?>> exten
 
     private void removeListeners() {
         model.tradeCurrencyCode.removeListener(tradeCurrencyCodeListener);
-        model.marketPriceAvailableProperty.removeListener(marketPriceAvailableListener);
-        model.marketPriceMargin.removeListener(marketPriceMarginListener);
+        //model.marketPriceAvailableProperty.removeListener(marketPriceAvailableListener);
+        //model.marketPriceMargin.removeListener(marketPriceMarginListener);
         model.volume.removeListener(volumeListener);
         model.getDataModel().missingCoin.removeListener(missingCoinListener);
         model.isTradeFeeVisible.removeListener(tradeFeeVisibleListener);
@@ -992,7 +990,7 @@ public abstract class MutableOfferView<M extends MutableOfferViewModel<?>> exten
         // focus out
         amountTextField.focusedProperty().removeListener(amountFocusedListener);
         minAmountTextField.focusedProperty().removeListener(minAmountFocusedListener);
-       fixedPriceTextField.focusedProperty().removeListener(priceFocusedListener);
+        fixedPriceTextField.focusedProperty().removeListener(priceFocusedListener);
         triggerPriceInputTextField.focusedProperty().removeListener(triggerPriceFocusedListener);
         marketBasedPriceTextField.focusedProperty().removeListener(priceAsPercentageFocusedListener);
         volumeTextField.focusedProperty().removeListener(volumeFocusedListener);
@@ -1388,38 +1386,39 @@ public abstract class MutableOfferView<M extends MutableOfferViewModel<?>> exten
         gridPane.getChildren().add(firstRowHBox);
     }
 
-    private void updatePriceToggleButtons(boolean fixedPriceSelected) {
-        int marketPriceAvailable = model.marketPriceAvailableProperty.get();
-        fixedPriceSelected = fixedPriceSelected || (marketPriceAvailable == 0);
+//    private void updatePriceToggleButtons {
+//(boolean fixedPriceSelected) {
+       // int marketPriceAvailable = model.marketPriceAvailableProperty.get();
+//        fixedPriceSelected = !fixedPriceSelected || (marketPriceAvailable == 1);
 
-        if (marketPriceAvailable == 1) {
-            model.getDataModel().setUseMarketBasedPrice(!fixedPriceSelected);
-        }
+//        if (marketPriceAvailable == 1) {
+        //    model.getDataModel().setUseMarketBasedPrice(!fixedPriceSelected);
+  //      }
 
-        percentagePriceBox.setDisable(fixedPriceSelected);
-        fixedPriceBox.setDisable(!fixedPriceSelected);
+        //percentagePriceBox.setDisable(fixedPriceSelected);
+        //fixedPriceBox.setDisable(!fixedPriceSelected);
 
-        if (fixedPriceSelected) {
-            firstRowHBox.getChildren().remove(percentagePriceBox);
-            secondRowHBox.getChildren().remove(fixedPriceBox);
+  //      if (fixedPriceSelected) {
+          //  firstRowHBox.getChildren().remove(percentagePriceBox);
+           // secondRowHBox.getChildren().remove(fixedPriceBox);
 
-            if (!firstRowHBox.getChildren().contains(fixedPriceBox))
-                firstRowHBox.getChildren().add(2, fixedPriceBox);
-            if (!secondRowHBox.getChildren().contains(percentagePriceBox))
-                secondRowHBox.getChildren().add(2, percentagePriceBox);
-        } else {
-            firstRowHBox.getChildren().remove(fixedPriceBox);
-            secondRowHBox.getChildren().remove(percentagePriceBox);
+    //        if (!firstRowHBox.getChildren().contains(fixedPriceBox))
+             //   firstRowHBox.getChildren().add(2, fixedPriceBox);
+      //      if (!secondRowHBox.getChildren().contains(percentagePriceBox))
+               // secondRowHBox.getChildren().add(2, percentagePriceBox);
+//        } else {
+           // firstRowHBox.getChildren().remove(fixedPriceBox);
+            //secondRowHBox.getChildren().remove(percentagePriceBox);
 
-            if (!firstRowHBox.getChildren().contains(percentagePriceBox))
-                firstRowHBox.getChildren().add(2, percentagePriceBox);
-            if (!secondRowHBox.getChildren().contains(fixedPriceBox))
-                secondRowHBox.getChildren().add(2, fixedPriceBox);
-        }
+        //    if (!firstRowHBox.getChildren().contains(percentagePriceBox))
+              //  firstRowHBox.getChildren().add(2, percentagePriceBox);
+          //  if (!secondRowHBox.getChildren().contains(fixedPriceBox))
+                //secondRowHBox.getChildren().add(2, fixedPriceBox);
+//        }
 
-        triggerPriceVBox.setVisible(!fixedPriceSelected);
-        model.onFixPriceToggleChange(fixedPriceSelected);
-    }
+        //triggerPriceVBox.setVisible(!fixedPriceSelected);
+       // model.onFixPriceToggleChange(fixedPriceSelected);
+  //  }
 
     private void addSecondRow() {
         // price as fiat
@@ -1459,8 +1458,8 @@ public abstract class MutableOfferView<M extends MutableOfferViewModel<?>> exten
         priceTypeToggleButton = getIconButton(MaterialDesignIcon.SWAP_VERTICAL);
         editOfferElements.add(priceTypeToggleButton);
         HBox.setMargin(priceTypeToggleButton, new Insets(16, 1.5, 0, 0));
-        priceTypeToggleButton.setOnAction((actionEvent) ->
-                updatePriceToggleButtons(model.getDataModel().getUseMarketBasedPrice().getValue()));
+//        priceTypeToggleButton.setOnAction((actionEvent) ->
+  //              updatePriceToggleButtons(model.getDataModel().getUseMarketBasedPrice().getValue()));
 
         // triggerPrice
         Tuple3<HBox, InfoInputTextField, Label> triggerPriceTuple3 = getEditableValueBoxWithInfo(Res.get("createOffer.triggerPrice.prompt"));
@@ -1502,7 +1501,7 @@ public abstract class MutableOfferView<M extends MutableOfferViewModel<?>> exten
         vBox.getChildren().addAll(tradeFeeInBtcLabel, tradeFeeInBsqLabel);
 
         tradeFeeInBtcToggle = new AutoTooltipSlideToggleButton();
-        tradeFeeInBtcToggle.setText("RADC");
+        tradeFeeInBtcToggle.setText("BTC");
         tradeFeeInBtcToggle.setVisible(false);
         tradeFeeInBtcToggle.setPadding(new Insets(-8, 5, -10, 5));
 

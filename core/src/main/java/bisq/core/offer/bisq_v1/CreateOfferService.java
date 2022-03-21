@@ -128,10 +128,12 @@ public class CreateOfferService {
 
         long creationTime = new Date().getTime();
         NodeAddress makerAddress = p2PService.getAddress();
-        boolean useMarketBasedPriceValue = useMarketBasedPrice &&
+        boolean useMarketBasedPriceValue = false;
+/*
+useMarketBasedPrice &&
                 isMarketPriceAvailable(currencyCode) &&
                 !paymentAccount.hasPaymentMethodWithId(HAL_CASH_ID);
-
+*/
         long priceAsLong = price != null && !useMarketBasedPriceValue ? price.getValue() : 0L;
         double marketPriceMarginParam = useMarketBasedPriceValue ? marketPriceMargin : 0;
         long amountAsLong = amount != null ? amount.getValue() : 0L;
